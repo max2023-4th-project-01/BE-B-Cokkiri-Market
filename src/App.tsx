@@ -11,6 +11,6 @@ const Div = styled.div`
   justify-content: center;
   align-items: center;
   margin: 0 auto;
-  font-size: 30px;
+  font: ${({ theme }) => theme.font.displayStrong20};
   color: ${({ theme }) => theme.color.neutral.textStrong};
 `;
