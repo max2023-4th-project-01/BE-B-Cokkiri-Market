@@ -51,8 +51,8 @@ export const designSystem = {
     accent: {
       text: colors.white,
       textWeak: colors.black,
-      backgroundPrimary: colors.orange,
-      backgroundSecondary: colors.mint,
+      primary: colors.orange,
+      secondary: colors.mint,
     },
     system: {
       warning: colors.red,
