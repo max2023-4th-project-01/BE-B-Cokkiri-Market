@@ -1,6 +1,8 @@
 import { decToHexOpacity } from '../utils/style';
 
-const colors = {
+export type ColorType = keyof typeof designSystem.color;
+
+export const colors = {
   white: '#FFFFFF',
   grey50: '#FAFAFA',
   grey100: `#F9F9F9${decToHexOpacity(0.8)}`,
@@ -36,29 +38,25 @@ const font = {
 
 export const designSystem = {
   color: {
-    neutral: {
-      text: colors.grey900,
-      textWeak: colors.grey800,
-      textStrong: colors.black,
-      background: colors.white,
-      backgroundWeak: colors.grey50,
-      backgroundBold: colors.grey400,
-      backgroundBlur: colors.grey100, // needs backdrop-filter: blur(8px);
-      border: colors.grey500,
-      borderStrong: colors.grey700,
-      overlay: colors.grey600,
-    },
-    accent: {
-      text: colors.white,
-      textWeak: colors.black,
-      primary: colors.orange,
-      secondary: colors.mint,
-    },
-    system: {
-      warning: colors.red,
-      background: colors.white,
-      backgroundWeak: colors.grey200,
-    },
+    neutralText: colors.grey900,
+    neutralTextWeak: colors.grey800,
+    neutralTextStrong: colors.black,
+    neutralBackground: colors.white,
+    neutralBackgroundWeak: colors.grey50,
+    neutralBackgroundBold: colors.grey400,
+    neutralBackgroundBlur: colors.grey100, // needs backdrop-filter: blur(8px);
+    neutralBorder: colors.grey500,
+    neutralBorderStrong: colors.grey700,
+    neutralOverlay: colors.grey600,
+
+    accentText: colors.white,
+    accentTextWeak: colors.black,
+    accentPrimary: colors.orange,
+    accentSecondary: colors.mint,
+
+    systemWarning: colors.red,
+    systemBackground: colors.white,
+    systemBackgroundWeak: colors.grey200,
   },
   filter: {
     neutralTextWeak:
