@@ -10,7 +10,7 @@ export function App() {
       <Button type="outline" color="neutralBorder">
         <Add>추가</Add>
       </Button>
-      <Button type="ghost" color="neutralBorder">
+      <Button type="ghost">
         <SignUp>회원가입</SignUp>
       </Button>
       <Button type="circle" color="accentPrimary">

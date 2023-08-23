@@ -1,36 +1,45 @@
 import { ButtonHTMLAttributes } from 'react';
 import { css, styled } from 'styled-components';
 import { ColorType, designSystem } from '../styles/designSystem';
-type type = 'container' | 'outline' | 'ghost' | 'circle';
 
-type ButtonProps = {
+type ButtonType = 'container' | 'outline' | 'ghost' | 'circle';
+
+type ButtonPropsWithColor = {
   children?: React.ReactNode;
-  type: type;
+  type: Exclude<ButtonType, 'ghost'>;
   color: ColorType;
 } & ButtonHTMLAttributes<HTMLButtonElement>;
 
+type ButtonPropsGhost = {
+  children?: React.ReactNode;
+  type: 'ghost';
+} & ButtonHTMLAttributes<HTMLButtonElement>;
+
+type ButtonProps = ButtonPropsWithColor | ButtonPropsGhost;
+
 export function Button({ children, type, color, ...rest }: ButtonProps) {
   return (
-    <StyledButton $type={type} $color={color} {...rest}>
+    <StyledButton
+      $type={type}
+      $color={type !== 'ghost' ? color : undefined}
+      {...rest}
+    >
       {children}
     </StyledButton>
   );
 }
 
-const StyledButton = styled.button<{
-  $type: type;
-  $color: ColorType;
-}>`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
+const typeToCss = ($type: ButtonType, $color?: ColorType) => {
+  if ($type === 'ghost') {
+    return css`
+      border: none;
+      border-radius: 8px;
+      background: none;
+    `;
+  }
 
-  ${({ $type: $type, $color }) => typeToCss($type, $color)}
-  cursor: pointer;
-`;
+  if (!$color) return '';
 
-const typeToCss = ($type: type, $color: ColorType) => {
   switch ($type) {
     case 'circle':
       return css`
@@ -44,12 +53,6 @@ const typeToCss = ($type: type, $color: ColorType) => {
         border-radius: 8px;
         background: ${designSystem.color[$color]};
       `;
-    case 'ghost':
-      return css`
-        border: none;
-        border-radius: 8px;
-        background: none;
-      `;
     case 'outline':
       return css`
         border: 1px solid ${designSystem.color[$color]};
@@ -60,3 +63,16 @@ const typeToCss = ($type: type, $color: ColorType) => {
       return '';
   }
 };
+
+const StyledButton = styled.button<{
+  $type: ButtonType;
+  $color?: ColorType;
+}>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+
+  ${({ $type, $color }) => typeToCss($type, $color)}
+  cursor: pointer;
+`;
