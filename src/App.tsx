@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { styled } from 'styled-components';
+import { Button } from './components/Button';
 import Modal from './components/Modal';
 import elephantImg from '/elephant-bg.png';
 import TestContent from './components/TestModalContent';
@@ -10,6 +11,18 @@ export function App() {
   return (
     <AppContainer>
       <Layout>
+        <Button type="container" color="accentPrimary">
+          <Login>로그인</Login>
+        </Button>
+        <Button type="outline" color="neutralBorder">
+          <Add>추가</Add>
+        </Button>
+        <Button type="ghost">
+          <SignUp>회원가입</SignUp>
+        </Button>
+        <Button type="circle" color="accentPrimary">
+          <Plus>+</Plus>
+        </Button>
         <Button onClick={() => setIsOpen(true)}>Open Modal</Button>
         <Modal
           open={isOpen}
@@ -29,7 +42,7 @@ const AppContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: ${({ theme }) => theme.color.neutral.backgroundWeak};
+  background-color: ${({ theme }) => theme.color.neutralBackgroundWeak};
   background-image: url(${elephantImg});
 }`;
 
@@ -37,19 +50,53 @@ const Layout = styled.div`
   width: 393px;
   height: 852px;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 10px;
   margin: 0 auto;
-  border: 1px solid ${({ theme }) => theme.color.neutral.border};
+  border: 1px solid ${({ theme }) => theme.color.neutralBorder};
   font: ${({ theme }) => theme.font.displayStrong20};
-  color: ${({ theme }) => theme.color.neutral.textStrong};
-  background-color: ${({ theme }) => theme.color.accent.text};
+  color: ${({ theme }) => theme.color.neutralTextStrong};
+  background-color: ${({ theme }) => theme.color.accentText};
 `;
 
-// TODO: 추후 버튼 공통 컴포넌트로 교체
-const Button = styled.button`
-  width: 100px;
-  height: 50px;
-  border: 1px solid black;
-  border-radius: 5px;
+const Login = styled.div`
+  width: 297px;
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font: ${({ theme }) => theme.font.availableStrong16};
+  color: ${({ theme }) => theme.color.accentText};
+`;
+
+const Add = styled.div`
+  width: 256px;
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font: ${({ theme }) => theme.font.availableStrong16};
+  color: ${({ theme }) => theme.color.accentTextWeak};
+`;
+
+const SignUp = styled.div`
+  width: 45px;
+  height: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font: ${({ theme }) => theme.font.availableStrong12};
+  color: ${({ theme }) => theme.color.neutralText};
+`;
+
+const Plus = styled.div`
+  width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font: ${({ theme }) => theme.font.availableStrong16};
+  color: ${({ theme }) => theme.color.accentText};
 `;

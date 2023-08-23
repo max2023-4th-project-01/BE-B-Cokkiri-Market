@@ -31,5 +31,5 @@ const Button = styled.button`
   gap: 4px;
   align-self: stretch;
   border-radius: 8px;
-  border: 0.8px solid ${({ theme }) => theme.color.neutral.border};
+  border: 0.8px solid ${({ theme }) => theme.color.neutralBorder};
 `;
