@@ -6,6 +6,7 @@ import {
   useRef,
 } from 'react';
 import { styled, keyframes } from 'styled-components';
+import { Button } from './Button';
 
 type ModalProps = DialogHTMLAttributes<HTMLDialogElement> & {
   open: boolean;
@@ -70,9 +71,11 @@ export default function Modal({
           {hasHeadline ? (
             <Headline>{headline}</Headline>
           ) : (
-            <Button>뒤로</Button>
+            <Button type="ghost">뒤로</Button>
           )}
-          <Button onClick={onClose}>X</Button>
+          <Button type="ghost" onClick={onClose}>
+            <Plus>X</Plus>
+          </Button>
         </Header>
         <Content>{children}</Content>
       </Container>
@@ -137,6 +140,7 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
   flex-shrink: 0;
+  overflow-x: hidden;
 `;
 
 const Header = styled.header<{ $hasHeadline: boolean }>`
@@ -154,10 +158,10 @@ const Headline = styled.h2`
   font: ${({ theme }) => theme.font.displayStrong20};
 `;
 
-const Button = styled.button`
+const Plus = styled.div`
   display: flex;
-  width: 48px;
-  height: 48px;
+  width: 32px;
+  height: 32px;
   padding: 12px;
   justify-content: center;
   align-items: center;

@@ -23,7 +23,13 @@ export function App() {
         <Button type="circle" color="accentPrimary">
           <Plus>+</Plus>
         </Button>
-        <Button onClick={() => setIsOpen(true)}>Open Modal</Button>
+        <Button
+          type="outline"
+          color="neutralBorder"
+          onClick={() => setIsOpen(true)}
+        >
+          Open Modal
+        </Button>
         <Modal
           open={isOpen}
           onClose={() => setIsOpen(false)}
