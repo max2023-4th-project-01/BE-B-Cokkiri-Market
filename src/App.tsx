@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { styled } from 'styled-components';
 import Modal from './components/Modal';
 import elephantImg from '/elephant-bg.png';
+import TestContent from './components/TestModalContent';
 
 export function App() {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,9 +11,12 @@ export function App() {
     <AppContainer>
       <Layout>
         <Button onClick={() => setIsOpen(true)}>Open Modal</Button>
-        <Modal open={isOpen} onClose={() => setIsOpen(false)}>
-          I'm a Modal
-          <Button onClick={() => setIsOpen(false)}>Close</Button>
+        <Modal
+          open={isOpen}
+          onClose={() => setIsOpen(false)}
+          headline="동네 설정"
+        >
+          <TestContent />
         </Modal>
       </Layout>
     </AppContainer>

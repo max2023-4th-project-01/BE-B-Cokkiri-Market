@@ -1,5 +1,5 @@
 import {
-  HTMLAttributes,
+  DialogHTMLAttributes,
   MouseEventHandler,
   useCallback,
   useEffect,
@@ -7,15 +7,21 @@ import {
 } from 'react';
 import { styled, keyframes } from 'styled-components';
 
-type ModalProps = HTMLAttributes<HTMLDialogElement> & {
+type ModalProps = DialogHTMLAttributes<HTMLDialogElement> & {
   open: boolean;
   onClose: () => void;
   children: React.ReactNode;
+  headline?: string;
 };
 
-export default function Modal({ open, onClose, children }: ModalProps) {
+export default function Modal({
+  open,
+  onClose,
+  headline,
+  children,
+}: ModalProps) {
   const modalRef = useRef<HTMLDialogElement>(null);
-
+  const hasHeadline = !!headline;
   // Esc로 닫았을 때는 close 이벤트 감지해서 애니메이션 적용
   const onCancel: MouseEventHandler<HTMLDialogElement> = useCallback(
     event => {
@@ -59,7 +65,17 @@ export default function Modal({ open, onClose, children }: ModalProps) {
       onClick={onClick}
       onAnimationEnd={onAnimEnd}
     >
-      <Container>{children}</Container>
+      <Container>
+        <Header $hasHeadline={hasHeadline}>
+          {hasHeadline ? (
+            <Headline>{headline}</Headline>
+          ) : (
+            <Button>뒤로</Button>
+          )}
+          <Button onClick={onClose}>X</Button>
+        </Header>
+        <Content>{children}</Content>
+      </Container>
     </Dialog>
   );
 }
@@ -93,8 +109,6 @@ const Dialog = styled.dialog`
   border-radius: 16px;
   border-width: 0;
   padding: 0;
-  max-height: 80%;
-  max-width: 80%;
 
   &[open] {
     animation: ${show} 250ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
@@ -116,12 +130,41 @@ const Dialog = styled.dialog`
 `;
 
 const Container = styled.div`
-  min-width: 320px;
-  min-height: 700px;
+  width: 320px;
+  height: 700px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 8px;
-  padding: 1rem;
+  flex-shrink: 0;
+`;
+
+const Header = styled.header<{ $hasHeadline: boolean }>`
+  min-height: 72px;
+  display: flex;
+  padding: 8px 8px 16px 24px;
+  justify-content: space-between;
+  align-items: center;
+  align-self: stretch;
+
+  ${({ $hasHeadline }) => !$hasHeadline && 'padding: 8px 8px 16px 12px;'}
+`;
+
+const Headline = styled.h2`
+  font: ${({ theme }) => theme.font.displayStrong20};
+`;
+
+const Button = styled.button`
+  display: flex;
+  width: 48px;
+  height: 48px;
+  padding: 12px;
+  justify-content: center;
+  align-items: center;
+`;
+
+const Content = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 0;
 `;
