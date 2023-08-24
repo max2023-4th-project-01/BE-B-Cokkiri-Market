@@ -5,16 +5,16 @@ import { Icon } from './components/icon/Icon';
 export function App() {
   return (
     <Div>
-      <Button type="container" color="accentPrimary">
+      <Button styledType="container" color="accentPrimary">
         <Login>로그인</Login>
       </Button>
-      <Button type="outline" color="neutralBorder">
+      <Button styledType="outline" color="neutralBorder">
         <Add>추가</Add>
       </Button>
-      <Button type="ghost">
+      <Button styledType="ghost">
         <SignUp>회원가입</SignUp>
       </Button>
-      <Button type="circle" color="accentPrimary">
+      <Button styledType="circle" color="accentPrimary">
         <Plus>+</Plus>
       </Button>
       <IconWrapper>

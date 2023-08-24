@@ -6,22 +6,22 @@ type ButtonType = 'container' | 'outline' | 'ghost' | 'circle';
 
 type ButtonPropsWithColor = {
   children?: React.ReactNode;
-  type: Exclude<ButtonType, 'ghost'>;
+  styledType: Exclude<ButtonType, 'ghost'>;
   color: ColorType;
 } & ButtonHTMLAttributes<HTMLButtonElement>;
 
 type ButtonPropsGhost = {
   children?: React.ReactNode;
-  type: 'ghost';
+  styledType: 'ghost';
 } & ButtonHTMLAttributes<HTMLButtonElement>;
 
 type ButtonProps = ButtonPropsWithColor | ButtonPropsGhost;
 
-export function Button({ children, type, color, ...rest }: ButtonProps) {
+export function Button({ children, styledType, color, ...rest }: ButtonProps) {
   return (
     <StyledButton
-      $type={type}
-      $color={type !== 'ghost' ? color : undefined}
+      $type={styledType}
+      $color={styledType !== 'ghost' ? color : undefined}
       {...rest}
     >
       {children}
