@@ -4,6 +4,7 @@ import {
   useEffect,
   useRef,
 } from 'react';
+import { createPortal } from 'react-dom';
 import { styled, keyframes } from 'styled-components';
 import { Button } from './Button';
 
@@ -16,6 +17,7 @@ type ModalProps = DialogHTMLAttributes<HTMLDialogElement> & {
 
 export function Modal({ isOpen, onClose, headline, children }: ModalProps) {
   const modalRef = useRef<HTMLDialogElement>(null);
+  const rootElement = document.getElementById('modal-root');
   const hasHeadline = !!headline;
 
   const onCancel: MouseEventHandler<HTMLDialogElement> = event => {
@@ -40,7 +42,11 @@ export function Modal({ isOpen, onClose, headline, children }: ModalProps) {
     isOpen && dialog?.showModal();
   }, [isOpen]);
 
-  return (
+  if (!rootElement) {
+    return;
+  }
+
+  return createPortal(
     <Dialog
       className={isOpen ? '' : 'modal--closing'}
       ref={modalRef}
@@ -62,7 +68,8 @@ export function Modal({ isOpen, onClose, headline, children }: ModalProps) {
         </Header>
         <Content>{children}</Content>
       </Container>
-    </Dialog>
+    </Dialog>,
+    rootElement
   );
 }
 
