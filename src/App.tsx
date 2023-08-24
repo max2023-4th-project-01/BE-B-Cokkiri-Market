@@ -1,5 +1,6 @@
 import { styled } from 'styled-components';
 import { Button } from './components/Button';
+import { Icon } from './components/icon/Icon';
 
 export function App() {
   return (
@@ -16,9 +17,26 @@ export function App() {
       <Button styledType="circle" color="accentPrimary">
         <Plus>+</Plus>
       </Button>
+      <IconWrapper>
+        <Icon name="camera" color="accentPrimary" />
+        <Icon name="check" color="accentSecondary" />
+        <Icon name="chevronDown" color="systemWarning" />
+        <Icon name="chevronLeft" color="accentTextWeak" />
+        <Icon name="chevronRight" color="neutralTextWeak" />
+        <Icon name="chevronUp" color="neutralTextStrong" />
+        <Icon name="circleXFilled" color="neutralBackgroundBold" />
+        <Icon name="dots" color="neutralOverlay" />
+        <Icon name="exclamationCircle" color="neutralBorderStrong" />
+        <Icon name="heart" color="neutralOverlay" />
+        <Icon name="home" color="neutralText" />
+      </IconWrapper>
     </Div>
   );
 }
+
+const IconWrapper = styled.div`
+  display: flex;
+`;
 
 const Login = styled.div`
   width: 297px;
@@ -27,7 +45,7 @@ const Login = styled.div`
   justify-content: center;
   align-items: center;
   font: ${({ theme }) => theme.font.availableStrong16};
-  color: ${({ theme }) => theme.color.accentText};
+  color: ${({ theme }) => theme.color.systemBackgroundWeak};
 `;
 
 const Add = styled.div`
