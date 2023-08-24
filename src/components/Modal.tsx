@@ -27,9 +27,7 @@ export function Modal({ isOpen, onClose, headline, children }: ModalProps) {
 
   const onClick: MouseEventHandler<HTMLDialogElement> = ({ target }) => {
     const dialog = modalRef.current;
-    if (target === dialog) {
-      onClose();
-    }
+    if (target === dialog) onClose();
   };
 
   const onAnimEnd = () => {
@@ -42,9 +40,7 @@ export function Modal({ isOpen, onClose, headline, children }: ModalProps) {
     isOpen && dialog?.showModal();
   }, [isOpen]);
 
-  if (!rootElement) {
-    return;
-  }
+  if (!rootElement) return;
 
   return createPortal(
     <Dialog
