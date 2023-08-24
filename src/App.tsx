@@ -31,7 +31,7 @@ export function App() {
           Open Modal
         </Button>
         <Modal
-          open={isOpen}
+          isOpen={isOpen}
           onClose={() => setIsOpen(false)}
           headline="동네 설정"
         >

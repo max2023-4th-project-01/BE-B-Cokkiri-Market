@@ -1,7 +1,6 @@
 import {
   DialogHTMLAttributes,
   MouseEventHandler,
-  useCallback,
   useEffect,
   useRef,
 } from 'react';
@@ -9,57 +8,46 @@ import { styled, keyframes } from 'styled-components';
 import { Button } from './Button';
 
 type ModalProps = DialogHTMLAttributes<HTMLDialogElement> & {
-  open: boolean;
+  isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
   headline?: string;
 };
 
 export default function Modal({
-  open,
+  isOpen,
   onClose,
   headline,
   children,
 }: ModalProps) {
   const modalRef = useRef<HTMLDialogElement>(null);
   const hasHeadline = !!headline;
-  // Esc로 닫았을 때는 close 이벤트 감지해서 애니메이션 적용
-  const onCancel: MouseEventHandler<HTMLDialogElement> = useCallback(
-    event => {
-      event.preventDefault();
+
+  const onCancel: MouseEventHandler<HTMLDialogElement> = event => {
+    event.preventDefault();
+    onClose();
+  };
+
+  const onClick: MouseEventHandler<HTMLDialogElement> = ({ target }) => {
+    const dialog = modalRef.current;
+    if (target === dialog) {
       onClose();
-    },
-    [onClose]
-  );
-
-  // 모달 바깥 영역 클릭시 닫히도록
-  const onClick: MouseEventHandler<HTMLDialogElement> = useCallback(
-    ({ target }) => {
-      const { current: el } = modalRef;
-      if (target === el) {
-        onClose();
-      }
-    },
-    [onClose]
-  );
-
-  const onAnimEnd = useCallback(() => {
-    const { current: el } = modalRef;
-    if (el && !open) {
-      el.close();
     }
-  }, [open]);
+  };
+
+  const onAnimEnd = () => {
+    const dialog = modalRef.current;
+    !isOpen && dialog?.close();
+  };
 
   useEffect(() => {
-    const { current: el } = modalRef;
-    if (el && open) {
-      el.showModal();
-    }
-  }, [open]);
+    const dialog = modalRef.current;
+    isOpen && dialog?.showModal();
+  }, [isOpen]);
 
   return (
     <Dialog
-      className={open ? '' : 'modal--closing'}
+      className={isOpen ? '' : 'modal--closing'}
       ref={modalRef}
       onClose={onClose}
       onCancel={onCancel}
