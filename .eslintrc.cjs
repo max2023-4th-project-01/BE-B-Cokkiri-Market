@@ -31,7 +31,8 @@ module.exports = {
         groups: [
           'builtin',
           'external',
-          ['parent', 'sibling'],
+          'parent',
+          'sibling',
           'index',
           'type',
           'unknown',
