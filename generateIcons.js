@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const iconsDir = path.resolve(__dirname, 'src/assets');
+const iconsDir = path.resolve(__dirname, 'src/assets/icon');
 const files = fs.readdirSync(iconsDir);
 
 const imports = files
@@ -18,7 +18,7 @@ const imports = files
         index === 0 ? part : part.charAt(0).toUpperCase() + part.slice(1)
       )
       .join('');
-    return `import { ReactComponent as ${iconName} } from '../../assets/${file}';`;
+    return `import { ReactComponent as ${iconName} } from '../../assets/icon/${file}';`;
   })
   .join('\n');
 
