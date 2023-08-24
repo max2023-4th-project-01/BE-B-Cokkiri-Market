@@ -30,13 +30,15 @@ export function App() {
         >
           Open Modal
         </Button>
-        <Modal
-          isOpen={isOpen}
-          onClose={() => setIsOpen(false)}
-          headline="동네 설정"
-        >
-          <TestModalContent />
-        </Modal>
+        {isOpen && (
+          <Modal
+            isOpen={isOpen}
+            onClose={() => setIsOpen(false)}
+            headline="동네 설정"
+          >
+            <TestModalContent />
+          </Modal>
+        )}
       </Layout>
     </AppContainer>
   );
