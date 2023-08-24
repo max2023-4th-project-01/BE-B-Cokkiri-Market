@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import { Badge } from './components/Badge';
 import { Button } from './components/Button';
@@ -9,6 +9,15 @@ import elephantImg from '/elephant-bg.png';
 
 export function App() {
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    const test = async () => {
+      const res = await fetch('/api/test');
+      console.log(await res.json());
+    };
+
+    test();
+  });
 
   return (
     <AppContainer>
