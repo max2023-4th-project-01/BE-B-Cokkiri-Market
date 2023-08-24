@@ -1,7 +1,7 @@
 import { styled } from 'styled-components';
 import { Button } from './Button';
 
-export default function TestModalContent() {
+export function TestModalContent() {
   return (
     <Content>
       <Notice>지역은 최소 1개, 최대 2개까지 설정 가능해요.</Notice>

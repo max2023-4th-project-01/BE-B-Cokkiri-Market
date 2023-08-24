@@ -14,12 +14,7 @@ type ModalProps = DialogHTMLAttributes<HTMLDialogElement> & {
   headline?: string;
 };
 
-export default function Modal({
-  isOpen,
-  onClose,
-  headline,
-  children,
-}: ModalProps) {
+export function Modal({ isOpen, onClose, headline, children }: ModalProps) {
   const modalRef = useRef<HTMLDialogElement>(null);
   const hasHeadline = !!headline;
 

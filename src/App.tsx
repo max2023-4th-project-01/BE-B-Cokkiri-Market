@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { styled } from 'styled-components';
 import { Button } from './components/Button';
-import Modal from './components/Modal';
+import { Modal } from './components/Modal';
+import { TestModalContent } from './components/TestModalContent';
 import elephantImg from '/elephant-bg.png';
-import TestContent from './components/TestModalContent';
 
 export function App() {
   const [isOpen, setIsOpen] = useState(false);
@@ -35,7 +35,7 @@ export function App() {
           onClose={() => setIsOpen(false)}
           headline="동네 설정"
         >
-          <TestContent />
+          <TestModalContent />
         </Modal>
       </Layout>
     </AppContainer>
