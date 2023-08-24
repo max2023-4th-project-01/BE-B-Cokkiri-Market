@@ -15,17 +15,17 @@ export function Icon({ name, color }: IconProps) {
   useEffect(() => {
     const svgElement = iconRef.current;
 
-    if (svgElement) {
-      const paths = svgElement.querySelectorAll('path');
-      paths.forEach((path: SVGPathElement) => {
-        if (path.getAttribute('fill')) {
-          path.setAttribute('fill', iconColor);
-        }
-        if (path.getAttribute('stroke')) {
-          path.setAttribute('stroke', iconColor);
-        }
-      });
-    }
+    if (!svgElement) return;
+
+    const paths = svgElement.querySelectorAll('path');
+    paths.forEach((path: SVGPathElement) => {
+      if (path.getAttribute('fill')) {
+        path.setAttribute('fill', iconColor);
+      }
+      if (path.getAttribute('stroke')) {
+        path.setAttribute('stroke', iconColor);
+      }
+    });
   }, [iconColor]);
 
   return (
