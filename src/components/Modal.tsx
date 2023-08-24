@@ -60,9 +60,9 @@ export function Modal({ isOpen, onClose, headline, children }: ModalProps) {
           {hasHeadline ? (
             <Headline>{headline}</Headline>
           ) : (
-            <Button type="ghost">뒤로</Button>
+            <Button styledType="ghost">뒤로</Button>
           )}
-          <Button type="ghost" onClick={onClose}>
+          <Button styledType="ghost" onClick={onClose}>
             <Plus>X</Plus>
           </Button>
         </Header>

@@ -6,10 +6,10 @@ export function TestModalContent() {
     <Content>
       <Notice>지역은 최소 1개, 최대 2개까지 설정 가능해요.</Notice>
       <Buttons>
-        <Button type="container" color="accentPrimary">
+        <Button styledType="container" color="accentPrimary">
           <Location>역삼 1동</Location>
         </Button>
-        <Button type="outline" color="neutralBorder">
+        <Button styledType="outline" color="neutralBorder">
           <Plus>+ 추가</Plus>
         </Button>
       </Buttons>

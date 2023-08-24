@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { styled } from 'styled-components';
 import { Button } from './components/Button';
+import { Icon } from './components/icon/Icon';
 import { Modal } from './components/Modal';
 import { TestModalContent } from './components/TestModalContent';
 import elephantImg from '/elephant-bg.png';
@@ -11,20 +12,33 @@ export function App() {
   return (
     <AppContainer>
       <Layout>
-        <Button type="container" color="accentPrimary">
+        <Button styledType="container" color="accentPrimary">
           <Login>로그인</Login>
         </Button>
-        <Button type="outline" color="neutralBorder">
+        <Button styledType="outline" color="neutralBorder">
           <Add>추가</Add>
         </Button>
-        <Button type="ghost">
+        <Button styledType="ghost">
           <SignUp>회원가입</SignUp>
         </Button>
-        <Button type="circle" color="accentPrimary">
+        <Button styledType="circle" color="accentPrimary">
           <Plus>+</Plus>
         </Button>
+        <IconWrapper>
+          <Icon name="camera" color="accentPrimary" />
+          <Icon name="check" color="accentSecondary" />
+          <Icon name="chevronDown" color="systemWarning" />
+          <Icon name="chevronLeft" color="accentTextWeak" />
+          <Icon name="chevronRight" color="neutralTextWeak" />
+          <Icon name="chevronUp" color="neutralTextStrong" />
+          <Icon name="circleXFilled" color="neutralBackgroundBold" />
+          <Icon name="dots" color="neutralOverlay" />
+          <Icon name="exclamationCircle" color="neutralBorderStrong" />
+          <Icon name="heart" color="neutralOverlay" />
+          <Icon name="home" color="neutralText" />
+        </IconWrapper>
         <Button
-          type="outline"
+          styledType="outline"
           color="neutralBorder"
           onClick={() => setIsOpen(true)}
         >
@@ -76,7 +90,7 @@ const Login = styled.div`
   justify-content: center;
   align-items: center;
   font: ${({ theme }) => theme.font.availableStrong16};
-  color: ${({ theme }) => theme.color.accentText};
+  color: ${({ theme }) => theme.color.systemBackgroundWeak};
 `;
 
 const Add = styled.div`
@@ -107,4 +121,8 @@ const Plus = styled.div`
   align-items: center;
   font: ${({ theme }) => theme.font.availableStrong16};
   color: ${({ theme }) => theme.color.accentText};
+`;
+
+const IconWrapper = styled.div`
+  display: flex;
 `;
