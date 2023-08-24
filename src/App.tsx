@@ -1,6 +1,6 @@
 import { styled } from 'styled-components';
 import { Button } from './components/Button';
-import { Icon2 } from './components/icon/Icon';
+import { Icon } from './components/icon/Icon';
 
 export function App() {
   return (
@@ -18,17 +18,17 @@ export function App() {
         <Plus>+</Plus>
       </Button>
       <IconWrapper>
-        <Icon2 name="camera" color="accentPrimary" />
-        <Icon2 name="check" color="accentSecondary" />
-        <Icon2 name="chevronDown" color="systemWarning" />
-        <Icon2 name="chevronLeft" color="accentTextWeak" />
-        <Icon2 name="chevronRight" color="neutralTextWeak" />
-        <Icon2 name="chevronUp" color="neutralTextStrong" />
-        <Icon2 name="circleXFilled" color="neutralBackgroundBold" />
-        <Icon2 name="dots" color="neutralOverlay" />
-        <Icon2 name="exclamationCircle" color="neutralBorderStrong" />
-        <Icon2 name="heart" color="neutralOverlay" />
-        <Icon2 name="home" color="neutralText" />
+        <Icon name="camera" color="accentPrimary" />
+        <Icon name="check" color="accentSecondary" />
+        <Icon name="chevronDown" color="systemWarning" />
+        <Icon name="chevronLeft" color="accentTextWeak" />
+        <Icon name="chevronRight" color="neutralTextWeak" />
+        <Icon name="chevronUp" color="neutralTextStrong" />
+        <Icon name="circleXFilled" color="neutralBackgroundBold" />
+        <Icon name="dots" color="neutralOverlay" />
+        <Icon name="exclamationCircle" color="neutralBorderStrong" />
+        <Icon name="heart" color="neutralOverlay" />
+        <Icon name="home" color="neutralText" />
       </IconWrapper>
     </Div>
   );

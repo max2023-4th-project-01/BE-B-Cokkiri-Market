@@ -7,7 +7,7 @@ interface IconProps {
   color: ColorType;
 }
 
-export function Icon2({ name, color }: IconProps) {
+export function Icon({ name, color }: IconProps) {
   const IconComponent = icons[name];
   const iconColor = designSystem.color[color];
   const iconRef = useRef<HTMLDivElement>(null);
