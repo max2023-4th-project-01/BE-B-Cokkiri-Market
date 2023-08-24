@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 import { styled } from 'styled-components';
 import { Badge } from './components/Badge';
 import { Button } from './components/Button';
@@ -10,18 +11,25 @@ import elephantImg from '/elephant-bg.png';
 export function App() {
   const [isOpen, setIsOpen] = useState(false);
 
-  useEffect(() => {
-    const test = async () => {
-      const res = await fetch('/api/test');
-      console.log(await res.json());
-    };
+  const { data, error, isLoading } = useQuery<string, Error>(
+    ['test'],
+    fetchTest
+  );
 
-    test();
-  });
+  if (isLoading) console.log('loading');
+
+  if (error) console.log(error.message);
+
+  async function fetchTest() {
+    const res = await fetch('/api/test');
+
+    return res.json();
+  }
 
   return (
     <AppContainer>
       <Layout>
+        <div>{data}</div>
         <Button styledType="container" color="accentPrimary">
           <Login>로그인</Login>
         </Button>
