@@ -6,8 +6,10 @@ import { Button } from '../components/Button';
 import { Modal } from '../components/Modal';
 import { TestModalContent } from '../components/TestModalContent';
 import { Icon } from '../components/icon/Icon';
+import { countStore } from '../store';
 
 export function Test() {
+  const { count, increment } = countStore();
   const [isOpen, setIsOpen] = useState(false);
 
   const { data, error, isLoading } = useQuery<string, Error>(
@@ -26,7 +28,13 @@ export function Test() {
   }
   return (
     <Div>
-      <div>{data}</div>
+      <ResDiv>react query res : {data}</ResDiv>
+      <TestZustand>
+        <div>count :{count}</div>
+        <Button styledType="ghost" color="accentPrimary" onClick={increment}>
+          <Icon name="plus" color="neutralTextStrong" />
+        </Button>
+      </TestZustand>
       <Button styledType="container" color="accentPrimary">
         <Login>로그인</Login>
       </Button>
@@ -109,6 +117,7 @@ const Div = styled.div`
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  gap: 10px;
 `;
 
 const Login = styled.div`
@@ -156,4 +165,16 @@ const Wrapper = styled.div`
   justify-content: center;
   align-items: center;
   gap: 10px;
+`;
+
+const ResDiv = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const TestZustand = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;

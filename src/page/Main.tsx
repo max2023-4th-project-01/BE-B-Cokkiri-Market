@@ -1,7 +1,15 @@
 import { styled } from 'styled-components';
+import { countStore } from '../store';
 
 export function Main() {
-  return <Div>메인</Div>;
+  const { count } = countStore();
+
+  return (
+    <Div>
+      메인
+      <div>count : {count}</div>
+    </Div>
+  );
 }
 
 const Div = styled.div`
