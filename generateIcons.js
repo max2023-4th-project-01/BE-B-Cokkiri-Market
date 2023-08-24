@@ -37,12 +37,17 @@ const iconNames = files
 const iconNamesWithSpaces = iconNames.map(name => `  ${name}`);
 const exportStatement = `export const icons = {\n${iconNamesWithSpaces.join(
   ',\n'
-)}, \n};`;
+)},\n};`;
 
 const types = `export type IconsType = keyof typeof icons;\n`;
-const content = `${imports}\n\n${exportStatement}\n\n${types}`;
 
-fs.writeFileSync(
-  path.resolve(__dirname, 'src/components/icon/icons.ts'),
-  content
-);
+const newContent = `${imports}\n\n${exportStatement}\n\n${types}`;
+const iconFilePath = path.resolve(__dirname, 'src/components/icon/icons.ts');
+
+const existingContent = fs.existsSync(iconFilePath)
+  ? fs.readFileSync(iconFilePath, 'utf-8')
+  : '';
+
+if (existingContent != newContent) {
+  fs.writeFileSync(iconFilePath, newContent);
+}
