@@ -37,7 +37,6 @@ const Div = styled.div<{
   justify-content: center;
 
   ${({ $size }) => sizeToCss($size)};
-
   font: ${({ theme }) => theme.font.displayDefault12};
   ${({ $type, $BadgeColor }) => typeToCss($type, $BadgeColor)};
   color: ${({ theme, $fontColor: $color }) => theme.color[$color]};
@@ -75,5 +74,7 @@ const typeToCss = ($type: BadgeType, $BadgeColor: ColorType) => {
         border: ${({ theme }) => `1px solid ${theme.color[$BadgeColor]}`};
       `;
     }
+    default:
+      return '';
   }
 };
