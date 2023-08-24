@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { styled } from 'styled-components';
+import { Badge } from './components/Badge';
 import { Button } from './components/Button';
-import { Icon } from './components/icon/Icon';
 import { Modal } from './components/Modal';
 import { TestModalContent } from './components/TestModalContent';
+import { Icon } from './components/icon/Icon';
 import elephantImg from '/elephant-bg.png';
 
 export function App() {
@@ -24,7 +25,7 @@ export function App() {
         <Button styledType="circle" color="accentPrimary">
           <Plus>+</Plus>
         </Button>
-        <IconWrapper>
+        <Wrapper>
           <Icon name="camera" color="accentPrimary" />
           <Icon name="check" color="accentSecondary" />
           <Icon name="chevronDown" color="systemWarning" />
@@ -36,7 +37,37 @@ export function App() {
           <Icon name="exclamationCircle" color="neutralBorderStrong" />
           <Icon name="heart" color="neutralOverlay" />
           <Icon name="home" color="neutralText" />
-        </IconWrapper>
+        </Wrapper>
+        <Wrapper>
+          <Badge
+            type="container"
+            size="S"
+            text="예약중"
+            fontColor="accentText"
+            badgeColor="accentSecondary"
+          />
+          <Badge
+            type="container"
+            size="M"
+            text="기타중고물품"
+            fontColor="accentText"
+            badgeColor="accentPrimary"
+          />
+          <Badge
+            type="outline"
+            size="M"
+            text="여성패션"
+            fontColor="accentTextWeak"
+            badgeColor="neutralBorder"
+          />
+          <Badge
+            type="container"
+            size="M"
+            text="1 / 2"
+            fontColor="neutralTextWeak"
+            badgeColor="neutralBackgroundBlur"
+          />
+        </Wrapper>
         <Button
           styledType="outline"
           color="neutralBorder"
@@ -66,7 +97,7 @@ const AppContainer = styled.div`
   align-items: center;
   background-color: ${({ theme }) => theme.color.neutralBackgroundWeak};
   background-image: url(${elephantImg});
-}`;
+`;
 
 const Layout = styled.div`
   width: 393px;
@@ -123,6 +154,9 @@ const Plus = styled.div`
   color: ${({ theme }) => theme.color.accentText};
 `;
 
-const IconWrapper = styled.div`
+const Wrapper = styled.div`
   display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
 `;
