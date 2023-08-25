@@ -1,7 +1,11 @@
+import { useState } from 'react';
 import { styled } from 'styled-components';
+import { Alert } from './Alert';
 import { Button } from './Button';
 
 export function TestModalContent() {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
     <Content>
       <Notice>지역은 최소 1개, 최대 2개까지 설정 가능해요.</Notice>
@@ -9,9 +13,18 @@ export function TestModalContent() {
         <Button styledType="container" color="accentPrimary">
           <Location>역삼 1동</Location>
         </Button>
-        <Button styledType="outline" color="neutralBorder">
+        <Button
+          styledType="outline"
+          color="neutralBorder"
+          onClick={() => setIsOpen(true)}
+        >
           <Plus>+ 추가</Plus>
         </Button>
+        {isOpen && (
+          <Alert isOpen={isOpen} onClose={() => setIsOpen(false)}>
+            I'm Alert!
+          </Alert>
+        )}
       </Buttons>
     </Content>
   );

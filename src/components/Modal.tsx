@@ -21,6 +21,7 @@ export function Modal({ isOpen, onClose, headline, children }: ModalProps) {
   const hasHeadline = !!headline;
 
   const onCancel: MouseEventHandler<HTMLDialogElement> = event => {
+    console.log('cancel event from modal');
     event.preventDefault();
     onClose();
   };
