@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { styled } from 'styled-components';
 import { ColorType, designSystem } from '../../styles/designSystem';
 import { IconsType, icons } from './icons';
 
@@ -29,8 +30,12 @@ export function Icon({ name, color }: IconProps) {
   }, [iconColor]);
 
   return (
-    <div ref={iconRef}>
+    <Div ref={iconRef}>
       <IconComponent />
-    </div>
+    </Div>
   );
 }
+
+const Div = styled.div`
+  display: flex;
+`;
