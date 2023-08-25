@@ -1,9 +1,9 @@
 import { Link, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { Icon } from './components/icon/Icon';
-import { Auth } from './page/Auth';
 import { Main } from './page/Main';
 import { Test } from './page/Test';
+import { MyAccount } from './page/auth/MyAccount';
 import elephantImg from '/elephant-bg.png';
 
 export function App() {
@@ -14,7 +14,7 @@ export function App() {
           <Routes>
             <Route path="/" element={<Main />} />
             <Route path="/test" element={<Test />} />
-            <Route path="/auth" element={<Auth />} />
+            <Route path="/myAccount" element={<MyAccount />} />
           </Routes>
           <Footer />
         </Router>
@@ -42,7 +42,7 @@ function Footer() {
         <Icon name="check" color="accentTextWeak" />
         <Label>test</Label>
       </Tab>
-      <Tab to="/auth">
+      <Tab to="/myAccount">
         <Icon name="userCircle" color="neutralTextWeak" />
         <Label>내 계정</Label>
       </Tab>
@@ -63,6 +63,7 @@ const AppContainer = styled.div`
 const Layout = styled.div`
   width: 393px;
   height: 852px;
+  position: absolute;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -73,6 +74,7 @@ const Layout = styled.div`
   font: ${({ theme }) => theme.font.displayStrong20};
   color: ${({ theme }) => theme.color.neutralTextStrong};
   background-color: ${({ theme }) => theme.color.accentText};
+  overflow: hidden;
 `;
 
 const FooterDiv = styled.div`
@@ -82,6 +84,7 @@ const FooterDiv = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 8px 16px;
+  border-top: ${({ theme }) => `0.8px solid ${theme.color.neutralBorder}`};
 `;
 
 const Tab = styled(Link)`
