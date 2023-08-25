@@ -41,15 +41,37 @@ const Container = styled.dialog`
   width: 336px;
   flex-direction: column;
   align-items: flex-start;
+  padding: 0;
   border-width: 0;
   border-radius: 16px;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 `;
 
-const Content = styled.div``;
+const Content = styled.div`
+  display: flex;
+  padding: 24px 32px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  align-self: stretch;
+  font: ${({ theme }) => theme.font.displayStrong16};
+`;
 
-const Footer = styled.div``;
+const Footer = styled.div`
+  display: flex;
+  padding: 16px 32px;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 32px;
+  align-self: stretch;
+`;
 
-const Cancel = styled.div``;
+const Cancel = styled.div`
+  font: ${({ theme }) => theme.font.displayDefault16};
+`;
 
-const Delete = styled.div``;
+const Delete = styled.div`
+  font: ${({ theme }) => theme.font.displayStrong16};
+  color: ${({ theme }) => theme.color.systemWarning};
+`;
