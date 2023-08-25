@@ -1,4 +1,4 @@
-package kr.codesquad.item;
+package kr.codesquad.item.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -6,6 +6,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import kr.codesquad.item.dto.ItemRequest;
+import kr.codesquad.util.ItemStatus;
 import kr.codesquad.util.TimeStamped;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,25 +26,39 @@ public class Item extends TimeStamped {
 	private String content;
 	@Column(nullable = false)
 	private Long categoryId;
+	@Column(nullable = true)
+	private Integer price;
 	@Column(nullable = false, length = 45)
 	private String locationName;
 	@Column(nullable = false, length = 200)
 	private String thumbnailUrl;
 	@Column(nullable = false, length = 45)
-	private String status;
+	private ItemStatus status;
 	@Column(nullable = false)
 	private Long userId;
 
 	@Builder
-	public Item(Long id, String title, String content, Long categoryId, String locationName, String thumbnailUrl,
-		String status, Long userId) {
+	public Item(Long id, String title, String content, Long categoryId, Integer price, String locationName, String thumbnailUrl,
+		ItemStatus status, Long userId) {
 		this.id = id;
 		this.title = title;
 		this.content = content;
 		this.categoryId = categoryId;
+		this.price = price;
 		this.locationName = locationName;
 		this.thumbnailUrl = thumbnailUrl;
 		this.status = status;
 		this.userId = userId;
+	}
+
+	public void update(ItemRequest.UpdateInDto item, String thumbnailUrl) {
+		this.title = item.getTitle();
+		this.categoryId = item.getCategoryId();
+		this.price = item.getPrice();
+		this.content = item.getContent();
+		this.locationName = item.getLocationName();
+		if (thumbnailUrl != null) {
+			this.thumbnailUrl = thumbnailUrl;
+		}
 	}
 }
