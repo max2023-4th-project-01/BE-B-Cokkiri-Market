@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { styled } from 'styled-components';
 import { Button } from './components/Button';
-import { Icon } from './components/icon/Icon';
 import { Modal } from './components/Modal';
-import { TestModalContent } from './components/TestModalContent';
 import elephantImg from '/elephant-bg.png';
+import { TestModalContent } from './components/TestModalContent';
+import { Icon } from './components/icon/Icon';
 
 export function App() {
   const [isOpen, setIsOpen] = useState(false);
@@ -66,7 +66,7 @@ const AppContainer = styled.div`
   align-items: center;
   background-color: ${({ theme }) => theme.color.neutralBackgroundWeak};
   background-image: url(${elephantImg});
-}`;
+`;
 
 const Layout = styled.div`
   width: 393px;
