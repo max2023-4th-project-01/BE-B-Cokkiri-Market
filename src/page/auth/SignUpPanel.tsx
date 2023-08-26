@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { styled } from 'styled-components';
 import { Button } from '../../components/Button';
 import { Icon } from '../../components/icon/Icon';
@@ -13,6 +13,16 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
   const [rightPosition, setRightPosition] = useState(-392);
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
+  const [location, setLocation] = useState('역삼1동');
+  const [file, setFile] = useState<File>();
+  const [backgroundImage, setBackgroundImage] = useState<string>();
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const isValidId = /^[A-Za-z0-9]{6,20}$/.test(id);
+  const isValidPassword = /^[A-Za-z0-9]{6,20}$/.test(password);
+  const isNullLocation = location === '';
+
+  const isSignUpDisabled = !(isValidId && isValidPassword && !isNullLocation);
 
   useEffect(() => {
     setRightPosition(0);
@@ -34,6 +44,61 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
     setRightPosition(-392);
   };
 
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const fileList = event.target.files;
+
+    if (!fileList) return;
+
+    if (fileList) {
+      const file = fileList[0];
+      if (file && file.type.startsWith('image/')) {
+        setFile(file);
+        const reader = new FileReader();
+
+        reader.onload = function (event) {
+          if (event.target && event.target.readyState === FileReader.DONE) {
+            setBackgroundImage(event.target.result as string);
+          }
+        };
+
+        reader.readAsDataURL(file);
+      } else {
+        event.target.value = '';
+
+        // TODO : toast alert 추가?
+        alert('이미지 파일만 업로드 가능합니다.');
+      }
+    }
+  };
+
+  const removeProfile = () => {
+    // TODO : alert component 추가해서 사용자의 동의 받기
+    setFile(undefined);
+    setBackgroundImage(undefined);
+    if (inputRef.current) {
+      inputRef.current.value = '';
+    }
+  };
+
+  const submit = async () => {
+    const formData = new FormData();
+    formData.append('id', id);
+    formData.append('password', password);
+    formData.append('locationName', location);
+
+    if (file) {
+      formData.append('profileImageFile', file);
+    }
+
+    const res = await fetch('/api/signup', {
+      method: 'POST',
+      body: formData,
+    });
+
+    const data = await res.json();
+    console.log('Response:', data);
+  };
+
   return (
     <Div $right={rightPosition} onTransitionEnd={onTransitionEndHandler}>
       <Header>
@@ -41,21 +106,42 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
           <ButtonDiv>닫기</ButtonDiv>
         </Button>
         <Title>회원가입</Title>
-        <Button styledType="ghost">
+        <Button styledType="ghost" onClick={submit} disabled={isSignUpDisabled}>
           <ButtonDiv>완료</ButtonDiv>
         </Button>
       </Header>
       <Body>
-        <ProfileButton>
-          <Icon name="camera" color="accentText" />
-        </ProfileButton>
+        <ProfileWrapper>
+          <ProfileButton
+            htmlFor="profileButton"
+            $backgroundImage={backgroundImage}
+          >
+            <Icon name="camera" color="accentText" />
+          </ProfileButton>
+          {file && (
+            <RemoveProfileButton onClick={removeProfile}>
+              프로필 삭제
+            </RemoveProfileButton>
+          )}
+        </ProfileWrapper>
+        <input
+          ref={inputRef}
+          type="file"
+          id="profileButton"
+          accept="image/*"
+          onChange={handleFileChange}
+        />
         <AuthInput
           id={id}
           password={password}
           onChangeId={onChangeId}
           onChangePassword={onChangePassword}
         />
-        <Button styledType="outline" color="neutralBorder">
+        <Button
+          styledType="outline"
+          color="neutralBorder"
+          onClick={() => setLocation('역삼1동')}
+        >
           <AddLocation>
             <Icon name="plus" color="accentTextWeak" />
             위치 추가
@@ -118,18 +204,44 @@ const Body = styled.div`
   & > button {
     width: 100%;
   }
+
+  & #profileButton {
+    display: none;
+  }
 `;
 
-const ProfileButton = styled.div`
+const ProfileWrapper = styled.div`
+  height: 115px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 5px;
+`;
+
+const ProfileButton = styled.label<{ $backgroundImage: string | undefined }>`
   width: 80px;
   height: 80px;
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
   border: ${({ theme }) => `1px solid ${theme.color.neutralBorder}`};
   border-radius: 50%;
-  background: ${({ theme }) => theme.color.neutralOverlay};
+  background: ${({ $backgroundImage, theme }) =>
+    $backgroundImage ? `url(${$backgroundImage})` : theme.color.neutralOverlay};
+  background-size: cover;
   cursor: pointer;
+`;
+
+const RemoveProfileButton = styled.button`
+  width: 90px;
+  height: 30px;
+  border-radius: 8px;
+  padding: 0 5px;
+  font: ${({ theme }) => theme.font.availableStrong12};
+  background: ${({ theme }) => theme.color.accentPrimary};
+  color: ${({ theme }) => theme.color.accentText};
 `;
 
 const ButtonDiv = styled.div`

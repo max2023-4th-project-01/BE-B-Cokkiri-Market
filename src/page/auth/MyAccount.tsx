@@ -9,12 +9,16 @@ export function MyAccount() {
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
 
+  const isValidId = /^[A-Za-z0-9]{6,20}$/.test(id);
+  const isValidPassword = /^[A-Za-z0-9]{6,20}$/.test(password);
+
+  const isLoginDisabled = !(isValidId && isValidPassword);
+
   const openPanel = () => {
     setIsOpenPanel(true);
   };
 
   const closePanel = () => {
-    console.log(1);
     setIsOpenPanel(false);
   };
 
@@ -26,8 +30,17 @@ export function MyAccount() {
     setPassword(event.target.value);
   };
 
-  const submit = () => {
-    console.log(id, password);
+  const submit = async () => {
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ id, password }),
+    });
+
+    const data = await res.json();
+    console.log('Response:', data);
   };
 
   return (
@@ -47,6 +60,7 @@ export function MyAccount() {
               styledType="container"
               color="accentPrimary"
               onClick={submit}
+              disabled={isLoginDisabled}
             >
               <LoginDiv>로그인</LoginDiv>
             </Button>
