@@ -1,60 +1,52 @@
-import { useState } from 'react';
+import { Link, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { styled } from 'styled-components';
-import { Button } from './components/Button';
-import { Modal } from './components/Modal';
-import elephantImg from '/elephant-bg.png';
-import { TestModalContent } from './components/TestModalContent';
 import { Icon } from './components/icon/Icon';
+import { Main } from './page/Main';
+import { Test } from './page/Test';
+import { MyAccount } from './page/auth/MyAccount';
+import elephantImg from '/elephant-bg.png';
 
 export function App() {
-  const [isOpen, setIsOpen] = useState(false);
-
   return (
     <AppContainer>
       <Layout>
-        <Button styledType="container" color="accentPrimary">
-          <Login>로그인</Login>
-        </Button>
-        <Button styledType="outline" color="neutralBorder">
-          <Add>추가</Add>
-        </Button>
-        <Button styledType="ghost">
-          <SignUp>회원가입</SignUp>
-        </Button>
-        <Button styledType="circle" color="accentPrimary">
-          <Plus>+</Plus>
-        </Button>
-        <IconWrapper>
-          <Icon name="camera" color="accentPrimary" />
-          <Icon name="check" color="accentSecondary" />
-          <Icon name="chevronDown" color="systemWarning" />
-          <Icon name="chevronLeft" color="accentTextWeak" />
-          <Icon name="chevronRight" color="neutralTextWeak" />
-          <Icon name="chevronUp" color="neutralTextStrong" />
-          <Icon name="circleXFilled" color="neutralBackgroundBold" />
-          <Icon name="dots" color="neutralOverlay" />
-          <Icon name="exclamationCircle" color="neutralBorderStrong" />
-          <Icon name="heart" color="neutralOverlay" />
-          <Icon name="home" color="neutralText" />
-        </IconWrapper>
-        <Button
-          styledType="outline"
-          color="neutralBorder"
-          onClick={() => setIsOpen(true)}
-        >
-          Open Modal
-        </Button>
-        {isOpen && (
-          <Modal
-            isOpen={isOpen}
-            onClose={() => setIsOpen(false)}
-            headline="동네 설정"
-          >
-            <TestModalContent />
-          </Modal>
-        )}
+        <Router>
+          <Routes>
+            <Route path="/" element={<Main />} />
+            <Route path="/test" element={<Test />} />
+            <Route path="/myAccount" element={<MyAccount />} />
+          </Routes>
+          <Footer />
+        </Router>
       </Layout>
     </AppContainer>
+  );
+}
+
+function Footer() {
+  return (
+    <FooterDiv>
+      <Tab to="/">
+        <Icon name="home" color="accentPrimary" />
+        <Label>홈화면</Label>
+      </Tab>
+      <Tab to="/">
+        <Icon name="news" color="accentSecondary" />
+        <Label>판매내역</Label>
+      </Tab>
+      <Tab to="/">
+        <Icon name="heart" color="systemWarning" />
+        <Label>관심상품</Label>
+      </Tab>
+      <Tab to="/test">
+        <Icon name="check" color="accentTextWeak" />
+        <Label>test</Label>
+      </Tab>
+      <Tab to="/myAccount">
+        <Icon name="userCircle" color="neutralTextWeak" />
+        <Label>내 계정</Label>
+      </Tab>
+    </FooterDiv>
   );
 }
 
@@ -71,6 +63,7 @@ const AppContainer = styled.div`
 const Layout = styled.div`
   width: 393px;
   height: 852px;
+  position: absolute;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -81,48 +74,31 @@ const Layout = styled.div`
   font: ${({ theme }) => theme.font.displayStrong20};
   color: ${({ theme }) => theme.color.neutralTextStrong};
   background-color: ${({ theme }) => theme.color.accentText};
+  overflow: hidden;
 `;
 
-const Login = styled.div`
-  width: 297px;
-  height: 24px;
+const FooterDiv = styled.div`
+  width: 100%;
+  height: 64px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+  border-top: ${({ theme }) => `0.8px solid ${theme.color.neutralBorder}`};
+`;
+
+const Tab = styled(Link)`
+  width: 48px;
+  height: 48px;
   display: flex;
   justify-content: center;
   align-items: center;
-  font: ${({ theme }) => theme.font.availableStrong16};
-  color: ${({ theme }) => theme.color.systemBackgroundWeak};
+  flex-direction: column;
+  cursor: pointer;
+  text-decoration: none;
 `;
 
-const Add = styled.div`
-  width: 256px;
-  height: 24px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font: ${({ theme }) => theme.font.availableStrong16};
-  color: ${({ theme }) => theme.color.accentTextWeak};
-`;
-
-const SignUp = styled.div`
-  width: 45px;
-  height: 16px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font: ${({ theme }) => theme.font.availableStrong12};
-  color: ${({ theme }) => theme.color.neutralText};
-`;
-
-const Plus = styled.div`
-  width: 20px;
-  height: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font: ${({ theme }) => theme.font.availableStrong16};
-  color: ${({ theme }) => theme.color.accentText};
-`;
-
-const IconWrapper = styled.div`
-  display: flex;
+const Label = styled.span`
+  font: ${({ theme }) => theme.font.availableStrong10};
+  color: ${({ theme }) => theme.color.neutralTextWeak};
 `;
