@@ -7,30 +7,32 @@ export function TestModalContent() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <Content>
-      <Notice>지역은 최소 1개, 최대 2개까지 설정 가능해요.</Notice>
-      <Buttons>
-        <Button styledType="container" color="accentPrimary">
-          <Location>역삼 1동</Location>
-        </Button>
-        <Button
-          styledType="outline"
-          color="neutralBorder"
-          onClick={() => setIsOpen(true)}
-        >
-          <Plus>+ 추가</Plus>
-        </Button>
-        {isOpen && (
-          <Alert isOpen={isOpen} onClose={() => setIsOpen(false)}>
-            I'm Alert!
-          </Alert>
-        )}
-      </Buttons>
-    </Content>
+    <>
+      <Div>
+        <Notice>지역은 최소 1개, 최대 2개까지 설정 가능해요.</Notice>
+        <Buttons>
+          <Button styledType="container" color="accentPrimary">
+            <Location>역삼 1동</Location>
+          </Button>
+          <Button
+            styledType="outline"
+            color="neutralBorder"
+            onClick={() => setIsOpen(true)}
+          >
+            <Plus>+ 추가</Plus>
+          </Button>
+        </Buttons>
+      </Div>
+      {isOpen && (
+        <Alert isOpen={isOpen} onClose={() => setIsOpen(false)}>
+          I'm Alert!
+        </Alert>
+      )}
+    </>
   );
 }
 
-const Content = styled.div`
+const Div = styled.div`
   display: flex;
   padding: 40px 16px;
   flex-direction: column;

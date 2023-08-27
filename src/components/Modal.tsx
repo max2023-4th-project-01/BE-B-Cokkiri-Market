@@ -1,8 +1,8 @@
 import {
   DialogHTMLAttributes,
-  MouseEventHandler,
   useEffect,
   useRef,
+  MouseEventHandler,
 } from 'react';
 import { createPortal } from 'react-dom';
 import { styled, keyframes } from 'styled-components';
@@ -20,37 +20,40 @@ export function Modal({ isOpen, onClose, headline, children }: ModalProps) {
   const rootElement = document.getElementById('modal-root');
   const hasHeadline = !!headline;
 
-  const onCancel: MouseEventHandler<HTMLDialogElement> = event => {
-    console.log('cancel event from modal');
-    event.preventDefault();
-    onClose();
+  // const onCancel: MouseEventHandler<HTMLDialogElement> = () => {
+  //   onClose();
+  // };
+
+  const onClick: MouseEventHandler<HTMLDialogElement> = event => {
+    const dialog = modalRef.current;
+    if (event.target === dialog) onClose();
   };
 
-  const onClick: MouseEventHandler<HTMLDialogElement> = ({ target }) => {
-    const dialog = modalRef.current;
-    if (target === dialog) onClose();
-  };
-
-  const onAnimEnd = () => {
-    const dialog = modalRef.current;
-    !isOpen && dialog?.close();
-  };
+  // const onAnimEnd = () => {
+  //   const dialog = modalRef.current;
+  //   !isOpen && dialog?.close();
+  // };
 
   useEffect(() => {
-    const dialog = modalRef.current;
-    isOpen && dialog?.showModal();
+    const modal = modalRef.current;
+    isOpen && modal?.showModal();
   }, [isOpen]);
 
   if (!rootElement) return;
 
   return createPortal(
     <Dialog
-      className={isOpen ? '' : 'modal--closing'}
+      // className={isOpen ? '' : 'modal--closing'}
       ref={modalRef}
-      onClose={onClose}
-      onCancel={onCancel}
+      onClose={event => {
+        if (event.target !== modalRef.current) {
+          return;
+        }
+        onClose();
+      }}
+      // onCancel={onCancel}
       onClick={onClick}
-      onAnimationEnd={onAnimEnd}
+      // onAnimationEnd={onAnimEnd}
     >
       <Container>
         <Header $hasHeadline={hasHeadline}>
@@ -93,7 +96,6 @@ const hide = keyframes`
 `;
 
 const Dialog = styled.dialog`
-  position: relative;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   background-color: ${({ theme }) => theme.color.neutralBackground};
   border-radius: 16px;

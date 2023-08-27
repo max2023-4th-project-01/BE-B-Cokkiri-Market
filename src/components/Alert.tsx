@@ -1,5 +1,6 @@
-import { useRef, useEffect, ReactEventHandler } from 'react';
-import { styled } from 'styled-components';
+import { useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
+import { styled, keyframes } from 'styled-components';
 import { Button } from './Button';
 
 type AlertProps = {
@@ -10,41 +11,69 @@ type AlertProps = {
 
 export function Alert({ isOpen, onClose, children }: AlertProps) {
   const alertRef = useRef<HTMLDialogElement>(null);
-
-  const onCancel: ReactEventHandler<HTMLDialogElement> = event => {
-    console.log('cancel event from alert');
-    event.preventDefault;
-  };
+  const rootElement = document.getElementById('modal-root');
 
   useEffect(() => {
-    const dialog = alertRef.current;
-    isOpen && dialog?.showModal();
+    const alert = alertRef.current;
+    isOpen && alert?.showModal();
   }, [isOpen]);
 
-  return (
-    <Container ref={alertRef} onCancel={onCancel}>
-      <Content>{children}</Content>
-      <Footer>
-        <Button styledType="ghost">
-          <Cancel onClick={onClose}>취소</Cancel>
-        </Button>
-        <Button styledType="ghost">
-          <Delete>삭제</Delete>
-        </Button>
-      </Footer>
-    </Container>
+  if (!rootElement) return;
+
+  return createPortal(
+    <Dialog
+      ref={alertRef}
+      onClose={event => {
+        if (event.target !== alertRef.current) {
+          return;
+        }
+        onClose();
+      }}
+    >
+      <Container>
+        <Content>{children}</Content>
+        <Footer>
+          <Button styledType="ghost">
+            <Cancel onClick={onClose}>취소</Cancel>
+          </Button>
+          <Button styledType="ghost">
+            <Delete>삭제</Delete>
+          </Button>
+        </Footer>
+      </Container>
+    </Dialog>,
+    rootElement
   );
 }
 
-const Container = styled.dialog`
+const show = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(min(100px, 5vh));
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0%);
+  }
+`;
+
+const Dialog = styled.dialog`
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  background-color: ${({ theme }) => theme.color.neutralBackground};
+  border-radius: 16px;
+  border-width: 0;
+  padding: 0;
+
+  &[open] {
+    animation: ${show} 250ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+`;
+
+const Container = styled.div`
   display: flex;
   width: 336px;
   flex-direction: column;
   align-items: flex-start;
-  padding: 0;
-  border-width: 0;
-  border-radius: 16px;
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 `;
 
 const Content = styled.div`
