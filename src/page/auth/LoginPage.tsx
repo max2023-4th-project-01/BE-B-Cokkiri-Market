@@ -1,6 +1,7 @@
 import { ChangeEvent, useState } from 'react';
 import { styled } from 'styled-components';
 import { Button } from '../../components/Button';
+import { Icon } from '../../components/icon/Icon';
 import { useAuthStore } from '../../stores/authStore';
 import { setAccessToken, setUserInfo } from '../../utils/localStorage';
 import { AuthInput } from './AuthInput';
@@ -66,7 +67,10 @@ export function LoginPage() {
             onClick={submit}
             disabled={isLoginDisabled}
           >
-            <OauthDiv>GitHub 로그인</OauthDiv>
+            <OauthDiv>
+              <Icon name="octocat" color="accentText" />
+              GitHub 로그인
+            </OauthDiv>
           </Button>
           <DividerContainer>
             <DividerLine />
@@ -134,6 +138,7 @@ const OauthDiv = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 10px;
   font: ${({ theme }) => theme.font.availableStrong16};
   color: ${({ theme }) => theme.color.neutralTextStrong};
 `;
