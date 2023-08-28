@@ -12,6 +12,7 @@ import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import kr.codesquad.common.UuidGenerator;
 import kr.codesquad.location.Location;
 import kr.codesquad.location.LocationRepository;
 import kr.codesquad.user.User;
@@ -24,7 +25,6 @@ public class OAuthService implements OAuth2UserService<OAuth2UserRequest, OAuth2
 	private final static String GITHUB_ID = "id";
 	private final static String GITHUB_PROFILE_URL = "avatar_url";
 	private final static String GITHUB_LOGIN_ID = "login";
-	private final static String GITHUB_SUFFIX = "_github";
 	private final UserRepository userRepository;
 	private final LocationRepository locationRepository;
 
@@ -38,7 +38,7 @@ public class OAuthService implements OAuth2UserService<OAuth2UserRequest, OAuth2
 		User user = User.builder()
 			.loginId(id.toString())
 			.profileImage((String)attributes.get(GITHUB_PROFILE_URL))
-			.nickName(attributes.get(GITHUB_LOGIN_ID) + GITHUB_SUFFIX)
+			.nickName(generateNickName((String)attributes.get(GITHUB_LOGIN_ID)))
 			.build();
 
 		if (!userRepository.existsByLoginId(user.getLoginId())) {
@@ -52,5 +52,13 @@ public class OAuthService implements OAuth2UserService<OAuth2UserRequest, OAuth2
 
 		return new DefaultOAuth2User(Collections.singleton(new SimpleGrantedAuthority("no_role"))
 			, attributes, GITHUB_ID);
+	}
+
+	private String generateNickName(String loginId) {
+		String nickName = loginId + UuidGenerator.generateUuid();
+		while (userRepository.existsByNickName(nickName)) {
+			nickName = loginId + UuidGenerator.generateUuid();
+		}
+		return nickName;
 	}
 }

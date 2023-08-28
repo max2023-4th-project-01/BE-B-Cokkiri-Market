@@ -21,11 +21,11 @@ public class User {
 	private Long id;
 	@Column(length = 200)
 	private String profileImage;
-	@Column(nullable = false, length = 45)
+	@Column(nullable = false, length = 45, unique = true)
 	private String loginId;
 	@Column(length = 100)
 	private String password;
-	@Column(length = 45)
+	@Column(nullable = false, length = 45, unique = true)
 	private String nickName;
 
 	@Builder
