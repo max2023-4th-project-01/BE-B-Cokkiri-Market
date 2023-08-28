@@ -16,6 +16,7 @@ import { ReactComponent as mapPinFilled } from '../../assets/icon/map-pin-filled
 import { ReactComponent as messageNoti } from '../../assets/icon/message-noti.svg';
 import { ReactComponent as message } from '../../assets/icon/message.svg';
 import { ReactComponent as news } from '../../assets/icon/news.svg';
+import { ReactComponent as octocat } from '../../assets/icon/octocat.svg';
 import { ReactComponent as paperclip } from '../../assets/icon/paperclip.svg';
 import { ReactComponent as pencil } from '../../assets/icon/pencil.svg';
 import { ReactComponent as photo } from '../../assets/icon/photo.svg';
@@ -44,6 +45,7 @@ export const icons = {
   messageNoti,
   message,
   news,
+  octocat,
   paperclip,
   pencil,
   photo,
