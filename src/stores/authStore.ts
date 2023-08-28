@@ -1,12 +1,16 @@
 import { create } from 'zustand';
 
+type UserInfo = {
+  username: string;
+  profileImageUrl: string;
+};
+
 type AuthState = {
   accessToken: string;
   userName: string;
   profileImageUrl: string;
-  setAccessToken: (token: string) => void;
-  setUserName: (name: string) => void;
-  setProfileImageUrl: (url: string) => void;
+  setStateAccessToken: (token: string) => void;
+  setStateUserInfo: (userInfo: UserInfo) => void;
   clearUserState: () => void;
 };
 
@@ -14,9 +18,11 @@ export const useAuthStore = create<AuthState>(set => ({
   accessToken: '',
   userName: '',
   profileImageUrl: '',
-  setAccessToken: (token: string) => set(() => ({ accessToken: token })),
-  setUserName: (name: string) => set(() => ({ userName: name })),
-  setProfileImageUrl: (url: string) => set(() => ({ accessToken: url })),
+  setStateAccessToken: (token: string) => set(() => ({ accessToken: token })),
+  setStateUserInfo: (userInfo: UserInfo) => {
+    set(() => ({ userName: userInfo.username }));
+    set(() => ({ accessToken: userInfo.profileImageUrl }));
+  },
   clearUserState: () =>
     set({
       accessToken: '',

@@ -10,18 +10,17 @@ import { getAccessToken, getUserInfo } from './utils/localStorage';
 import elephantImg from '/elephant-bg.png';
 
 export function App() {
-  const { setAccessToken, setProfileImageUrl, setUserName } = useAuthStore();
+  const { setStateAccessToken, setStateUserInfo } = useAuthStore();
 
   useEffect(() => {
     const accessToken = getAccessToken();
     const userInfo = getUserInfo();
 
     if (accessToken && userInfo) {
-      setAccessToken(accessToken);
-      setProfileImageUrl(userInfo.profileImageUrl);
-      setUserName(userInfo.username);
+      setStateAccessToken(accessToken);
+      setStateUserInfo(userInfo);
     }
-  }, [setAccessToken, setProfileImageUrl, setUserName]);
+  }, [setStateAccessToken, setStateUserInfo]);
 
   return (
     <AppContainer>

@@ -8,7 +8,8 @@ import { AuthInput } from './AuthInput';
 import { SignUpPanel } from './SignUpPanel';
 
 export function LoginPage() {
-  const authStore = useAuthStore();
+  const { setStateAccessToken, setStateUserInfo } = useAuthStore();
+
   const [isOpenPanel, setIsOpenPanel] = useState(false);
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
@@ -50,9 +51,8 @@ export function LoginPage() {
       setAccessToken(accessToken);
       setUserInfo(userInfo);
 
-      authStore.setAccessToken(accessToken);
-      authStore.setUserName(userInfo.userName);
-      authStore.setProfileImageUrl(userInfo.profileImageUrl);
+      setStateAccessToken(accessToken);
+      setStateUserInfo(userInfo);
     }
   };
 
