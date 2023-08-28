@@ -1,92 +1,22 @@
-import { ChangeEvent, useState } from 'react';
 import { styled } from 'styled-components';
-import { Button } from '../../components/Button';
-import { AuthInput } from './AuthInput';
-import { SignUpPanel } from './SignUpPanel';
+import { useAuthStore } from '../../stores/authStore';
+import { LoginPage } from './LoginPage';
+import { MyProfilePage } from './MyProfilePage';
 
 export function MyAccount() {
-  const [isOpenPanel, setIsOpenPanel] = useState(false);
-  const [id, setId] = useState('');
-  const [password, setPassword] = useState('');
-
-  const isValidId = /^[A-Za-z0-9]{6,20}$/.test(id);
-  const isValidPassword = /^[A-Za-z0-9]{6,20}$/.test(password);
-
-  const isLoginDisabled = !(isValidId && isValidPassword);
-
-  const openPanel = () => {
-    setIsOpenPanel(true);
-  };
-
-  const closePanel = () => {
-    setIsOpenPanel(false);
-  };
-
-  const onChangeId = (event: ChangeEvent<HTMLInputElement>) => {
-    setId(event.target.value);
-  };
-
-  const onChangePassword = (event: ChangeEvent<HTMLInputElement>) => {
-    setPassword(event.target.value);
-  };
-
-  const submit = async () => {
-    const res = await fetch('/api/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ id, password }),
-    });
-
-    const data = await res.json();
-    console.log('Response:', data);
-  };
+  const authStore = useAuthStore();
 
   return (
     <>
-      {isOpenPanel && <SignUpPanel closePanel={closePanel} />}
-      <Div>
-        <Header>내 계정</Header>
-        <Body>
-          <AuthInput
-            id={id}
-            password={password}
-            onChangeId={onChangeId}
-            onChangePassword={onChangePassword}
-          />
-          <ButtonWrapper>
-            <Button
-              styledType="container"
-              color="accentPrimary"
-              onClick={submit}
-              disabled={isLoginDisabled}
-            >
-              <LoginDiv>로그인</LoginDiv>
-            </Button>
-            <Button styledType="ghost" onClick={openPanel}>
-              <SignUpDiv>회원가입</SignUpDiv>
-            </Button>
-          </ButtonWrapper>
-        </Body>
-      </Div>
+      <Header>내 계정</Header>
+      {authStore.accessToken ? <MyProfilePage /> : <LoginPage />}
     </>
   );
 }
 
-const Div = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-`;
-
 const Header = styled.div`
   width: 100%;
   height: 56px;
-  position: absolute;
-  top: 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -95,44 +25,4 @@ const Header = styled.div`
   font: ${({ theme }) => theme.font.displayStrong16};
   background: ${({ theme }) => theme.color.neutralBackgroundBlur};
   color: ${({ theme }) => theme.color.neutralTextStrong};
-`;
-
-const Body = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  gap: 40px;
-  flex: 1;
-  padding: 0 32px;
-`;
-
-const LoginDiv = styled.div`
-  width: 297px;
-  height: 24px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font: ${({ theme }) => theme.font.availableStrong16};
-  color: ${({ theme }) => theme.color.accentText};
-`;
-
-const SignUpDiv = styled.div`
-  width: 45px;
-  height: 16px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font: ${({ theme }) => theme.font.availableStrong12};
-  color: ${({ theme }) => theme.color.neutralText};
-`;
-
-const ButtonWrapper = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  gap: 16px;
 `;

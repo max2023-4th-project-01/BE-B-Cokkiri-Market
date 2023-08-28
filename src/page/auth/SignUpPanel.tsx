@@ -1,6 +1,7 @@
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { styled } from 'styled-components';
 import { Button } from '../../components/Button';
+import { ProfileButton } from '../../components/ProfileButton';
 import { Icon } from '../../components/icon/Icon';
 import { AuthInput } from './AuthInput';
 
@@ -44,13 +45,14 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
     setRightPosition(-392);
   };
 
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const onChangeFile = (event: ChangeEvent<HTMLInputElement>) => {
     const fileList = event.target.files;
 
     if (!fileList) return;
 
     if (fileList) {
       const file = fileList[0];
+
       if (file && file.type.startsWith('image/')) {
         setFile(file);
         const reader = new FileReader();
@@ -71,7 +73,7 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
     }
   };
 
-  const removeProfile = () => {
+  const onRemoveProfile = () => {
     // TODO : alert component 추가해서 사용자의 동의 받기
     setFile(undefined);
     setBackgroundImage(undefined);
@@ -95,8 +97,11 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
       body: formData,
     });
 
-    const data = await res.json();
-    console.log('Response:', data);
+    if (res.ok) {
+      const data = await res.json();
+      console.log('Response:', data);
+      closePanel();
+    }
   };
 
   return (
@@ -113,24 +118,14 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
       <Body>
         <ProfileWrapper>
           <ProfileButton
-            htmlFor="profileButton"
-            $backgroundImage={backgroundImage}
-          >
-            <Icon name="camera" color="accentText" />
-          </ProfileButton>
-          {file && (
-            <RemoveProfileButton onClick={removeProfile}>
-              프로필 삭제
-            </RemoveProfileButton>
-          )}
+            file={file}
+            backgroundImage={backgroundImage}
+            inputRef={inputRef}
+            onChangeFile={onChangeFile}
+            onRemoveProfile={onRemoveProfile}
+          />
         </ProfileWrapper>
-        <input
-          ref={inputRef}
-          type="file"
-          id="profileButton"
-          accept="image/*"
-          onChange={handleFileChange}
-        />
+
         <AuthInput
           id={id}
           password={password}
@@ -170,8 +165,6 @@ const Div = styled.div<{ $right: number }>`
 const Header = styled.div`
   width: 100%;
   height: 56px;
-  position: absolute;
-  top: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -194,19 +187,15 @@ const Title = styled.div`
 const Body = styled.div`
   width: 100%;
   display: flex;
-  justify-content: center;
   align-items: center;
   flex-direction: column;
   gap: 40px;
   flex: 1;
   padding: 0 32px;
+  margin-top: 138px;
 
   & > button {
     width: 100%;
-  }
-
-  & #profileButton {
-    display: none;
   }
 `;
 
@@ -217,31 +206,10 @@ const ProfileWrapper = styled.div`
   align-items: center;
   flex-direction: column;
   gap: 5px;
-`;
 
-const ProfileButton = styled.label<{ $backgroundImage: string | undefined }>`
-  width: 80px;
-  height: 80px;
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: ${({ theme }) => `1px solid ${theme.color.neutralBorder}`};
-  border-radius: 50%;
-  background: ${({ $backgroundImage, theme }) =>
-    $backgroundImage ? `url(${$backgroundImage})` : theme.color.neutralOverlay};
-  background-size: cover;
-  cursor: pointer;
-`;
-
-const RemoveProfileButton = styled.button`
-  width: 90px;
-  height: 30px;
-  border-radius: 8px;
-  padding: 0 5px;
-  font: ${({ theme }) => theme.font.availableStrong12};
-  background: ${({ theme }) => theme.color.accentPrimary};
-  color: ${({ theme }) => theme.color.accentText};
+  & input {
+    display: none;
+  }
 `;
 
 const ButtonDiv = styled.div`
