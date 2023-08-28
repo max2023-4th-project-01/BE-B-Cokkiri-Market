@@ -25,7 +25,7 @@ export function TestModalContent() {
       </Div>
       {isOpen && (
         <Alert isOpen={isOpen} onClose={() => setIsOpen(false)}>
-          I'm Alert!
+          동네를 삭제할까요?
         </Alert>
       )}
     </>

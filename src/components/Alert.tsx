@@ -39,7 +39,7 @@ export function Alert({ isOpen, onClose, children }: AlertProps) {
             <Cancel onClick={onClose}>취소</Cancel>
           </Button>
           <Button styledType="ghost">
-            <Delete>삭제</Delete>
+            <Delete>확인</Delete>
           </Button>
         </Footer>
       </Container>
@@ -104,5 +104,5 @@ const Cancel = styled.div`
 
 const Delete = styled.div`
   font: ${({ theme }) => theme.font.displayStrong16};
-  color: ${({ theme }) => theme.color.systemWarning};
+  color: ${({ theme }) => theme.color.accentPrimary};
 `;
