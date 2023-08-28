@@ -63,13 +63,15 @@ export function ProductItem({
           {locationName}・{getElapsedSince(createdAt)}
         </LocationAndTimestamp>
         <StateAndPrice>
-          <Badge
-            type="container"
-            size="S"
-            text={statusName}
-            fontColor="accentText"
-            badgeColor="accentSecondary"
-          />
+          {statusName !== '' && (
+            <Badge
+              type="container"
+              size="S"
+              text={statusName}
+              fontColor="accentText"
+              badgeColor="accentSecondary"
+            />
+          )}
           <Price>{setPrice(price)}</Price>
         </StateAndPrice>
         <History>
