@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { styled } from 'styled-components';
+import { useLocationStore } from '../../stores/useLocationStore';
 import { Alert } from '../Alert';
 import { Button } from '../Button';
 import { Icon } from '../icon/Icon';
@@ -11,6 +12,7 @@ export function SetLocation({
   onClose: () => void;
   onOpenAddModal: () => void;
 }) {
+  const { locations } = useLocationStore();
   const [isAlertOpen, setIsAlertOpen] = useState(false);
 
   return (
@@ -28,7 +30,7 @@ export function SetLocation({
         </Notice>
         <Buttons>
           <Location>
-            역삼 1동
+            {locations[0]?.name}
             <Button styledType="ghost" onClick={() => setIsAlertOpen(true)}>
               <Icon name="circleXFilled" color="accentText" />
             </Button>

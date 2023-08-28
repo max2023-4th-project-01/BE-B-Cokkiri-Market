@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useLocationStore } from '../../stores/useLocationStore';
 import { AddLocation } from './AddLocation';
 import { Modal } from './Modal';
 import { SetLocation } from './SetLocation';
@@ -9,7 +10,22 @@ type LocationModalProps = {
 };
 
 export function LocationModal({ isOpen, onClose }: LocationModalProps) {
+  const { setLocations } = useLocationStore();
   const [isAddLocationModalOpen, setIsAddLocationModalOpen] = useState(false);
+
+  const getUserLocation = async () => {
+    try {
+      const res = await fetch('/api/users/locations');
+      const data = await res.json();
+      setLocations(data.locations);
+    } catch (err) {
+      alert(err);
+    }
+  };
+
+  useEffect(() => {
+    getUserLocation();
+  }, []);
 
   const onOpenAddModal = () => {
     setIsAddLocationModalOpen(true);
