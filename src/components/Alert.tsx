@@ -11,16 +11,22 @@ import { Button } from './Button';
 type AlertProps = DialogHTMLAttributes<HTMLDialogElement> & {
   isOpen: boolean;
   onClose: () => void;
+  onAction: () => void;
   children: React.ReactNode;
 };
 
-export function Alert({ isOpen, onClose, children }: AlertProps) {
+export function Alert({ isOpen, onClose, onAction, children }: AlertProps) {
   const alertRef = useRef<HTMLDialogElement>(null);
   const rootElement = document.getElementById('modal-root');
 
   const onAlertClose = (event: BaseSyntheticEvent) => {
     const modal = alertRef.current;
     if (event.target === modal) onClose();
+  };
+
+  const onAlertConfirm = () => {
+    onAction();
+    onClose();
   };
 
   useEffect(() => {
@@ -35,10 +41,10 @@ export function Alert({ isOpen, onClose, children }: AlertProps) {
       <Container>
         <Content>{children}</Content>
         <Footer>
-          <Button styledType="ghost">
-            <Cancel onClick={onClose}>취소</Cancel>
+          <Button styledType="ghost" onClick={onClose}>
+            <Cancel>취소</Cancel>
           </Button>
-          <Button styledType="ghost">
+          <Button styledType="ghost" onClick={onAlertConfirm}>
             <Delete>확인</Delete>
           </Button>
         </Footer>
