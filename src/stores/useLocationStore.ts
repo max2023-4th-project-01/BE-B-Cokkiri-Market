@@ -4,7 +4,7 @@ import { devtools } from 'zustand/middleware';
 type Location = {
   id: number;
   name: string;
-  isSelect: boolean;
+  isSelected: boolean;
 };
 
 type LocationState = {
