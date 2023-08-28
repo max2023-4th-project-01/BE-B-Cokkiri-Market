@@ -12,11 +12,11 @@ import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import kr.codesquad.common.UuidGenerator;
 import kr.codesquad.location.Location;
 import kr.codesquad.location.LocationRepository;
 import kr.codesquad.user.User;
 import kr.codesquad.user.UserRepository;
+import kr.codesquad.util.UuidGenerator;
 import lombok.RequiredArgsConstructor;
 
 @Service

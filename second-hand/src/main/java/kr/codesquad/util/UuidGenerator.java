@@ -1,4 +1,4 @@
-package kr.codesquad.common;
+package kr.codesquad.util;
 
 import java.util.UUID;
 

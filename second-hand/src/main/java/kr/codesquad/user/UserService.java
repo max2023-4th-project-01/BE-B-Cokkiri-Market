@@ -9,11 +9,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kr.codesquad.common.UuidGenerator;
 import kr.codesquad.location.Location;
 import kr.codesquad.location.LocationRepository;
 import kr.codesquad.user.dto.UserMapper;
 import kr.codesquad.user.dto.request.UserSignUpRequest;
+import kr.codesquad.util.UuidGenerator;
 import lombok.RequiredArgsConstructor;
 
 @Service
