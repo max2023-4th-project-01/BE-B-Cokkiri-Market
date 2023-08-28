@@ -24,7 +24,13 @@ export function TestModalContent() {
         </Buttons>
       </Div>
       {isOpen && (
-        <Alert isOpen={isOpen} onClose={() => setIsOpen(false)}>
+        <Alert
+          isOpen={isOpen}
+          onClose={() => setIsOpen(false)}
+          onAction={() => {
+            console.log('동네 삭제 완료!');
+          }}
+        >
           동네를 삭제할까요?
         </Alert>
       )}
