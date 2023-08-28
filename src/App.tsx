@@ -5,7 +5,7 @@ import { Layout } from './components/Layout';
 import { Main } from './page/Main';
 import { Test } from './page/Test';
 import { MyAccount } from './page/auth/MyAccount';
-import { useAuthStore } from './stores/authStore';
+import { useAuthStore } from './stores/useAuthStore';
 import { getAccessToken, getUserInfo } from './utils/localStorage';
 import elephantImg from '/elephant-bg.png';
 

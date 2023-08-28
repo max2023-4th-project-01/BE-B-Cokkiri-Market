@@ -1,5 +1,5 @@
 import { styled } from 'styled-components';
-import { useAuthStore } from '../../stores/authStore';
+import { useAuthStore } from '../../stores/useAuthStore';
 import { LoginPage } from './LoginPage';
 import { MyProfilePage } from './MyProfilePage';
 
