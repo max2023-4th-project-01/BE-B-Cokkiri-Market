@@ -6,6 +6,7 @@ import { Button } from '../components/Button';
 import { Modal } from '../components/Modal';
 import { TestModalContent } from '../components/TestModalContent';
 import { Icon } from '../components/icon/Icon';
+import { ProductItem } from '../components/productItem';
 import { countStore, useNameStore } from '../store';
 
 export function Test() {
@@ -29,6 +30,17 @@ export function Test() {
   }
   return (
     <Div>
+      <ProductItem
+        seller="testUser"
+        id={1}
+        thumbnailUrl="https://www.ikea.com/kr/ko/images/products/alex-storage-unit-white__1209817_pe909458_s5.jpg?f=xl"
+        title="글제목"
+        locationName="역삼 1동"
+        createdAt={new Date()}
+        statusName="예약 중"
+        price={null}
+        countData={{ chat: 10, favorite: 2 }}
+      />
       <ResDiv>react query res : {data}</ResDiv>
       <TestZustand>
         <div>count :{count}</div>
