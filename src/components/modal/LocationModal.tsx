@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useAuthStore } from '../../stores/useAuthStore';
 import { useLocationStore } from '../../stores/useLocationStore';
 import { AddLocation } from './AddLocation';
 import { Modal } from './Modal';
@@ -10,12 +11,17 @@ type LocationModalProps = {
 };
 
 export function LocationModal({ isOpen, onClose }: LocationModalProps) {
+  const { accessToken } = useAuthStore();
   const { setLocations } = useLocationStore();
   const [isAddLocationModalOpen, setIsAddLocationModalOpen] = useState(false);
 
   const getUserLocation = async () => {
     try {
-      const res = await fetch('/api/users/locations');
+      const res = await fetch('/api/users/locations', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
       const data = await res.json();
       setLocations(data.locations);
     } catch (err) {

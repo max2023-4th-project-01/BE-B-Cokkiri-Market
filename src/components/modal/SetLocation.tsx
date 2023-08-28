@@ -3,6 +3,7 @@ import { styled } from 'styled-components';
 import { useLocationStore } from '../../stores/useLocationStore';
 import { Alert } from '../Alert';
 import { Button } from '../Button';
+import { LocationButton } from '../LocationButton';
 import { Icon } from '../icon/Icon';
 
 export function SetLocation({
@@ -14,6 +15,10 @@ export function SetLocation({
 }) {
   const { locations } = useLocationStore();
   const [isAlertOpen, setIsAlertOpen] = useState(false);
+
+  const onOpenAlert = () => {
+    setIsAlertOpen(true);
+  };
 
   return (
     <>
@@ -29,12 +34,13 @@ export function SetLocation({
           <br /> 최대 2개까지 설정 가능해요.
         </Notice>
         <Buttons>
-          <Location>
-            {locations[0]?.name}
-            <Button styledType="ghost" onClick={() => setIsAlertOpen(true)}>
-              <Icon name="circleXFilled" color="accentText" />
-            </Button>
-          </Location>
+          {locations.map((location, index) => (
+            <LocationButton
+              key={index}
+              locationData={location}
+              onOpenAlert={onOpenAlert}
+            />
+          ))}
           <Button
             styledType="outline"
             color="neutralBorder"
@@ -97,19 +103,6 @@ const Buttons = styled.div`
   align-items: flex-start;
   gap: 8px;
   align-self: stretch;
-`;
-
-const Location = styled.div`
-  width: 288px;
-  height: 56px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 8px 16px 16px;
-  border-radius: 8px;
-  background-color: ${({ theme }) => theme.color.accentPrimary};
-  font: ${({ theme }) => theme.font.availableStrong16};
-  color: ${({ theme }) => theme.color.accentText};
 `;
 
 const Plus = styled.div`
