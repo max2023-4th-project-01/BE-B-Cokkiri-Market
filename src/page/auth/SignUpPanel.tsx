@@ -1,6 +1,7 @@
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { styled } from 'styled-components';
 import { Button } from '../../components/Button';
+import { ProfileButton } from '../../components/ProfileButton';
 import { Icon } from '../../components/icon/Icon';
 import { AuthInput } from './AuthInput';
 
@@ -13,6 +14,16 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
   const [rightPosition, setRightPosition] = useState(-392);
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
+  const [location, setLocation] = useState('역삼1동');
+  const [file, setFile] = useState<File>();
+  const [backgroundImage, setBackgroundImage] = useState<string>();
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const isValidId = /^[A-Za-z0-9]{6,20}$/.test(id);
+  const isValidPassword = /^[A-Za-z0-9]{6,20}$/.test(password);
+  const isNullLocation = location === '';
+
+  const isSignUpDisabled = !(isValidId && isValidPassword && !isNullLocation);
 
   useEffect(() => {
     setRightPosition(0);
@@ -34,6 +45,65 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
     setRightPosition(-392);
   };
 
+  const onChangeFile = (event: ChangeEvent<HTMLInputElement>) => {
+    const fileList = event.target.files;
+
+    if (!fileList) return;
+
+    if (fileList) {
+      const file = fileList[0];
+
+      if (file && file.type.startsWith('image/')) {
+        setFile(file);
+        const reader = new FileReader();
+
+        reader.onload = function (event) {
+          if (event.target && event.target.readyState === FileReader.DONE) {
+            setBackgroundImage(event.target.result as string);
+          }
+        };
+
+        reader.readAsDataURL(file);
+      } else {
+        event.target.value = '';
+
+        // TODO : toast alert 추가?
+        alert('이미지 파일만 업로드 가능합니다.');
+      }
+    }
+  };
+
+  const onRemoveProfile = () => {
+    // TODO : alert component 추가해서 사용자의 동의 받기
+    setFile(undefined);
+    setBackgroundImage(undefined);
+    if (inputRef.current) {
+      inputRef.current.value = '';
+    }
+  };
+
+  const submit = async () => {
+    const formData = new FormData();
+    formData.append('id', id);
+    formData.append('password', password);
+    formData.append('locationName', location);
+
+    if (file) {
+      formData.append('profileImageFile', file);
+    }
+
+    const res = await fetch('/api/signup', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      console.log('Response:', data);
+      closePanel();
+    }
+  };
+
   return (
     <Div $right={rightPosition} onTransitionEnd={onTransitionEndHandler}>
       <Header>
@@ -41,21 +111,32 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
           <ButtonDiv>닫기</ButtonDiv>
         </Button>
         <Title>회원가입</Title>
-        <Button styledType="ghost">
+        <Button styledType="ghost" onClick={submit} disabled={isSignUpDisabled}>
           <ButtonDiv>완료</ButtonDiv>
         </Button>
       </Header>
       <Body>
-        <ProfileButton>
-          <Icon name="camera" color="accentText" />
-        </ProfileButton>
+        <ProfileWrapper>
+          <ProfileButton
+            file={file}
+            backgroundImage={backgroundImage}
+            inputRef={inputRef}
+            onChangeFile={onChangeFile}
+            onRemoveProfile={onRemoveProfile}
+          />
+        </ProfileWrapper>
+
         <AuthInput
           id={id}
           password={password}
           onChangeId={onChangeId}
           onChangePassword={onChangePassword}
         />
-        <Button styledType="outline" color="neutralBorder">
+        <Button
+          styledType="outline"
+          color="neutralBorder"
+          onClick={() => setLocation('역삼1동')}
+        >
           <AddLocation>
             <Icon name="plus" color="accentTextWeak" />
             위치 추가
@@ -84,8 +165,6 @@ const Div = styled.div<{ $right: number }>`
 const Header = styled.div`
   width: 100%;
   height: 56px;
-  position: absolute;
-  top: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -108,28 +187,29 @@ const Title = styled.div`
 const Body = styled.div`
   width: 100%;
   display: flex;
-  justify-content: center;
   align-items: center;
   flex-direction: column;
   gap: 40px;
   flex: 1;
   padding: 0 32px;
+  margin-top: 138px;
 
   & > button {
     width: 100%;
   }
 `;
 
-const ProfileButton = styled.div`
-  width: 80px;
-  height: 80px;
+const ProfileWrapper = styled.div`
+  height: 115px;
   display: flex;
   justify-content: center;
   align-items: center;
-  border: ${({ theme }) => `1px solid ${theme.color.neutralBorder}`};
-  border-radius: 50%;
-  background: ${({ theme }) => theme.color.neutralOverlay};
-  cursor: pointer;
+  flex-direction: column;
+  gap: 5px;
+
+  & input {
+    display: none;
+  }
 `;
 
 const ButtonDiv = styled.div`

@@ -1,12 +1,27 @@
 import { Route, Routes } from 'react-router-dom';
+import { useEffect } from 'react';
 import { styled } from 'styled-components';
 import { Layout } from './components/Layout';
 import { Main } from './page/Main';
 import { Test } from './page/Test';
 import { MyAccount } from './page/auth/MyAccount';
+import { useAuthStore } from './stores/authStore';
+import { getAccessToken, getUserInfo } from './utils/localStorage';
 import elephantImg from '/elephant-bg.png';
 
 export function App() {
+  const { setStateAccessToken, setStateUserInfo } = useAuthStore();
+
+  useEffect(() => {
+    const accessToken = getAccessToken();
+    const userInfo = getUserInfo();
+
+    if (accessToken && userInfo) {
+      setStateAccessToken(accessToken);
+      setStateUserInfo(userInfo);
+    }
+  }, [setStateAccessToken, setStateUserInfo]);
+
   return (
     <AppContainer>
       <Routes>
