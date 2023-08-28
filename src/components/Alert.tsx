@@ -1,9 +1,14 @@
-import { useRef, useEffect } from 'react';
+import {
+  useRef,
+  useEffect,
+  DialogHTMLAttributes,
+  BaseSyntheticEvent,
+} from 'react';
 import { createPortal } from 'react-dom';
 import { styled, keyframes } from 'styled-components';
 import { Button } from './Button';
 
-type AlertProps = {
+type AlertProps = DialogHTMLAttributes<HTMLDialogElement> & {
   isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
@@ -13,6 +18,11 @@ export function Alert({ isOpen, onClose, children }: AlertProps) {
   const alertRef = useRef<HTMLDialogElement>(null);
   const rootElement = document.getElementById('modal-root');
 
+  const onAlertClose = (event: BaseSyntheticEvent) => {
+    const modal = alertRef.current;
+    if (event.target === modal) onClose();
+  };
+
   useEffect(() => {
     const alert = alertRef.current;
     isOpen && alert?.showModal();
@@ -21,15 +31,7 @@ export function Alert({ isOpen, onClose, children }: AlertProps) {
   if (!rootElement) return;
 
   return createPortal(
-    <Dialog
-      ref={alertRef}
-      onClose={event => {
-        if (event.target !== alertRef.current) {
-          return;
-        }
-        onClose();
-      }}
-    >
+    <Dialog ref={alertRef} onClose={onAlertClose} onClick={onAlertClose}>
       <Container>
         <Content>{children}</Content>
         <Footer>
