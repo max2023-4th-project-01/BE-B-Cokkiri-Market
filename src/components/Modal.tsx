@@ -1,8 +1,8 @@
 import {
-  DialogHTMLAttributes,
-  useEffect,
   useRef,
-  MouseEventHandler,
+  useEffect,
+  DialogHTMLAttributes,
+  BaseSyntheticEvent,
 } from 'react';
 import { createPortal } from 'react-dom';
 import { styled, keyframes } from 'styled-components';
@@ -20,19 +20,10 @@ export function Modal({ isOpen, onClose, headline, children }: ModalProps) {
   const rootElement = document.getElementById('modal-root');
   const hasHeadline = !!headline;
 
-  // const onCancel: MouseEventHandler<HTMLDialogElement> = () => {
-  //   onClose();
-  // };
-
-  const onClick: MouseEventHandler<HTMLDialogElement> = event => {
-    const dialog = modalRef.current;
-    if (event.target === dialog) onClose();
+  const onModalClose = (event: BaseSyntheticEvent) => {
+    const modal = modalRef.current;
+    if (event.target === modal) onClose();
   };
-
-  // const onAnimEnd = () => {
-  //   const dialog = modalRef.current;
-  //   !isOpen && dialog?.close();
-  // };
 
   useEffect(() => {
     const modal = modalRef.current;
@@ -42,19 +33,7 @@ export function Modal({ isOpen, onClose, headline, children }: ModalProps) {
   if (!rootElement) return;
 
   return createPortal(
-    <Dialog
-      // className={isOpen ? '' : 'modal--closing'}
-      ref={modalRef}
-      onClose={event => {
-        if (event.target !== modalRef.current) {
-          return;
-        }
-        onClose();
-      }}
-      // onCancel={onCancel}
-      onClick={onClick}
-      // onAnimationEnd={onAnimEnd}
-    >
+    <Dialog ref={modalRef} onClose={onModalClose} onClick={onModalClose}>
       <Container>
         <Header $hasHeadline={hasHeadline}>
           {hasHeadline ? (
@@ -84,17 +63,6 @@ const show = keyframes`
   }
 `;
 
-const hide = keyframes`
-  from {
-    opacity: 1;
-    transform: translateY(0%);
-  }
-  to {
-    opacity: 0;
-    transform: translateY(min(100px, 5vh));
-  }
-`;
-
 const Dialog = styled.dialog`
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   background-color: ${({ theme }) => theme.color.neutralBackground};
@@ -104,10 +72,6 @@ const Dialog = styled.dialog`
 
   &[open] {
     animation: ${show} 250ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
-
-    &.modal--closing {
-      animation: ${hide} 150ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
-    }
   }
 
   &::backdrop {
