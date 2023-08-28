@@ -9,39 +9,29 @@ import { Icon } from '../components/icon/Icon';
 import { ProductItem } from '../components/productItem';
 import { countStore, useNameStore } from '../store';
 
+const fetchItem = async () => {
+  const res = await fetch('/api/item');
+
+  return res.json();
+};
+
 export function Test() {
   const { count, increment } = countStore();
   const { firstName, updateFirstName } = useNameStore();
   const [isOpen, setIsOpen] = useState(false);
+  const { data: itemData, isLoading, isError } = useQuery(['item'], fetchItem);
 
-  const { data, error, isLoading } = useQuery<string, Error>(
-    ['test'],
-    fetchTest
-  );
-
-  if (isLoading) console.log('loading');
-
-  if (error) console.log(error.message);
-
-  async function fetchTest() {
-    const res = await fetch('/api/test');
-
-    return res.json();
+  if (isLoading) {
+    return <div>Loading...</div>;
   }
+
+  if (isError) {
+    return <div>Error occurred</div>;
+  }
+
   return (
     <Div>
-      <ProductItem
-        seller="testUser"
-        id={1}
-        thumbnailUrl="https://www.ikea.com/kr/ko/images/products/alex-storage-unit-white__1209817_pe909458_s5.jpg?f=xl"
-        title="글제목"
-        locationName="역삼 1동"
-        createdAt={new Date()}
-        statusName="예약 중"
-        price={null}
-        countData={{ chat: 10, favorite: 2 }}
-      />
-      <ResDiv>react query res : {data}</ResDiv>
+      <ProductItem {...itemData} />
       <TestZustand>
         <div>count :{count}</div>
         <Button styledType="ghost" color="accentPrimary" onClick={increment}>
@@ -187,12 +177,6 @@ const Wrapper = styled.div`
   justify-content: center;
   align-items: center;
   gap: 10px;
-`;
-
-const ResDiv = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
 `;
 
 const TestZustand = styled.div`
