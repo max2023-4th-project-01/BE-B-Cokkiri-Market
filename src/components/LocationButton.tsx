@@ -1,5 +1,6 @@
 import { MouseEvent } from 'react';
 import { styled } from 'styled-components';
+import { useLocationStore } from '../stores/useLocationStore';
 import { Button } from './Button';
 import { Icon } from './icon/Icon';
 
@@ -10,15 +11,20 @@ type LocationButtonProps = {
     isSelected: boolean;
   };
   onOpenAlert: () => void;
+  onDelete: (locationId: number) => void;
 };
 
 export function LocationButton({
   locationData,
   onOpenAlert,
 }: LocationButtonProps) {
+  const { setSelectedLocationId } = useLocationStore();
+
   const onDeleteLocation = (event: MouseEvent) => {
     event.stopPropagation();
+    setSelectedLocationId(locationData.id);
     onOpenAlert();
+    // TODO: Alert의 onAction을 통해 삭제 요청, 클릭된 location의 id를 전달해야함
   };
 
   return (

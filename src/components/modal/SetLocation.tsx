@@ -6,18 +6,30 @@ import { Button } from '../Button';
 import { LocationButton } from '../LocationButton';
 import { Icon } from '../icon/Icon';
 
+type SetLocationProps = {
+  onClose: () => void;
+  onOpenAddModal: () => void;
+  onDelete: (locationId: number) => void;
+};
+
 export function SetLocation({
   onClose,
   onOpenAddModal,
-}: {
-  onClose: () => void;
-  onOpenAddModal: () => void;
-}) {
-  const { locations } = useLocationStore();
+  onDelete,
+}: SetLocationProps) {
+  const { locations, selectedLocationId } = useLocationStore();
   const [isAlertOpen, setIsAlertOpen] = useState(false);
+
+  const isMaxLocations = locations.length >= 2;
 
   const onOpenAlert = () => {
     setIsAlertOpen(true);
+  };
+
+  const deleteLocation = (locationId: number | null) => {
+    if (!locationId) return;
+    onDelete(locationId);
+    console.log('동네 삭제 완료!');
   };
 
   return (
@@ -39,18 +51,21 @@ export function SetLocation({
               key={index}
               locationData={location}
               onOpenAlert={onOpenAlert}
+              onDelete={onDelete}
             />
           ))}
-          <Button
-            styledType="outline"
-            color="neutralBorder"
-            onClick={onOpenAddModal}
-          >
-            <Plus>
-              <Icon name="plus" color="accentTextWeak" />
-              추가
-            </Plus>
-          </Button>
+          {!isMaxLocations && (
+            <Button
+              styledType="outline"
+              color="neutralBorder"
+              onClick={onOpenAddModal}
+            >
+              <Plus>
+                <Icon name="plus" color="accentTextWeak" />
+                추가
+              </Plus>
+            </Button>
+          )}
         </Buttons>
       </Content>
       {isAlertOpen && (
@@ -58,7 +73,7 @@ export function SetLocation({
           isOpen={isAlertOpen}
           onClose={() => setIsAlertOpen(false)}
           onAction={() => {
-            console.log('동네 삭제 완료!');
+            deleteLocation(selectedLocationId);
           }}
         >
           동네를 삭제할까요?
