@@ -2,7 +2,7 @@ import { ChangeEvent, useState } from 'react';
 import { styled } from 'styled-components';
 import { Button } from '../../components/Button';
 import { Icon } from '../../components/icon/Icon';
-import { useAuthStore } from '../../stores/authStore';
+import { useAuthStore } from '../../stores/useAuthStore';
 import { setAccessToken, setUserInfo } from '../../utils/localStorage';
 import { AuthInput } from './AuthInput';
 import { SignUpPanel } from './SignUpPanel';

@@ -4,10 +4,9 @@ import { styled } from 'styled-components';
 import { getItem } from '../api/fetcher';
 import { Badge } from '../components/Badge';
 import { Button } from '../components/Button';
-import { Modal } from '../components/Modal';
 import { ProductItem } from '../components/ProductItem';
-import { TestModalContent } from '../components/TestModalContent';
 import { Icon } from '../components/icon/Icon';
+import { LocationModal } from '../components/modal/LocationModal';
 import { countStore, useNameStore } from '../store';
 
 export function Test() {
@@ -104,13 +103,7 @@ export function Test() {
         Open Modal
       </Button>
       {isOpen && (
-        <Modal
-          isOpen={isOpen}
-          onClose={() => setIsOpen(false)}
-          headline="동네 설정"
-        >
-          <TestModalContent />
-        </Modal>
+        <LocationModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
       )}
     </Div>
   );

@@ -1,1 +1,4 @@
-export const API_ENDPOINT = { ITEMS: '/api/items' };
+export const API_ENDPOINT = {
+  ITEMS: '/api/items',
+  USER_LOCATION: '/api/users/locations',
+};

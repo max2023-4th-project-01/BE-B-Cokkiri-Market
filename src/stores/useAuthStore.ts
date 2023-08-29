@@ -21,7 +21,7 @@ export const useAuthStore = create<AuthState>(set => ({
   setStateAccessToken: (token: string) => set(() => ({ accessToken: token })),
   setStateUserInfo: (userInfo: UserInfo) => {
     set(() => ({ userName: userInfo.username }));
-    set(() => ({ accessToken: userInfo.profileImageUrl }));
+    set(() => ({ profileImageUrl: userInfo.profileImageUrl }));
   },
   clearUserState: () =>
     set({

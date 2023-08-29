@@ -6,7 +6,6 @@ import {
 } from 'react';
 import { createPortal } from 'react-dom';
 import { styled, keyframes } from 'styled-components';
-import { Button } from './Button';
 
 type ModalProps = DialogHTMLAttributes<HTMLDialogElement> & {
   isOpen: boolean;
@@ -15,10 +14,9 @@ type ModalProps = DialogHTMLAttributes<HTMLDialogElement> & {
   headline?: string;
 };
 
-export function Modal({ isOpen, onClose, headline, children }: ModalProps) {
+export function Modal({ isOpen, onClose, children }: ModalProps) {
   const modalRef = useRef<HTMLDialogElement>(null);
   const rootElement = document.getElementById('modal-root');
-  const hasHeadline = !!headline;
 
   const onModalClose = (event: BaseSyntheticEvent) => {
     const modal = modalRef.current;
@@ -34,19 +32,7 @@ export function Modal({ isOpen, onClose, headline, children }: ModalProps) {
 
   return createPortal(
     <Dialog ref={modalRef} onClose={onModalClose} onClick={onModalClose}>
-      <Container>
-        <Header $hasHeadline={hasHeadline}>
-          {hasHeadline ? (
-            <Headline>{headline}</Headline>
-          ) : (
-            <Button styledType="ghost">뒤로</Button>
-          )}
-          <Button styledType="ghost" onClick={onClose}>
-            <Plus>X</Plus>
-          </Button>
-        </Header>
-        <Content>{children}</Content>
-      </Container>
+      <Container>{children}</Container>
     </Dialog>,
     rootElement
   );
@@ -94,34 +80,4 @@ const Container = styled.div`
   align-items: center;
   flex-shrink: 0;
   overflow-x: hidden;
-`;
-
-const Header = styled.header<{ $hasHeadline: boolean }>`
-  min-height: 72px;
-  display: flex;
-  padding: 8px 8px 16px 24px;
-  justify-content: space-between;
-  align-items: center;
-  align-self: stretch;
-
-  ${({ $hasHeadline }) => !$hasHeadline && 'padding: 8px 8px 16px 12px;'}
-`;
-
-const Headline = styled.h2`
-  font: ${({ theme }) => theme.font.displayStrong20};
-`;
-
-const Plus = styled.div`
-  display: flex;
-  width: 32px;
-  height: 32px;
-  padding: 12px;
-  justify-content: center;
-  align-items: center;
-`;
-
-const Content = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex: 1 0 0;
 `;
