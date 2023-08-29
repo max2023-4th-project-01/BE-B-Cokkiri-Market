@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import kr.codesquad.item.dto.ItemRequest;
+import kr.codesquad.item.dto.ItemResponse;
 import kr.codesquad.util.ItemStatus;
 import kr.codesquad.util.TimeStamped;
 import lombok.Builder;
@@ -36,10 +37,12 @@ public class Item extends TimeStamped {
 	private ItemStatus status;
 	@Column(nullable = false)
 	private Long userId;
+	@Column(nullable = true)
+	private int viewCount;
 
 	@Builder
 	public Item(Long id, String title, String content, Long categoryId, Integer price, String locationName, String thumbnailUrl,
-		ItemStatus status, Long userId) {
+		ItemStatus status, Long userId, int viewCount) {
 		this.id = id;
 		this.title = title;
 		this.content = content;
@@ -49,6 +52,7 @@ public class Item extends TimeStamped {
 		this.thumbnailUrl = thumbnailUrl;
 		this.status = status;
 		this.userId = userId;
+		this.viewCount = viewCount;
 	}
 
 	public void update(ItemRequest.UpdateInDto item, String thumbnailUrl) {
@@ -60,5 +64,13 @@ public class Item extends TimeStamped {
 		if (thumbnailUrl != null) {
 			this.thumbnailUrl = thumbnailUrl;
 		}
+	}
+
+	public ItemResponse.DetailOutDto.CountData countData(int chatCount, int favoriteCount) {
+		return ItemResponse.DetailOutDto.CountData.builder()
+			.chat(chatCount)
+			.favorite(favoriteCount)
+			.view(this.viewCount)
+			.build();
 	}
 }

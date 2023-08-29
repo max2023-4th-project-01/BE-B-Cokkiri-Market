@@ -1,6 +1,11 @@
 package kr.codesquad.item.service;
 
+import kr.codesquad.category.CategoryRepository;
+import kr.codesquad.chat.ChatRepository;
+import kr.codesquad.favorite.FavoriteRepository;
+import kr.codesquad.image.ImageRepository;
 import kr.codesquad.item.dto.ItemRequest;
+import kr.codesquad.item.dto.ItemResponse;
 import kr.codesquad.item.repository.ItemRepository;
 import kr.codesquad.item.entity.Item;
 import kr.codesquad.user.User;
@@ -17,6 +22,10 @@ import java.util.List;
 public class ItemService {
 
     private final ItemRepository itemRepository;
+    private final ImageRepository imageRepository;
+    private final CategoryRepository categoryRepository;
+    private final FavoriteRepository favoriteRepository;
+    private final ChatRepository chatRepository;
 
     @Transactional
     public Long saveItem(List<MultipartFile> imageFiles, ItemRequest.SaveInDto itemRequest, User user) {
@@ -43,8 +52,30 @@ public class ItemService {
         return itemRepository.findAll();
     }
 
-    public Item getItem(Long id) {
-        return itemRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 아이템이 없습니다."));
+    public ItemResponse.DetailOutDto getItem(Long id) {
+        // 로그인한 유저 정보
+        User userPS = new User();
+
+        Item item = itemRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 아이템이 없습니다."));
+
+        List<ItemResponse.DetailOutDto.imageInfo> images = imageRepository.findByItemId(item.getId());
+        String categoryName = categoryRepository.findNameById(item.getCategoryId());
+        int chatCount = chatRepository.countByItemId(item.getId());
+        int favoriteCount = favoriteRepository.countByItemId(item.getId());
+
+        return ItemResponse.DetailOutDto.builder()
+            .isSeller(userPS.getId().equals(item.getUserId()))
+            .images(images)
+            .seller(userPS.getNickName())
+            .status(ItemResponse.DetailOutDto.StatusDropdown.of(item.getStatus()))
+            .title(item.getTitle())
+            .categoryName(categoryName)
+            .createdAt(item.getCreatedAt())
+            .content(item.getContent())
+            .countData(item.countData(chatCount, favoriteCount))
+            .isFavorite(favoriteRepository.existsByUserIdAndItemId(userPS.getId(), item.getId()))
+            .price(item.getPrice())
+            .build();
     }
 
     @Transactional
