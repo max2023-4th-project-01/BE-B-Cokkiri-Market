@@ -1,4 +1,4 @@
-package kr.codesquad.common;
+package kr.codesquad.filter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,29 +10,25 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.PatternMatchUtils;
 import org.springframework.web.cors.CorsUtils;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.MalformedJwtException;
-import kr.codesquad.jwt.JwtProvider;
+import kr.codesquad.jwt.service.JwtProvider;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class AuthorizationFilter implements Filter {
 	private static final String TOKEN_PREFIX = "Bearer ";
-	private static final String HEADER_AUTHORIZATION = "Authorization";
-	private static final String USER_ID = "id";
-	private static final String[] whiteListUris = {"/h2-console/**", "/api/signup", "/api/login",
-		"/api/members/signup/**",
+	private static final String USER_ID = "login_id";
+	private static final String[] whiteListUris = {"/h2-console/**", "/api/users", "/api/login",
 		"/api/reissue-access-token", "/api/oauth/**", "/api/redirect/**"};
 
 	private final JwtProvider jwtProvider;
-	private final ObjectMapper objectMapper;
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -70,12 +66,12 @@ public class AuthorizationFilter implements Filter {
 	}
 
 	private boolean isContainToken(HttpServletRequest request) {
-		String authorization = request.getHeader(HEADER_AUTHORIZATION);
+		String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
 		return authorization != null && authorization.startsWith(TOKEN_PREFIX);
 	}
 
 	private String getToken(HttpServletRequest request) {
-		String authorization = request.getHeader(HEADER_AUTHORIZATION);
+		String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
 		return authorization.substring(7).replace("\"", "");
 	}
 }

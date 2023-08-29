@@ -1,4 +1,4 @@
-package kr.codesquad.common;
+package kr.codesquad.filter;
 
 import java.io.IOException;
 import java.util.ArrayList;

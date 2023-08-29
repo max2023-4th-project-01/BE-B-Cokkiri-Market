@@ -1,10 +1,8 @@
-package kr.codesquad.jwt;
+package kr.codesquad.jwt.service;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -15,22 +13,28 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import kr.codesquad.jwt.Jwt;
+import kr.codesquad.jwt.UserRefreshToken;
+import kr.codesquad.jwt.UserRefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 	private final JwtProvider jwtProvider;
+	private final UserRefreshTokenRepository userRefreshTokenRepository;
 
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-		Authentication authentication) throws IOException, ServletException {
+		Authentication authentication) throws IOException {
 
-		Jwt jwt = jwtProvider.createJwt(Map.of("id", authentication.getName()));
-		Map<String, Object> responseMap = new HashMap<>();
-		responseMap.put("jwt", jwt);
+		Jwt jwt = jwtProvider.createJwt(Map.of("login_id", authentication.getName()));
+		userRefreshTokenRepository.save(UserRefreshToken.builder()
+			.userLoginId(authentication.getName())
+			.refreshToken(jwt.getRefreshToken())
+			.build());
 
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-		response.getWriter().write(new ObjectMapper().writeValueAsString(responseMap));
+		response.getWriter().write(new ObjectMapper().writeValueAsString(jwt));
 	}
 }

@@ -2,6 +2,7 @@ package kr.codesquad.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,13 +13,11 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import kr.codesquad.auth.OAuthService;
-import kr.codesquad.common.AuthenticationFilter;
-import kr.codesquad.common.AuthorizationFilter;
-import kr.codesquad.jwt.JwtAuthenticationSuccessHandler;
-import kr.codesquad.jwt.JwtProvider;
+import kr.codesquad.filter.AuthenticationFilter;
+import kr.codesquad.filter.AuthorizationFilter;
+import kr.codesquad.jwt.service.JwtAuthenticationSuccessHandler;
+import kr.codesquad.jwt.service.JwtProvider;
 import kr.codesquad.user.UserService;
 import lombok.RequiredArgsConstructor;
 
@@ -44,7 +43,7 @@ public class SecurityConfig {
 		authenticationFilter.setAuthenticationSuccessHandler(jwtAuthenticationSuccessHandler);
 		authenticationFilter.setFilterProcessesUrl("/api/login");
 
-		AuthorizationFilter authorizationFilter = new AuthorizationFilter(jwtProvider, new ObjectMapper());
+		AuthorizationFilter authorizationFilter = new AuthorizationFilter(jwtProvider);
 
 		http.csrf()
 			.disable()
@@ -56,8 +55,8 @@ public class SecurityConfig {
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 			.and()
 			.authorizeRequests()
-			.antMatchers("/h2-console/**", "/api/signup")
-			.permitAll()
+			.antMatchers("/h2-console/**").permitAll()
+			.antMatchers(HttpMethod.POST, "/api/users").permitAll()
 			.anyRequest()
 			.authenticated()  //다른 요청은 인증 필요함
 			.and()

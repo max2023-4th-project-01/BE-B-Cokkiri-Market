@@ -1,22 +1,24 @@
 package kr.codesquad.auth;
 
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import kr.codesquad.user.UserService;
-import kr.codesquad.user.dto.request.UserSignUpRequest;
+import kr.codesquad.jwt.Jwt;
+import kr.codesquad.jwt.dto.request.JwtRefreshTokenRequest;
+import kr.codesquad.jwt.service.JwtService;
 import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
-@RequiredArgsConstructor
 public class AuthController {
-	private final UserService userService;
+	private final JwtService jwtService;
 
-	@PostMapping("/signup")
-	public void signUp(@RequestBody UserSignUpRequest userSignUpRequest) {
-		userService.signUp(userSignUpRequest);
+	@GetMapping("/reissue-access-token")
+	public Jwt reissueToken(@RequestBody JwtRefreshTokenRequest request) {
+		return jwtService.reissueAccessToken(
+			request.getRefreshToken());
 	}
 }
