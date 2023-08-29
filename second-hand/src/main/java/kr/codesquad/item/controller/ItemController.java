@@ -20,12 +20,11 @@ public class ItemController {
     private final ItemService itemService;
 
     @PostMapping("/items")
-    public ResponseEntity<Void> createItem(@RequestPart List<MultipartFile> imageFiles,
+    public ResponseEntity<Long> createItem(@RequestPart List<MultipartFile> imageFiles,
                                      @RequestPart ItemRequest.SaveInDto items) {
         // 로그인 구현되면 유저 정보 받음
         User user = null;
-        itemService.saveItem(imageFiles, items, user);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(itemService.saveItem(imageFiles, items, user));
     }
 
     @GetMapping("/items")

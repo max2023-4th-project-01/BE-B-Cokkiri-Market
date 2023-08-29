@@ -19,23 +19,23 @@ public class ItemService {
     private final ItemRepository itemRepository;
 
     @Transactional
-    public void saveItem(List<MultipartFile> imageFiles, ItemRequest.SaveInDto itemRequest, User user) {
+    public Long saveItem(List<MultipartFile> imageFiles, ItemRequest.SaveInDto itemRequest, User user) {
         // 로그인한 유저 아이디
         Long userId = 1L;
 
         // 이미지 처리하고 썸네일 하나 받아옴
         String thumbnailUrl = "썸네일 url 이지롱";
 
-        itemRepository.save(Item.builder()
-                .title(itemRequest.getTitle())
-                .content(itemRequest.getContent())
-                .price(itemRequest.getPrice())
-                .locationName(itemRequest.getLocationName())
-                .categoryId(itemRequest.getCategoryId())
-                .thumbnailUrl(thumbnailUrl)
-                .userId(userId)
-                .status(ItemStatus.판매중)
-                .build());
+        return itemRepository.save(Item.builder()
+            .title(itemRequest.getTitle())
+            .content(itemRequest.getContent())
+            .price(itemRequest.getPrice())
+            .locationName(itemRequest.getLocationName())
+            .categoryId(itemRequest.getCategoryId())
+            .thumbnailUrl(thumbnailUrl)
+            .userId(userId)
+            .status(ItemStatus.판매중)
+            .build()).getId();
     }
 
     @Transactional(readOnly = true)
