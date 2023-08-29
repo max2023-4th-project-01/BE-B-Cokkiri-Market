@@ -1,8 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { styled } from 'styled-components';
-import { getLocationData } from '../../api/fetcher';
+import { getUserLocations } from '../../api/fetcher';
 import { useLocationStore } from '../../stores/useLocationStore';
+import { LocationData } from '../../types';
 import { Alert } from '../Alert';
 import { Button } from '../Button';
 import { LocationButton } from '../LocationButton';
@@ -21,12 +22,12 @@ export function SetLocation({
   onSelect,
   onDelete,
 }: SetLocationProps) {
-  const { locations, selectedLocationId } = useLocationStore();
+  const { selectedLocationId } = useLocationStore();
   const [isAlertOpen, setIsAlertOpen] = useState(false);
 
-  const { data, isLoading, isError } = useQuery(
+  const { data, isLoading, isError } = useQuery<LocationData>(
     ['locations'],
-    getLocationData,
+    getUserLocations,
     {
       onSuccess: data => {
         console.log(data);
@@ -43,7 +44,7 @@ export function SetLocation({
 
   const deleteLocation = (locationId: number | null) => {
     if (!locationId) return;
-    if (locations.length === 1) {
+    if (data?.locations.length === 1) {
       alert('최소 1개의 동네는 설정되어야 합니다.');
       return;
     }

@@ -1,6 +1,9 @@
+import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { MouseEvent } from 'react';
 import { styled } from 'styled-components';
+import { selectUserLocation } from '../api/fetcher';
 import { useLocationStore } from '../stores/useLocationStore';
+import { LocationData } from '../types';
 import { Button } from './Button';
 import { Icon } from './icon/Icon';
 
@@ -17,9 +20,31 @@ type LocationButtonProps = {
 export function LocationButton({
   locationData,
   onOpenAlert,
-  onSelect,
 }: LocationButtonProps) {
   const { setSelectedLocationId } = useLocationStore();
+  const queryClient = useQueryClient();
+  const mutation = useMutation(selectUserLocation, {
+    onSuccess: () => {
+      queryClient.setQueryData<LocationData>(['locations'], prevData => {
+        if (!prevData) return;
+        return {
+          locations: prevData?.locations.map(location => {
+            if (location.id === locationData.id) {
+              return {
+                ...location,
+                isSelected: true,
+              };
+            }
+            return {
+              ...location,
+              isSelected: false,
+            };
+          }),
+        };
+      });
+      // queryClient.invalidateQueries(['todos']);
+    },
+  });
 
   const onDeleteLocation = (event: MouseEvent) => {
     event.stopPropagation();
@@ -32,8 +57,7 @@ export function LocationButton({
       styledType="container"
       color={locationData.isSelected ? 'accentPrimary' : 'neutralTextWeak'}
       onClick={() => {
-        onSelect(locationData.id);
-        console.log('내 동네 선택하기');
+        mutation.mutate(locationData.id);
       }}
     >
       <Text>{locationData.name}</Text>
