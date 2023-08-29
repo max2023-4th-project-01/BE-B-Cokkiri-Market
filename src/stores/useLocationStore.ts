@@ -15,6 +15,7 @@ type LocationState = {
 type LocationAction = {
   setSelectedLocationId: (id: number) => void;
   setLocations: (locations: Location[]) => void;
+  selectLocation: (locationId: number) => void;
   addLocation: (location: Location) => void;
   deleteLocation: (locationId: number) => void;
 };
@@ -25,6 +26,22 @@ export const useLocationStore = create<LocationState & LocationAction>()(
     selectedLocationId: null,
     setSelectedLocationId: id => set(() => ({ selectedLocationId: id })),
     setLocations: locations => set(() => ({ locations })),
+    selectLocation: locationId =>
+      set(state => ({
+        locations: state.locations.map(location => {
+          if (location.id === locationId) {
+            return {
+              ...location,
+              isSelected: true,
+            };
+          } else {
+            return {
+              ...location,
+              isSelected: false,
+            };
+          }
+        }),
+      })),
     addLocation: location =>
       set(state => ({ locations: [...state.locations, location] })),
     deleteLocation: locationId =>

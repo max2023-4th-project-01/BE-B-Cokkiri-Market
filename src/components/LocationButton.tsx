@@ -11,12 +11,13 @@ type LocationButtonProps = {
     isSelected: boolean;
   };
   onOpenAlert: () => void;
-  onDelete: (locationId: number) => void;
+  onSelect: (locationId: number) => void;
 };
 
 export function LocationButton({
   locationData,
   onOpenAlert,
+  onSelect,
 }: LocationButtonProps) {
   const { setSelectedLocationId } = useLocationStore();
 
@@ -24,7 +25,6 @@ export function LocationButton({
     event.stopPropagation();
     setSelectedLocationId(locationData.id);
     onOpenAlert();
-    // TODO: Alert의 onAction을 통해 삭제 요청, 클릭된 location의 id를 전달해야함
   };
 
   return (
@@ -32,6 +32,7 @@ export function LocationButton({
       styledType="container"
       color={locationData.isSelected ? 'accentPrimary' : 'neutralTextWeak'}
       onClick={() => {
+        onSelect(locationData.id);
         console.log('내 동네 선택하기');
       }}
     >

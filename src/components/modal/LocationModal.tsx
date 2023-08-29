@@ -12,8 +12,8 @@ type LocationModalProps = {
 
 export function LocationModal({ isOpen, onClose }: LocationModalProps) {
   const { accessToken } = useAuthStore();
-  const { setLocations, deleteLocation } = useLocationStore();
-  const [isAddLocationModalOpen, setIsAddLocationModalOpen] = useState(false);
+  const { setLocations, selectLocation, deleteLocation } = useLocationStore();
+  const [isAddLocation, setIsAddLocation] = useState(false);
 
   const getUserLocation = async () => {
     try {
@@ -23,7 +23,27 @@ export function LocationModal({ isOpen, onClose }: LocationModalProps) {
         },
       });
       const data = await res.json();
-      setLocations(data.locations);
+      if (res.status === 200) {
+        setLocations(data.locations);
+      }
+    } catch (err) {
+      alert(err);
+    }
+  };
+
+  const selectUserLocation = async (locationId: number) => {
+    try {
+      const res = await fetch(`/api/users/locations/${locationId}`, {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      const data = await res.json();
+      console.log(data);
+      if (res.status === 200) {
+        selectLocation(locationId);
+      }
     } catch (err) {
       alert(err);
     }
@@ -52,19 +72,20 @@ export function LocationModal({ isOpen, onClose }: LocationModalProps) {
   }, []);
 
   const onOpenAddModal = () => {
-    setIsAddLocationModalOpen(true);
+    setIsAddLocation(true);
   };
 
   const onCloseAddModal = () => {
-    setIsAddLocationModalOpen(false);
+    setIsAddLocation(false);
   };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      {!isAddLocationModalOpen ? (
+      {!isAddLocation ? (
         <SetLocation
           onClose={onClose}
           onOpenAddModal={onOpenAddModal}
+          onSelect={selectUserLocation}
           onDelete={deleteUserLocation}
         />
       ) : (

@@ -9,12 +9,14 @@ import { Icon } from '../icon/Icon';
 type SetLocationProps = {
   onClose: () => void;
   onOpenAddModal: () => void;
+  onSelect: (locationId: number) => void;
   onDelete: (locationId: number) => void;
 };
 
 export function SetLocation({
   onClose,
   onOpenAddModal,
+  onSelect,
   onDelete,
 }: SetLocationProps) {
   const { locations, selectedLocationId } = useLocationStore();
@@ -55,7 +57,7 @@ export function SetLocation({
               key={index}
               locationData={location}
               onOpenAlert={onOpenAlert}
-              onDelete={onDelete}
+              onSelect={onSelect}
             />
           ))}
           {!isMaxLocations && (
