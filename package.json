@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^4.33.0",
+    "@tanstack/react-query-devtools": "^4.33.0",
     "@types/styled-components": "^5.1.26",
     "axios": "^1.5.0",
     "msw": "^1.2.3",
