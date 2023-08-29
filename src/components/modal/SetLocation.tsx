@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { styled } from 'styled-components';
-import { useAuthStore } from '../../stores/useAuthStore';
+import { fetchLocationData } from '../../api/fetcher';
 import { useLocationStore } from '../../stores/useLocationStore';
 import { Alert } from '../Alert';
 import { Button } from '../Button';
@@ -15,35 +15,14 @@ type SetLocationProps = {
   onDelete: (locationId: number) => void;
 };
 
-type LocationData = {
-  locations: {
-    id: number;
-    name: string;
-    isSelected: boolean;
-  }[];
-};
-
 export function SetLocation({
   onClose,
   onOpenAddModal,
   onSelect,
   onDelete,
 }: SetLocationProps) {
-  const { accessToken } = useAuthStore();
   const { locations, selectedLocationId } = useLocationStore();
   const [isAlertOpen, setIsAlertOpen] = useState(false);
-
-  const isMaxLocations = locations.length >= 2;
-
-  const fetchLocationData = async (): Promise<LocationData> => {
-    const res = await fetch('/api/users/locations', {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-    const data = await res.json();
-    return data;
-  };
 
   const { data, isLoading, isError } = useQuery(
     ['locations'],
@@ -74,6 +53,8 @@ export function SetLocation({
 
   if (isLoading) return <div>로딩 중...</div>;
   if (isError) return <div>에러 발생!</div>;
+
+  const isMaxLocations = data?.locations?.length >= 2;
 
   return (
     <>
