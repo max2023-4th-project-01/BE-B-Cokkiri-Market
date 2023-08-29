@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { styled } from 'styled-components';
+import { getItem } from '../api/fetcher';
 import { Badge } from '../components/Badge';
 import { Button } from '../components/Button';
 import { Modal } from '../components/Modal';
@@ -9,17 +10,11 @@ import { TestModalContent } from '../components/TestModalContent';
 import { Icon } from '../components/icon/Icon';
 import { countStore, useNameStore } from '../store';
 
-const fetchItem = async () => {
-  const res = await fetch('/api/item');
-
-  return res.json();
-};
-
 export function Test() {
   const { count, increment } = countStore();
   const { firstName, updateFirstName } = useNameStore();
   const [isOpen, setIsOpen] = useState(false);
-  const { data: itemData, isLoading, isError } = useQuery(['item'], fetchItem);
+  const { data: itemData, isLoading, isError } = useQuery(['item'], getItem);
 
   if (isLoading) {
     return <div>Loading...</div>;
