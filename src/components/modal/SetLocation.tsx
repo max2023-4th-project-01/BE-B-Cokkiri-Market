@@ -28,6 +28,10 @@ export function SetLocation({
 
   const deleteLocation = (locationId: number | null) => {
     if (!locationId) return;
+    if (locations.length === 1) {
+      alert('최소 1개의 동네는 설정되어야 합니다.');
+      return;
+    }
     onDelete(locationId);
     console.log('동네 삭제 완료!');
   };
