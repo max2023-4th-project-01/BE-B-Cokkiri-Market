@@ -21,6 +21,4 @@ public abstract class TimeStamped {
 	private ZonedDateTime createdAt;
 	@LastModifiedDate
 	private ZonedDateTime updatedAt;
-
-	public void setUpdatedAt(ZonedDateTime updatedAt){ this.updatedAt = updatedAt;}
 }
