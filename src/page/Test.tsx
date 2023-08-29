@@ -1,8 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { styled } from 'styled-components';
+import { getItem } from '../api/fetcher';
 import { Badge } from '../components/Badge';
 import { Button } from '../components/Button';
+import { ProductItem } from '../components/ProductItem';
 import { Icon } from '../components/icon/Icon';
 import { LocationModal } from '../components/modal/LocationModal';
 import { countStore, useNameStore } from '../store';
@@ -11,24 +13,19 @@ export function Test() {
   const { count, increment } = countStore();
   const { firstName, updateFirstName } = useNameStore();
   const [isOpen, setIsOpen] = useState(false);
+  const { data: itemData, isLoading, isError } = useQuery(['item'], getItem);
 
-  const { data, error, isLoading } = useQuery<string, Error>(
-    ['test'],
-    fetchTest
-  );
-
-  if (isLoading) console.log('loading');
-
-  if (error) console.log(error.message);
-
-  async function fetchTest() {
-    const res = await fetch('/api/test');
-
-    return res.json();
+  if (isLoading) {
+    return <div>Loading...</div>;
   }
+
+  if (isError) {
+    return <div>Error occurred</div>;
+  }
+
   return (
     <Div>
-      <ResDiv>react query res : {data}</ResDiv>
+      <ProductItem {...itemData} />
       <TestZustand>
         <div>count :{count}</div>
         <Button styledType="ghost" color="accentPrimary" onClick={increment}>
@@ -168,12 +165,6 @@ const Wrapper = styled.div`
   justify-content: center;
   align-items: center;
   gap: 10px;
-`;
-
-const ResDiv = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
 `;
 
 const TestZustand = styled.div`
