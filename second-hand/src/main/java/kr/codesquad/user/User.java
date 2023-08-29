@@ -19,21 +19,21 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@Column(nullable = false, length = 200)
+	@Column(length = 200)
 	private String profileImage;
-	@Column(nullable = false, length = 45)
+	@Column(nullable = false, length = 45, unique = true)
 	private String loginId;
-	@Column(length = 45)
+	@Column(length = 100)
+	private String password;
+	@Column(nullable = false, length = 45, unique = true)
 	private String nickName;
-	@Column(nullable = false)
-	private Role role;
 
 	@Builder
-	public User(Long id, String profileImage, String loginId, String nickName, Role role) {
+	public User(Long id, String profileImage, String loginId, String password, String nickName) {
 		this.id = id;
 		this.profileImage = profileImage;
 		this.loginId = loginId;
+		this.password = password;
 		this.nickName = nickName;
-		this.role = role;
 	}
 }

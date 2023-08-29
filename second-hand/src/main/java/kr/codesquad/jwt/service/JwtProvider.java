@@ -1,4 +1,4 @@
-package kr.codesquad.jwt;
+package kr.codesquad.jwt.service;
 
 import java.security.Key;
 import java.util.Date;
@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import kr.codesquad.jwt.Jwt;
+import kr.codesquad.jwt.JwtProperties;
 
 @Service
 public class JwtProvider {
@@ -31,6 +33,7 @@ public class JwtProvider {
 
 	/**
 	 * 파라미터로 입력받은 token에서 Claims을 추출한다. 추출 하면서 토큰 검증도 같이 한다. 토큰 검증에 실패한 경우 JwtException 을 발생시킨다.
+	 *
 	 * @param token Claims를 추출할 토큰 문자열
 	 * @return 토큰의 Claims
 	 */
