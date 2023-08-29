@@ -4,9 +4,9 @@ import { styled } from 'styled-components';
 import { Badge } from '../components/Badge';
 import { Button } from '../components/Button';
 import { Modal } from '../components/Modal';
+import { ProductItem } from '../components/ProductItem';
 import { TestModalContent } from '../components/TestModalContent';
 import { Icon } from '../components/icon/Icon';
-import { ProductItem } from '../components/productItem';
 import { countStore, useNameStore } from '../store';
 
 const fetchItem = async () => {
