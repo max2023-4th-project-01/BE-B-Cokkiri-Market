@@ -1,4 +1,4 @@
-INSERT INTO category (name, iconName) VALUES
+INSERT INTO category (name, icon_name) VALUES
                                           ('디지털기기', 'icon_digital'),
                                           ('생활가전', 'icon_appliance'),
                                           ('가구/인테리어', 'icon_furniture'),

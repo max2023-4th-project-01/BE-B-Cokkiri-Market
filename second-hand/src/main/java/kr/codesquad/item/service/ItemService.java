@@ -53,8 +53,11 @@ public class ItemService {
     }
 
     public ItemResponse.DetailOutDto getItem(Long id) {
-        // 로그인한 유저 정보
-        User userPS = new User();
+        // 로그인한 유저 정보 -> 상세 보기는 무조건 있기 때문에 null 처리 안 함
+        User userPS = User.builder()
+            .id(1L)
+            .login_id("임시로그인아이디1")
+            .build();
 
         Item item = itemRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 아이템이 없습니다."));
 
@@ -66,7 +69,7 @@ public class ItemService {
         return ItemResponse.DetailOutDto.builder()
             .isSeller(userPS.getId().equals(item.getUserId()))
             .images(images)
-            .seller(userPS.getNickName())
+            .seller(userPS.getLogin_id())
             .status(ItemResponse.DetailOutDto.StatusDropdown.of(item.getStatus()))
             .title(item.getTitle())
             .categoryName(categoryName)

@@ -17,7 +17,7 @@ public class ItemResponse {
 	@Builder
 	public static class DetailOutDto {
 
-		private boolean isSeller;
+		private Boolean isSeller;
 		private List<imageInfo> images;
 		private String seller;
 		private List<StatusDropdown> status;
@@ -26,7 +26,7 @@ public class ItemResponse {
 		private ZonedDateTime createdAt;
 		private String content;
 		private CountData countData;
-		private boolean isFavorite;
+		private Boolean isFavorite;
 		private Integer price;
 
 		@Getter
@@ -39,7 +39,7 @@ public class ItemResponse {
 		@AllArgsConstructor
 		public static class StatusDropdown {
 			private String name;
-			private boolean isSelected;
+			private Boolean isSelected;
 
 			public static List<StatusDropdown> of(ItemStatus itemStatus) {
 				List<StatusDropdown> statusDropdown = new ArrayList<>();
