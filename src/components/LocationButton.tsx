@@ -27,18 +27,10 @@ export function LocationButton({
       queryClient.setQueryData<LocationData>(['locations'], prevData => {
         if (!prevData) return;
         return {
-          locations: prevData?.locations.map(location => {
-            if (location.id === locationData.id) {
-              return {
-                ...location,
-                isSelected: true,
-              };
-            }
-            return {
-              ...location,
-              isSelected: false,
-            };
-          }),
+          locations: prevData.locations.map(location => ({
+            ...location,
+            isSelected: location.id === locationData.id,
+          })),
         };
       });
       // queryClient.invalidateQueries(['todos']);
