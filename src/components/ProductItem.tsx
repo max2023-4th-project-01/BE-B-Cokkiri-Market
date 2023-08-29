@@ -1,12 +1,10 @@
 import { styled } from 'styled-components';
-import { useAuthStore } from '../stores/authStore';
 import { addCommasToNumber } from '../utils/addCommasToNumber';
 import { getElapsedSince } from '../utils/getElapsedSince';
 import { Badge } from './Badge';
 import { Icon } from './icon/Icon';
 
 type ItemProps = {
-  seller: string;
   id: number;
   title: string;
   locationName: string;
@@ -18,10 +16,10 @@ type ItemProps = {
     favorite: number;
   };
   thumbnailUrl: string;
+  isSeller: boolean;
 };
 
 export function ProductItem({
-  seller,
   id,
   title,
   locationName,
@@ -30,9 +28,9 @@ export function ProductItem({
   price,
   countData,
   thumbnailUrl,
+  isSeller,
 }: ItemProps) {
   const { chat, favorite } = countData;
-  const { userName } = useAuthStore();
 
   const setPrice = (price: number | null) => {
     switch (price) {
@@ -55,9 +53,7 @@ export function ProductItem({
       <Information>
         <Title>
           <span>{title}</span>
-          {userName === seller && (
-            <Icon name="dots" color="neutralTextStrong" />
-          )}
+          {isSeller && <Icon name="dots" color="neutralTextStrong" />}
         </Title>
         <LocationAndTimestamp>
           {locationName}・{getElapsedSince(createdAt)}
