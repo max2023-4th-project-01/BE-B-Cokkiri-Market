@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useAuthStore } from '../../stores/useAuthStore';
 import { useLocationStore } from '../../stores/useLocationStore';
 import { AddLocation } from './AddLocation';
@@ -12,24 +12,24 @@ type LocationModalProps = {
 
 export function LocationModal({ isOpen, onClose }: LocationModalProps) {
   const { accessToken } = useAuthStore();
-  const { setLocations, selectLocation, deleteLocation } = useLocationStore();
+  const { selectLocation, deleteLocation } = useLocationStore();
   const [isAddLocation, setIsAddLocation] = useState(false);
 
-  const getUserLocation = async () => {
-    try {
-      const res = await fetch('/api/users/locations', {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      const data = await res.json();
-      if (res.status === 200) {
-        setLocations(data.locations);
-      }
-    } catch (err) {
-      alert(err);
-    }
-  };
+  // const getUserLocation = async () => {
+  //   try {
+  //     const res = await fetch('/api/users/locations', {
+  //       headers: {
+  //         Authorization: `Bearer ${accessToken}`,
+  //       },
+  //     });
+  //     const data = await res.json();
+  //     if (res.status === 200) {
+  //       setLocations(data.locations);
+  //     }
+  //   } catch (err) {
+  //     alert(err);
+  //   }
+  // };
 
   const selectUserLocation = async (locationId: number) => {
     try {
@@ -67,9 +67,9 @@ export function LocationModal({ isOpen, onClose }: LocationModalProps) {
     }
   };
 
-  useEffect(() => {
-    getUserLocation();
-  }, []);
+  // useEffect(() => {
+  //   getUserLocation();
+  // }, []);
 
   const onOpenAddModal = () => {
     setIsAddLocation(true);

@@ -1,5 +1,7 @@
+import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { styled } from 'styled-components';
+import { useAuthStore } from '../../stores/useAuthStore';
 import { useLocationStore } from '../../stores/useLocationStore';
 import { Alert } from '../Alert';
 import { Button } from '../Button';
@@ -13,16 +15,48 @@ type SetLocationProps = {
   onDelete: (locationId: number) => void;
 };
 
+type LocationData = {
+  locations: {
+    id: number;
+    name: string;
+    isSelected: boolean;
+  }[];
+};
+
 export function SetLocation({
   onClose,
   onOpenAddModal,
   onSelect,
   onDelete,
 }: SetLocationProps) {
+  const { accessToken } = useAuthStore();
   const { locations, selectedLocationId } = useLocationStore();
   const [isAlertOpen, setIsAlertOpen] = useState(false);
 
   const isMaxLocations = locations.length >= 2;
+
+  const fetchLocationData = async (): Promise<LocationData> => {
+    const res = await fetch('/api/users/locations', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    const data = await res.json();
+    return data;
+  };
+
+  const { data, isLoading, isError } = useQuery(
+    ['locations'],
+    fetchLocationData,
+    {
+      onSuccess: data => {
+        console.log(data);
+      },
+      onError: error => {
+        alert(error);
+      },
+    }
+  );
 
   const onOpenAlert = () => {
     setIsAlertOpen(true);
@@ -38,6 +72,9 @@ export function SetLocation({
     console.log('동네 삭제 완료!');
   };
 
+  if (isLoading) return <div>로딩 중...</div>;
+  if (isError) return <div>에러 발생!</div>;
+
   return (
     <>
       <Header>
@@ -52,7 +89,7 @@ export function SetLocation({
           <br /> 최대 2개까지 설정 가능해요.
         </Notice>
         <Buttons>
-          {locations.map((location, index) => (
+          {data?.locations?.map((location, index) => (
             <LocationButton
               key={index}
               locationData={location}
