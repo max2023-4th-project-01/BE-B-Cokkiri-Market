@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { styled } from 'styled-components';
-import { fetchLocationData } from '../../api/fetcher';
+import { getLocationData } from '../../api/fetcher';
 import { useLocationStore } from '../../stores/useLocationStore';
 import { Alert } from '../Alert';
 import { Button } from '../Button';
@@ -26,7 +26,7 @@ export function SetLocation({
 
   const { data, isLoading, isError } = useQuery(
     ['locations'],
-    fetchLocationData,
+    getLocationData,
     {
       onSuccess: data => {
         console.log(data);

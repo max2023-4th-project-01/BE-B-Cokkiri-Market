@@ -1,20 +1,13 @@
 import { LocationData } from '../types';
+import axios, { axiosAuth } from './axios';
 import { API_ENDPOINT } from './endPoint';
 
-const accessToken = localStorage.getItem('accessToken');
-
 export const getItem = async () => {
-  const res = await fetch(API_ENDPOINT.ITEM);
-
-  return res.json();
+  const res = await axios.get(API_ENDPOINT.ITEM);
+  return res.data;
 };
 
-export const fetchLocationData = async (): Promise<LocationData> => {
-  const res = await fetch('/api/users/locations', {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
-  const data = await res.json();
-  return data;
+export const getLocationData = async (): Promise<LocationData> => {
+  const res = await axiosAuth.get(API_ENDPOINT.USER_LOCATION);
+  return res.data;
 };
