@@ -48,7 +48,7 @@ public class ItemService {
     }
 
     @Transactional
-    public void updateItem(Long id, List<MultipartFile> newImageFiles, List<Long> delteImageIds, ItemRequest.UpdateInDto item) {
+    public void updateItem(Long id, List<MultipartFile> newImageFiles, List<Long> deleteImageIds, ItemRequest.UpdateInDto item) {
         // 수정 권한 등 확인
 
         // 이미지 삭제
