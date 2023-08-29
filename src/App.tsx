@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { Layout } from './components/Layout';
-import { Main } from './page/Main';
+import { Home } from './page/Home';
 import { Test } from './page/Test';
 import { MyAccount } from './page/auth/MyAccount';
 import { useAuthStore } from './stores/useAuthStore';
@@ -26,7 +26,7 @@ export function App() {
     <AppContainer>
       <Routes>
         <Route element={<Layout />}>
-          <Route path="/" element={<Main />} />
+          <Route path="/" element={<Home />} />
           <Route path="/test" element={<Test />} />
           <Route path="/myAccount" element={<MyAccount />} />
         </Route>

@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { useRef } from 'react';
 import { styled } from 'styled-components';
-import { getItem } from '../../api/fetcher';
-import { ProductItem } from '../../components/ProductItem';
-import { Icon } from '../../components/icon/Icon';
+import { getItem } from '../api/fetcher';
+import { ProductItem } from '../components/ProductItem';
+import { Icon } from '../components/icon/Icon';
 
 type ItemData = {
   userLocation: string;
