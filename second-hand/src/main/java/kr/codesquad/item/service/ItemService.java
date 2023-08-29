@@ -61,7 +61,7 @@ public class ItemService {
 
         Item item = itemRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 아이템이 없습니다."));
 
-        List<ItemResponse.DetailOutDto.imageInfo> images = imageRepository.findByItemId(item.getId());
+        List<ItemResponse.imageInfo> images = imageRepository.findByItemId(item.getId());
         String categoryName = categoryRepository.findNameById(item.getCategoryId());
         int chatCount = chatRepository.countByItemId(item.getId());
         int favoriteCount = favoriteRepository.countByItemId(item.getId());
@@ -98,5 +98,21 @@ public class ItemService {
     @Transactional
     public void deleteItem(Long id) {
         itemRepository.deleteById(id);
+    }
+
+    public ItemResponse.UpdateOutDto getItemForUpdate(Long id) {
+        Item item = itemRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 아이템이 없습니다."));
+
+        // 추후 작은 사이즈로 변경
+        List<ItemResponse.imageInfo> images = imageRepository.findByItemId(item.getId());
+
+        return ItemResponse.UpdateOutDto.builder()
+            .images(images)
+            .title(item.getTitle())
+            .categoryId(item.getCategoryId())
+            .content(item.getContent())
+            .price(item.getPrice())
+            .locationName(item.getLocationName())
+            .build();
     }
 }

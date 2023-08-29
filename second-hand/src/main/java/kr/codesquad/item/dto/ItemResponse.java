@@ -4,6 +4,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import kr.codesquad.category.Category;
 import kr.codesquad.util.ItemStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,12 +31,6 @@ public class ItemResponse {
 		private Integer price;
 
 		@Getter
-		public static class imageInfo {
-			private Long id;
-			private String url;
-		}
-
-		@Getter
 		@AllArgsConstructor
 		public static class StatusDropdown {
 			private String name;
@@ -60,5 +55,24 @@ public class ItemResponse {
 			@Builder.Default
 			private int view = 0;
 		}
+	}
+
+	@Getter
+	@Builder
+	public static class UpdateOutDto {
+		private List<imageInfo> images;
+		private String title;
+		// 추천했던 카테고리 기억 용인데, 안 쓸 듯
+		// private List<Category> categories;
+		private Long categoryId;
+		private String content;
+		private Integer price;
+		private String locationName;
+	}
+
+	@Getter
+	public static class imageInfo {
+		private Long id;
+		private String url;
 	}
 }
