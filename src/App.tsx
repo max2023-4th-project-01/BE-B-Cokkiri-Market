@@ -2,9 +2,9 @@ import { useEffect } from 'react';
 import { Link, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { Icon } from './components/icon/Icon';
-import { Main } from './page/Main';
 import { Test } from './page/Test';
 import { MyAccount } from './page/auth/MyAccount';
+import { Home } from './page/home/Home';
 import { useAuthStore } from './stores/authStore';
 import { getAccessToken, getUserInfo } from './utils/localStorage';
 import elephantImg from '/elephant-bg.png';
@@ -27,7 +27,7 @@ export function App() {
       <Layout>
         <Router>
           <Routes>
-            <Route path="/" element={<Main />} />
+            <Route path="/" element={<Home />} />
             <Route path="/test" element={<Test />} />
             <Route path="/myAccount" element={<MyAccount />} />
           </Routes>
@@ -83,7 +83,6 @@ const Layout = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 10px;
   margin: 0 auto;
   border: 1px solid ${({ theme }) => theme.color.neutralBorder};
   font: ${({ theme }) => theme.font.displayStrong20};
