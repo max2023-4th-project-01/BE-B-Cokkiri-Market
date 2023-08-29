@@ -14,7 +14,6 @@ type LocationButtonProps = {
     isSelected: boolean;
   };
   onOpenAlert: () => void;
-  onSelect: (locationId: number) => void;
 };
 
 export function LocationButton({
@@ -23,7 +22,7 @@ export function LocationButton({
 }: LocationButtonProps) {
   const { setSelectedLocationId } = useLocationStore();
   const queryClient = useQueryClient();
-  const mutation = useMutation(selectUserLocation, {
+  const selectMutation = useMutation(selectUserLocation, {
     onSuccess: () => {
       queryClient.setQueryData<LocationData>(['locations'], prevData => {
         if (!prevData) return;
@@ -57,7 +56,7 @@ export function LocationButton({
       styledType="container"
       color={locationData.isSelected ? 'accentPrimary' : 'neutralTextWeak'}
       onClick={() => {
-        mutation.mutate(locationData.id);
+        selectMutation.mutate(locationData.id);
       }}
     >
       <Text>{locationData.name}</Text>

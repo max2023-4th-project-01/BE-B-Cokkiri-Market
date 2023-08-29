@@ -1,7 +1,7 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { styled } from 'styled-components';
-import { getUserLocations } from '../../api/fetcher';
+import { getUserLocations, deleteUserLocation } from '../../api/fetcher';
 import { useLocationStore } from '../../stores/useLocationStore';
 import { LocationData } from '../../types';
 import { Alert } from '../Alert';
@@ -12,16 +12,9 @@ import { Icon } from '../icon/Icon';
 type SetLocationProps = {
   onClose: () => void;
   onOpenAddModal: () => void;
-  onSelect: (locationId: number) => void;
-  onDelete: (locationId: number) => void;
 };
 
-export function SetLocation({
-  onClose,
-  onOpenAddModal,
-  onSelect,
-  onDelete,
-}: SetLocationProps) {
+export function SetLocation({ onClose, onOpenAddModal }: SetLocationProps) {
   const { selectedLocationId } = useLocationStore();
   const [isAlertOpen, setIsAlertOpen] = useState(false);
 
@@ -38,6 +31,21 @@ export function SetLocation({
     }
   );
 
+  const queryClient = useQueryClient();
+
+  const deleteMutation = useMutation(deleteUserLocation, {
+    onSuccess: () => {
+      queryClient.setQueryData<LocationData>(['locations'], prevData => {
+        if (!prevData) return;
+        return {
+          locations: prevData?.locations.filter(
+            location => location.id !== selectedLocationId
+          ),
+        };
+      });
+    },
+  });
+
   const onOpenAlert = () => {
     setIsAlertOpen(true);
   };
@@ -48,7 +56,7 @@ export function SetLocation({
       alert('최소 1개의 동네는 설정되어야 합니다.');
       return;
     }
-    onDelete(locationId);
+    deleteMutation.mutate(locationId);
     console.log('동네 삭제 완료!');
   };
 
@@ -76,7 +84,6 @@ export function SetLocation({
               key={index}
               locationData={location}
               onOpenAlert={onOpenAlert}
-              onSelect={onSelect}
             />
           ))}
           {!isMaxLocations && (
