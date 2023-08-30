@@ -1,10 +1,8 @@
-import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { styled } from 'styled-components';
-import { deleteUserLocation } from '../../api/fetcher';
+import { useDeleteLocation } from '../../queries/useLocationMutation';
 import { useLocationQuery } from '../../queries/useLocationQuery';
 import { useLocationStore } from '../../stores/useLocationStore';
-import { LocationData } from '../../types';
 import { Alert } from '../Alert';
 import { Button } from '../Button';
 import { LocationButton } from '../LocationButton';
@@ -21,19 +19,7 @@ export function SetLocation({ onClose, onOpenAddModal }: SetLocationProps) {
   const { selectedLocationId } = useLocationStore();
 
   const { data, isLoading, isError } = useLocationQuery();
-  const queryClient = useQueryClient();
-  const deleteMutation = useMutation(deleteUserLocation, {
-    onSuccess: () => {
-      queryClient.setQueryData<LocationData>(['locations'], prevData => {
-        if (!prevData) return;
-        return {
-          locations: prevData?.locations.filter(
-            location => location.id !== selectedLocationId
-          ),
-        };
-      });
-    },
-  });
+  const deleteMutation = useDeleteLocation();
 
   if (isLoading) return <div>로딩 중...</div>;
   if (isError) return <div>에러 발생!</div>;
