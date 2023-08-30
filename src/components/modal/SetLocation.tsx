@@ -1,7 +1,8 @@
-import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { useState } from 'react';
 import { styled } from 'styled-components';
-import { getUserLocations, deleteUserLocation } from '../../api/fetcher';
+import { deleteUserLocation } from '../../api/fetcher';
+import { useLocationQuery } from '../../queries/useLocationQuery';
 import { useLocationStore } from '../../stores/useLocationStore';
 import { LocationData } from '../../types';
 import { Alert } from '../Alert';
@@ -15,24 +16,12 @@ type SetLocationProps = {
 };
 
 export function SetLocation({ onClose, onOpenAddModal }: SetLocationProps) {
-  const { selectedLocationId } = useLocationStore();
   const [isAlertOpen, setIsAlertOpen] = useState(false);
 
-  const { data, isLoading, isError } = useQuery<LocationData>(
-    ['locations'],
-    getUserLocations,
-    {
-      onSuccess: data => {
-        console.log(data);
-      },
-      onError: error => {
-        alert(error);
-      },
-    }
-  );
+  const { selectedLocationId } = useLocationStore();
 
+  const { data, isLoading, isError } = useLocationQuery();
   const queryClient = useQueryClient();
-
   const deleteMutation = useMutation(deleteUserLocation, {
     onSuccess: () => {
       queryClient.setQueryData<LocationData>(['locations'], prevData => {
@@ -46,24 +35,18 @@ export function SetLocation({ onClose, onOpenAddModal }: SetLocationProps) {
     },
   });
 
-  const onOpenAlert = () => {
-    setIsAlertOpen(true);
-  };
+  if (isLoading) return <div>로딩 중...</div>;
+  if (isError) return <div>에러 발생!</div>;
 
-  const deleteLocation = (locationId: number | null) => {
-    if (!locationId) return;
-    if (data?.locations.length === 1) {
+  const isMaxLocations = data.locations?.length >= 2;
+
+  const deleteLocation = (locationId: number) => {
+    if (data.locations.length === 1) {
       alert('최소 1개의 동네는 설정되어야 합니다.');
       return;
     }
     deleteMutation.mutate(locationId);
-    console.log('동네 삭제 완료!');
   };
-
-  if (isLoading) return <div>로딩 중...</div>;
-  if (isError) return <div>에러 발생!</div>;
-
-  const isMaxLocations = data?.locations?.length >= 2;
 
   return (
     <>
@@ -79,11 +62,13 @@ export function SetLocation({ onClose, onOpenAddModal }: SetLocationProps) {
           <br /> 최대 2개까지 설정 가능해요.
         </Notice>
         <Buttons>
-          {data?.locations?.map((location, index) => (
+          {data.locations.map((location, index) => (
             <LocationButton
               key={index}
               locationData={location}
-              onOpenAlert={onOpenAlert}
+              onOpenAlert={() => {
+                setIsAlertOpen(true);
+              }}
             />
           ))}
           {!isMaxLocations && (
@@ -105,6 +90,10 @@ export function SetLocation({ onClose, onOpenAddModal }: SetLocationProps) {
           isOpen={isAlertOpen}
           onClose={() => setIsAlertOpen(false)}
           onAction={() => {
+            if (!selectedLocationId) {
+              alert('삭제할 동네가 정상적으로 선택되지 않았습니다.');
+              return;
+            }
             deleteLocation(selectedLocationId);
           }}
         >
