@@ -8,11 +8,11 @@ services:
     volumes:
       - cokkiri-market-app:/app
 
-  web:
-    container_name: cokkiri-market-web
-    image: sudago22/cokkiri-market-web:latest
-    ports:
-      - 5173:5173
+  # web:
+  #   container_name: cokkiri-market-web
+  #   image: sudago22/cokkiri-market-web:latest
+  #   ports:
+  #     - 5173:5173
 
   nginx: # 서비스 이름
     container_name: nginx_server
@@ -24,15 +24,5 @@ services:
     depends_on:
       - app # app 서비스가 실행되어야 nginx 서비스가 실행
       # - web
-
-  certbot:
-    container_name: certbot
-    image: certbot/certbot:latest
-    command: certonly --webroot --webroot-path=/var/www/certbot --email myemail@google.com --agree-tos --no-eff-email -d fishprincess.site
-    volumes:
-      - ./data/certbot/conf:/etc/letsencrypt:rw
-      - ./data/certbot/logs:/var/log/letsencrypt:rw
-      - ./data/certbot/data:/var/www/certbot:rw
-
 volumes:
   cokkiri-market-app: #로컬 또는 서버에 생성되는 폴더 (컨테이너 폴더와 연결)
