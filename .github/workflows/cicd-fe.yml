@@ -53,7 +53,7 @@
 #         uses: appleboy/scp-action@master
 #         with:
 #           host: ${{ secrets.HOST }}
-#           username: ${{ secrets.PRIVATE_KEY }}
+#           username: ${{ secrets.EC2_USERNAME }}
 #           key: ${{ secrets.PRIVATE_KEY }}
 #           port: 22
 #           source: "docker-compose.yml"
@@ -64,7 +64,7 @@
 #         uses: appleboy/ssh-action@master
 #         with:
 #           host: ${{ secrets.HOST }} # EC2 인스턴스 퍼블릭 DNS
-#           username: ${{ secrets.PRIVATE_KEY }}
+#           username: ${{ secrets.EC2_USERNAME }}
 #           key: ${{ secrets.PRIVATE_KEY }} # pem 키
 #           port: 22
 #           script: |
