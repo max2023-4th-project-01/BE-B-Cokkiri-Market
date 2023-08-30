@@ -1,9 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { styled } from 'styled-components';
-import { getItem } from '../api/fetcher';
-import { ProductItem } from '../components/ProductItem';
-import { Icon } from '../components/icon/Icon';
+import { getItem } from '../../api/fetcher';
+import { ProductItem } from '../../components/ProductItem';
+import { Icon } from '../../components/icon/Icon';
+import { CategoryFilterPanel } from './CategoryFilterPanel';
 
 type ItemData = {
   userLocation: string;
@@ -27,6 +28,7 @@ type ItemProps = {
 
 export function Home() {
   const bodyRef = useRef<HTMLDivElement>(null);
+  const [isOpenPanel, setIsOpenPanel] = useState(false);
   const {
     data: itemData,
     isLoading,
@@ -40,31 +42,39 @@ export function Home() {
   if (isError) {
     return <div>Error occurred</div>;
   }
+
+  const openPanel = () => {
+    setIsOpenPanel(true);
+  };
+
+  const closePanel = () => {
+    setIsOpenPanel(false);
+  };
+
   return (
     <Div>
+      {isOpenPanel && <CategoryFilterPanel closePanel={closePanel} />}
       <Header>
         <LeftAccessory>
           {itemData.userLocation}
           <Icon name="chevronDown" color="neutralTextStrong" />
         </LeftAccessory>
         <RightAccessory>
-          <Icon name="layoutGrid" color="neutralTextStrong" />
+          <Icon
+            name="layoutGrid"
+            color="neutralTextStrong"
+            onClick={openPanel}
+          />
         </RightAccessory>
       </Header>
       <Body ref={bodyRef}>
-        <Test>
-          {itemData.items.map((item, index) => {
-            return <ProductItem key={index} {...item} />;
-          })}
-        </Test>
+        {itemData.items.map((item, index) => {
+          return <ProductItem key={index} {...item} />;
+        })}
       </Body>
     </Div>
   );
 }
-
-const Test = styled.div`
-  position: relative;
-`;
 
 const Div = styled.div`
   width: 100%;
