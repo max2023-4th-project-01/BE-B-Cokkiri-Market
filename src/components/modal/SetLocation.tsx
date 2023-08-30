@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { styled } from 'styled-components';
 import {
+  useLocationQuery,
   useDeleteLocation,
   useSelectLocation,
-} from '../../queries/useLocationMutation';
-import { useLocationQuery } from '../../queries/useLocationQuery';
+} from '../../queries/useLocationQuery';
 import { useLocationStore } from '../../stores/useLocationStore';
 import { Alert } from '../Alert';
 import { Button } from '../Button';
