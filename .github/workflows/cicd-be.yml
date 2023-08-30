@@ -1,9 +1,9 @@
 name: BE CI/CD
 on:
   push:
-    branches: [ infra/cicd, be ]
+    branches: [ infra/cicd ]
   pull_request:
-    branches: [ infra/cicd, be ]
+    branches: [ be ]
 
 permissions:
   contents: read
