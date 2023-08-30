@@ -1,9 +1,7 @@
-import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { MouseEvent } from 'react';
 import { styled } from 'styled-components';
-import { selectUserLocation } from '../api/fetcher';
+import { useSelectLocation } from '../queries/useLocationQuery';
 import { useLocationStore } from '../stores/useLocationStore';
-import { LocationData } from '../types';
 import { Button } from './Button';
 import { Icon } from './icon/Icon';
 
@@ -21,21 +19,7 @@ export function LocationButton({
   onOpenAlert,
 }: LocationButtonProps) {
   const { setSelectedLocationId } = useLocationStore();
-  const queryClient = useQueryClient();
-  const selectMutation = useMutation(selectUserLocation, {
-    onSuccess: () => {
-      queryClient.setQueryData<LocationData>(['locations'], prevData => {
-        if (!prevData) return;
-        return {
-          locations: prevData.locations.map(location => ({
-            ...location,
-            isSelected: location.id === locationData.id,
-          })),
-        };
-      });
-      // queryClient.invalidateQueries(['todos']);
-    },
-  });
+  const selectMutation = useSelectLocation();
 
   const onDeleteLocation = (event: MouseEvent) => {
     event.stopPropagation();
@@ -43,13 +27,16 @@ export function LocationButton({
     onOpenAlert();
   };
 
+  const onClickLocation = () => {
+    if (locationData.isSelected) return;
+    selectMutation.mutate(locationData.id);
+  };
+
   return (
     <Location
       styledType="container"
       color={locationData.isSelected ? 'accentPrimary' : 'neutralTextWeak'}
-      onClick={() => {
-        selectMutation.mutate(locationData.id);
-      }}
+      onClick={onClickLocation}
     >
       <Text>{locationData.name}</Text>
       <Icon

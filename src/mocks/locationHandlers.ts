@@ -1,18 +1,6 @@
 import { rest } from 'msw';
 
-export const locationHandlers = [
-  rest.get('/api/users/locations', (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json(locations));
-  }),
-  rest.patch('/api/users/locations/:id', (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json({ message: '동네 선택 성공' }));
-  }),
-  rest.delete('/api/users/locations/:id', (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json({ message: '동네 삭제 성공' }));
-  }),
-];
-
-const locations = {
+let locationsData = {
   locations: [
     {
       id: 1,
@@ -26,3 +14,32 @@ const locations = {
     },
   ],
 };
+
+export const locationHandlers = [
+  rest.get('/api/users/locations', (_, res, ctx) => {
+    return res(ctx.status(200), ctx.json(locationsData));
+  }),
+
+  rest.patch('/api/users/locations/:id', (req, res, ctx) => {
+    const { id } = req.params;
+    locationsData = {
+      locations: locationsData.locations.map(location => {
+        return {
+          ...location,
+          isSelected: location.id === Number(id),
+        };
+      }),
+    };
+    return res(ctx.status(200), ctx.json({ message: '동네 선택 성공' }));
+  }),
+
+  rest.delete('/api/users/locations/:id', (req, res, ctx) => {
+    const { id } = req.params;
+    locationsData = {
+      locations: locationsData.locations.filter(
+        location => location.id !== Number(id)
+      ),
+    };
+    return res(ctx.status(200), ctx.json({ message: '동네 삭제 성공' }));
+  }),
+];
