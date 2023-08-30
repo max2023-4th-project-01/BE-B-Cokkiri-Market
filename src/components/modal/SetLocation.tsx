@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { styled } from 'styled-components';
-import { useDeleteLocation } from '../../queries/useLocationMutation';
+import {
+  useDeleteLocation,
+  useSelectLocation,
+} from '../../queries/useLocationMutation';
 import { useLocationQuery } from '../../queries/useLocationQuery';
 import { useLocationStore } from '../../stores/useLocationStore';
 import { Alert } from '../Alert';
@@ -20,6 +23,7 @@ export function SetLocation({ onClose, onOpenAddModal }: SetLocationProps) {
   const { selectedLocationId } = useLocationStore();
 
   const { data, isLoading, isError } = useLocationQuery();
+  const selectMutation = useSelectLocation();
   const deleteMutation = useDeleteLocation();
 
   if (isLoading) return <Loader />;
@@ -28,11 +32,22 @@ export function SetLocation({ onClose, onOpenAddModal }: SetLocationProps) {
   const isMaxLocations = data.locations?.length >= 2;
 
   const deleteLocation = (locationId: number) => {
-    if (data.locations.length === 1) {
+    const isLastLocation = data.locations.length === 1;
+    if (isLastLocation) {
       alert('최소 1개의 동네는 설정되어야 합니다.');
       return;
     }
+    const shouldSelectAnotherLocation = data.locations.find(
+      location => location.isSelected
+    )?.isSelected;
+
     deleteMutation.mutate(locationId);
+    if (shouldSelectAnotherLocation) {
+      const anotherLocation = data.locations.find(
+        location => location.id !== locationId
+      );
+      anotherLocation && selectMutation.mutate(anotherLocation.id);
+    }
   };
 
   return (
