@@ -79,6 +79,7 @@ jobs:
     name: continuos deploy
     runs-on: ubuntu-latest
     environment: dev
+
     steps:
       - uses: actions/checkout@master
       # nginx.conf 파일을 EC2에 업로드
@@ -87,7 +88,7 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.EC2_USERNAME }}
-          password: ${{ secrets.EC2_PASSWORD }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           source: "./nginx/nginx.conf"
           target: "/home/ubuntu/"
@@ -98,7 +99,7 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.EC2_USERNAME }}
-          password: ${{ secrets.EC2_PASSWORD }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           source: "docker-compose.yml"
           target: "/home/ubuntu/"
@@ -109,7 +110,7 @@ jobs:
         with:
           host: ${{ secrets.HOST }} # EC2 인스턴스 퍼블릭 DNS
           username: ${{ secrets.EC2_USERNAME }}
-          password: ${{ secrets.EC2_PASSWORD }} # pem 키
+          key: ${{ secrets.SSH_PRIVATE_KEY }} # pem 키
           port: 22
           script: |
             sudo chmod 666 /var/run/docker.sock
