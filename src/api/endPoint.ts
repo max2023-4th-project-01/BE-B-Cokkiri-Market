@@ -1,4 +1,5 @@
 export const API_ENDPOINT = {
-  ITEM: '/api/item',
+  ITEMS: '/api/items',
   USER_LOCATION: '/api/users/locations',
+  CATEGORIES: '/api/categories',
 };

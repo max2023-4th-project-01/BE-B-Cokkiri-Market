@@ -1,10 +1,10 @@
-import { Route, Routes } from 'react-router-dom';
 import { useEffect } from 'react';
+import { Route, Routes } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { Layout } from './components/Layout';
-import { Main } from './page/Main';
 import { Test } from './page/Test';
 import { MyAccount } from './page/auth/MyAccount';
+import { Home } from './page/home/Home';
 import { useAuthStore } from './stores/useAuthStore';
 import { getAccessToken, getUserInfo } from './utils/localStorage';
 import elephantImg from '/elephant-bg.png';
@@ -26,7 +26,7 @@ export function App() {
     <AppContainer>
       <Routes>
         <Route element={<Layout />}>
-          <Route path="/" element={<Main />} />
+          <Route path="/" element={<Home />} />
           <Route path="/test" element={<Test />} />
           <Route path="/myAccount" element={<MyAccount />} />
         </Route>

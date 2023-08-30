@@ -13,7 +13,7 @@ export function Test() {
   const { count, increment } = countStore();
   const { firstName, updateFirstName } = useNameStore();
   const [isOpen, setIsOpen] = useState(false);
-  const { data: itemData, isLoading, isError } = useQuery(['item'], getItem);
+  const { data: itemData, isLoading, isError } = useQuery(['items'], getItem);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -22,10 +22,9 @@ export function Test() {
   if (isError) {
     return <div>Error occurred</div>;
   }
-
   return (
     <Div>
-      <ProductItem {...itemData} />
+      <ProductItem {...itemData.items[0]} />
       <TestZustand>
         <div>count :{count}</div>
         <Button styledType="ghost" color="accentPrimary" onClick={increment}>
