@@ -1,6 +1,7 @@
 package kr.codesquad.item.controller;
 
 import kr.codesquad.item.dto.ItemRequest;
+import kr.codesquad.item.dto.ItemResponse;
 import kr.codesquad.item.entity.Item;
 import kr.codesquad.item.service.ItemService;
 import kr.codesquad.user.User;
@@ -20,12 +21,11 @@ public class ItemController {
     private final ItemService itemService;
 
     @PostMapping("/items")
-    public ResponseEntity<Void> createItem(@RequestPart List<MultipartFile> imageFiles,
+    public ResponseEntity<Long> createItem(@RequestPart List<MultipartFile> imageFiles,
                                      @RequestPart ItemRequest.SaveInDto items) {
         // 로그인 구현되면 유저 정보 받음
         User user = null;
-        itemService.saveItem(imageFiles, items, user);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(itemService.saveItem(imageFiles, items, user));
     }
 
     @GetMapping("/items")
@@ -34,7 +34,7 @@ public class ItemController {
     }
 
     @GetMapping("/items/{id}")
-    public ResponseEntity<Item> getItem(@PathVariable Long id) {
+    public ResponseEntity<ItemResponse.DetailOutDto> getItem(@PathVariable Long id) {
         return ResponseEntity.ok(itemService.getItem(id));
     }
 
@@ -45,6 +45,11 @@ public class ItemController {
                            @RequestPart ItemRequest.UpdateInDto item) {
         itemService.updateItem(id, newImageFiles, deleteImageIds, item);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/items/{id}/edit")
+    public ResponseEntity<ItemResponse.UpdateOutDto> getItemForUpdate(@PathVariable Long id) {
+        return ResponseEntity.ok(itemService.getItemForUpdate(id));
     }
 
     @DeleteMapping("/items/{id}")

@@ -57,6 +57,7 @@ public class SecurityConfig {
 			.authorizeRequests()
 			.antMatchers("/h2-console/**").permitAll()
 			.antMatchers(HttpMethod.POST, "/api/users").permitAll()
+			.antMatchers("/**").permitAll()
 			.anyRequest()
 			.authenticated()  //다른 요청은 인증 필요함
 			.and()
