@@ -27,13 +27,16 @@ export function LocationButton({
     onOpenAlert();
   };
 
+  const onClickLocation = () => {
+    if (locationData.isSelected) return;
+    selectMutation.mutate(locationData.id);
+  };
+
   return (
     <Location
       styledType="container"
       color={locationData.isSelected ? 'accentPrimary' : 'neutralTextWeak'}
-      onClick={() => {
-        selectMutation.mutate(locationData.id);
-      }}
+      onClick={onClickLocation}
     >
       <Text>{locationData.name}</Text>
       <Icon
