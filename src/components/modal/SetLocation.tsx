@@ -5,6 +5,7 @@ import { useLocationQuery } from '../../queries/useLocationQuery';
 import { useLocationStore } from '../../stores/useLocationStore';
 import { Alert } from '../Alert';
 import { Button } from '../Button';
+import { Loader } from '../Loader';
 import { LocationButton } from '../LocationButton';
 import { Icon } from '../icon/Icon';
 
@@ -21,7 +22,7 @@ export function SetLocation({ onClose, onOpenAddModal }: SetLocationProps) {
   const { data, isLoading, isError } = useLocationQuery();
   const deleteMutation = useDeleteLocation();
 
-  if (isLoading) return <div>로딩 중...</div>;
+  if (isLoading) return <Loader />;
   if (isError) return <div>에러 발생!</div>;
 
   const isMaxLocations = data.locations?.length >= 2;
