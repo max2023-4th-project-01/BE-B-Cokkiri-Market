@@ -91,7 +91,7 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           port: 22
           source: "./nginx/nginx.conf"
-          target: "/home/ubuntu/"
+          target: "/home/${{ secrets.EC2_USERNAME }}/"
 
       # docker-compose.yml 파일을 EC2에 업로드
       - name: copy docker-compose file via ssh password
@@ -102,7 +102,7 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           port: 22
           source: "docker-compose.yml"
-          target: "/home/ubuntu/"
+          target: "/home/${{ secrets.EC2_USERNAME }}/"
       
       # docker-compose 실행
       - name: Deploy to dev
