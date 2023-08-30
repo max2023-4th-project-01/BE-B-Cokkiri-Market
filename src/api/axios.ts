@@ -11,7 +11,15 @@ export const axiosAuth = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
-const accessToken = localStorage.getItem('accessToken');
-if (accessToken) {
-  axiosAuth.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
-}
+axiosAuth.interceptors.request.use(
+  config => {
+    const accessToken = localStorage.getItem('accessToken');
+    if (accessToken) {
+      config.headers['Authorization'] = `Bearer ${accessToken}`;
+    }
+    return config;
+  },
+  error => {
+    Promise.reject(error);
+  }
+);
