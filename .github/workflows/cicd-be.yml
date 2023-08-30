@@ -72,109 +72,48 @@ jobs:
           docker push ${{ secrets.DOCKER_USERNAME }}/cokkiri-market-app
 
 
-  # build-react-image:
-  #   runs-on: ubuntu-latest
-  #   environment: dev
-  #   defaults:
-  #     run:
-  #       shell: bash
-  #       working-directory: ./fe
-  #   strategy:
-  #     matrix:
-  #       node-version: [ 18.x ]
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - name: Docker build to dev
-  #       if: contains(github.ref, 'dev') ||
-  #         contains(github.ref, 'be/infra/#9-cicd')
-  #       run: |
-  #         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-  #         docker build -f Dockerfile-dev -t ${{ secrets.DOCKER_USERNAME }}/issue_tracker_web_dev .
-  #         docker push ${{ secrets.DOCKER_USERNAME }}/issue_tracker_web_dev
+ cd-pipeline:
+    needs:
+      - build-spring-boot-image
+      # - build-react-image
+    name: continuos deploy
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      - uses: actions/checkout@master
+      # nginx.conf 파일을 EC2에 업로드
+      - name: copy nginx.conf file via ssh password
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ec2-user
+          key: ${{ secrets.PRIVATE_KEY }}
+          port: 22
+          source: "./nginx/nginx.conf"
+          target: "/home/ec2-user/"
 
-  # cd-pipeline:
-  #   needs:
-  #     - build-image
-  #     - build-react-image
-  #   name: continuos deploy
-  #   runs-on: ubuntu-latest
-  #   environment: dev
-  #   steps:
-  #     - uses: actions/checkout@master
-  #     # nginx.conf 파일을 EC2에 업로드
-  #     - name: copy nginx.conf file via ssh password
-  #       uses: appleboy/scp-action@master
-  #       if: contains(github.ref, 'dev') ||
-  #         contains(github.ref, 'be/infra/#9-cicd')
-  #       with:
-  #         host: ${{ secrets.HOST }}
-  #         username: ec2-user
-  #         key: ${{ secrets.PRIVATE_KEY }}
-  #         port: 22
-  #         source: "./nginx/nginx.conf"
-  #         target: "/home/ec2-user/"
-  #     # nginx-release.conf 파일을 EC2에 업로드
-  #     - name: copy nginx-release.conf file via ssh password
-  #       uses: appleboy/scp-action@master
-  #       if: contains(github.ref, 'release')
-  #       with:
-  #         host: ${{ secrets.HOST }}
-  #         username: ec2-user
-  #         key: ${{ secrets.PRIVATE_KEY }}
-  #         port: 22
-  #         source: "./nginx/nginx-release.conf"
-  #         target: "/home/ec2-user/"
-  #     # docker-compose-dev.yml 파일을 EC2에 업로드
-  #     - name: copy docker-compose-dev file via ssh password
-  #       uses: appleboy/scp-action@master
-  #       if: contains(github.ref, 'dev') ||
-  #         contains(github.ref, 'be/infra/#9-cicd')
-  #       with:
-  #         host: ${{ secrets.HOST }}
-  #         username: ec2-user
-  #         key: ${{ secrets.PRIVATE_KEY }}
-  #         port: 22
-  #         source: "docker-compose-dev.yml"
-  #         target: "/home/ec2-user/"
-  #     # docker-compose-release.yml 파일을 EC2에 업로드
-  #     - name: copy docker-compose-release file via ssh password
-  #       uses: appleboy/scp-action@master
-  #       if: contains(github.ref, 'release')
-  #       with:
-  #         host: ${{ secrets.HOST }}
-  #         username: ec2-user
-  #         key: ${{ secrets.PRIVATE_KEY }}
-  #         port: 22
-  #         source: "docker-compose-release.yml"
-  #         target: "/home/ec2-user/"
-  #     # docker-compose-dev 실행
-  #     - name: Deploy to dev
-  #       uses: appleboy/ssh-action@master
-  #       if: contains(github.ref, 'dev') ||
-  #         contains(github.ref, 'be/infra/#9-cicd')
-  #       with:
-  #         host: ${{ secrets.HOST }} # EC2 인스턴스 퍼블릭 DNS
-  #         username: ec2-user
-  #         key: ${{ secrets.PRIVATE_KEY }} # pem 키
-  #         port: 22
-  #         script: |
-  #           sudo chmod 666 /var/run/docker.sock
-  #           docker-compose -f docker-compose-dev.yml down -v
-  #           docker-compose -f docker-compose-dev.yml pull
-  #           docker-compose -f docker-compose-dev.yml up -d
-  #           docker image prune -f
-  #     # docker-compose-dev 실행
-  #     - name: Deploy to release
-  #       uses: appleboy/ssh-action@master
-  #       if: contains(github.ref, 'release')
-  #       with:
-  #         host: ${{ secrets.HOST }} # EC2 인스턴스 퍼블릭 DNS
-  #         username: ec2-user
-  #         key: ${{ secrets.PRIVATE_KEY }} # pem 키
-  #         port: 22
-  #         script: |
-  #           sudo chmod 666 /var/run/docker.sock
-  #           docker-compose -f docker-compose-release.yml down -v
-  #           docker-compose -f docker-compose-release.yml pull
-  #           docker-compose -f docker-compose-release.yml up -d
-  #           docker image prune -f
+      # docker-compose.yml 파일을 EC2에 업로드
+      - name: copy docker-compose file via ssh password
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ec2-user
+          key: ${{ secrets.PRIVATE_KEY }}
+          port: 22
+          source: "docker-compose.yml"
+          target: "/home/ec2-user/"
+     
+      # docker-compose 실행
+      - name: Deploy to dev
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }} # EC2 인스턴스 퍼블릭 DNS
+          username: ec2-user
+          key: ${{ secrets.PRIVATE_KEY }} # pem 키
+          port: 22
+          script: |
+            sudo chmod 666 /var/run/docker.sock
+            docker-compose -f docker-compose.yml down -v
+            docker-compose -f docker-compose.yml pull
+            docker-compose -f docker-compose.yml up -d
+            docker image prune -f
