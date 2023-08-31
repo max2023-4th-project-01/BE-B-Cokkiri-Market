@@ -1,7 +1,7 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { styled } from 'styled-components';
-import { getLocationData } from '../../api/fetcher';
+import { addUserLocation, getLocationData } from '../../api/fetcher';
 import { LocationData } from '../../types';
 import { Error } from '../Error';
 import { Loader } from '../Loader';
@@ -10,17 +10,26 @@ type AddLocationProps = {
   rightPosition: number;
   showSearchPanel: () => void;
   closeSearchPanel: () => void;
+  hideSearchPanel: () => void;
 };
 
 export function AddLocation({
   rightPosition,
   showSearchPanel,
   closeSearchPanel,
+  hideSearchPanel,
 }: AddLocationProps) {
   const { data, isLoading, isError } = useQuery<LocationData>(
     ['/locations'],
     getLocationData
   );
+  const queryClient = useQueryClient();
+  const addMutation = useMutation(addUserLocation, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['/users/locations']);
+      hideSearchPanel();
+    },
+  });
 
   useEffect(() => {
     showSearchPanel();
@@ -41,7 +50,14 @@ export function AddLocation({
       <SearchBar placeholder="동명(읍, 면)으로 검색 (ex. 서초동)" />
       <Content>
         {data.map(location => (
-          <LocationItem key={location.id}>{location.item}</LocationItem>
+          <LocationItem
+            key={location.id}
+            onClick={() => {
+              addMutation.mutate(location.item);
+            }}
+          >
+            {location.item}
+          </LocationItem>
         ))}
       </Content>
     </Container>
@@ -95,4 +111,5 @@ const LocationItem = styled.li`
   gap: 4px;
   align-self: stretch;
   border-bottom: 1px solid ${({ theme }) => theme.color.neutralBorder};
+  cursor: pointer;
 `;

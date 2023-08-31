@@ -52,6 +52,7 @@ export function LocationModal({ isOpen, onClose }: LocationModalProps) {
             rightPosition={rightPosition}
             showSearchPanel={showSearchPanel}
             closeSearchPanel={closeSearchPanel}
+            hideSearchPanel={hideSearchPanel}
           />
         )}
       </Body>

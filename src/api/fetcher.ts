@@ -17,6 +17,13 @@ export const getLocationData = async () => {
   return res.data;
 };
 
+export const addUserLocation = async (locationName: string) => {
+  const res = await axiosAuth.post(API_ENDPOINT.USER_LOCATION, {
+    name: locationName,
+  });
+  return res.data;
+};
+
 export const selectUserLocation = async (locationId: number) => {
   const res = await axiosAuth.patch(
     `${API_ENDPOINT.USER_LOCATION}/${locationId}`

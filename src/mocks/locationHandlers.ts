@@ -10,6 +10,16 @@ export const locationHandlers = [
     return res(ctx.status(200), ctx.json(locationData));
   }),
 
+  rest.post(API_ENDPOINT.USER_LOCATION, (req, res, ctx) => {
+    userLocations = {
+      locations: [
+        ...userLocations.locations,
+        { id: 21, name: req.body?.name.split(' ').at(-1), isSelected: false },
+      ],
+    };
+    return res(ctx.status(200), ctx.json({ message: '동네 추가 성공' }));
+  }),
+
   rest.patch(`${API_ENDPOINT.USER_LOCATION}/:id`, (req, res, ctx) => {
     const { id } = req.params;
     userLocations = {
