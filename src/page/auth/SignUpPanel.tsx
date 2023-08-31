@@ -2,6 +2,7 @@ import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { styled } from 'styled-components';
 import { Button } from '../../components/Button';
 import { Icon } from '../../components/icon/Icon';
+import { useScreenConfigStore } from '../../stores/useDisplayConfigStore';
 import { AuthInput } from './AuthInput';
 import { ProfileButton } from './ProfileButton';
 
@@ -10,14 +11,15 @@ type SignUpPanelProps = {
 };
 
 export function SignUpPanel({ closePanel }: SignUpPanelProps) {
-  // TODO : 지금은 화면의 크기가 임의로 392로 지정되어 있다. 유저 화면 크기에 맞는 값으로 수정 하기
-  const [rightPosition, setRightPosition] = useState(-392);
+  const { screenWidth } = useScreenConfigStore();
+  const [rightPosition, setRightPosition] = useState(-screenWidth);
+  const inputRef = useRef<HTMLInputElement>(null);
+
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
   const [location, setLocation] = useState('역삼1동');
   const [file, setFile] = useState<File>();
   const [backgroundImage, setBackgroundImage] = useState<string>();
-  const inputRef = useRef<HTMLInputElement>(null);
 
   const isValidId = /^[A-Za-z0-9]{6,20}$/.test(id);
   const isValidPassword = /^[A-Za-z0-9]{6,20}$/.test(password);
@@ -42,7 +44,7 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
   };
 
   const onClose = () => {
-    setRightPosition(-392);
+    setRightPosition(-screenWidth);
   };
 
   const onChangeFile = (event: ChangeEvent<HTMLInputElement>) => {

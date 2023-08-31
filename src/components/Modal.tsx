@@ -1,11 +1,11 @@
 import {
-  useRef,
-  useEffect,
-  DialogHTMLAttributes,
   BaseSyntheticEvent,
+  DialogHTMLAttributes,
+  useEffect,
+  useRef,
 } from 'react';
 import { createPortal } from 'react-dom';
-import { styled, keyframes } from 'styled-components';
+import { keyframes, styled } from 'styled-components';
 
 type ModalProps = DialogHTMLAttributes<HTMLDialogElement> & {
   isOpen: boolean;
@@ -80,4 +80,8 @@ const Container = styled.div`
   align-items: center;
   flex-shrink: 0;
   overflow-x: hidden;
+
+  @media (max-height: 750px) {
+    height: 90vh;
+  }
 `;
