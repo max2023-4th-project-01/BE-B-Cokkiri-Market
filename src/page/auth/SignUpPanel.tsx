@@ -1,9 +1,9 @@
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { styled } from 'styled-components';
 import { Button } from '../../components/Button';
-import { ProfileButton } from '../../components/ProfileButton';
 import { Icon } from '../../components/icon/Icon';
 import { AuthInput } from './AuthInput';
+import { ProfileButton } from './ProfileButton';
 
 type SignUpPanelProps = {
   closePanel: () => void;

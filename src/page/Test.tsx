@@ -6,12 +6,9 @@ import { Badge } from '../components/Badge';
 import { Button } from '../components/Button';
 import { ProductItem } from '../components/ProductItem';
 import { Icon } from '../components/icon/Icon';
-import { LocationModal } from '../components/modal/LocationModal';
-import { countStore, useNameStore } from '../store';
+import { LocationModal } from '../components/locations/LocationModal';
 
 export function Test() {
-  const { count, increment } = countStore();
-  const { firstName, updateFirstName } = useNameStore();
   const [isOpen, setIsOpen] = useState(false);
   const { data: itemData, isLoading, isError } = useQuery(['items'], getItem);
 
@@ -25,21 +22,6 @@ export function Test() {
   return (
     <Div>
       <ProductItem {...itemData.items[0]} />
-      <TestZustand>
-        <div>count :{count}</div>
-        <Button styledType="ghost" color="accentPrimary" onClick={increment}>
-          <Icon name="plus" color="neutralTextStrong" />
-        </Button>
-        <label>First Name</label>
-        <input
-          type="text"
-          value={firstName}
-          onChange={event => {
-            updateFirstName(event.currentTarget.value);
-          }}
-        />
-        <p>Hi, my name is {firstName}</p>
-      </TestZustand>
       <Button styledType="container" color="accentPrimary">
         <Login>로그인</Login>
       </Button>
@@ -164,11 +146,4 @@ const Wrapper = styled.div`
   justify-content: center;
   align-items: center;
   gap: 10px;
-`;
-
-const TestZustand = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
 `;

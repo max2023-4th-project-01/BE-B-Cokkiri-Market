@@ -1,9 +1,9 @@
 import { ChangeEvent, useRef, useState } from 'react';
 import { styled } from 'styled-components';
 import { Button } from '../../components/Button';
-import { ProfileButton } from '../../components/ProfileButton';
 import { useAuthStore } from '../../stores/useAuthStore';
 import { clearAuthInfo, getUserInfo } from '../../utils/localStorage';
+import { ProfileButton } from './ProfileButton';
 
 export function MyProfilePage() {
   const userInfo = getUserInfo();

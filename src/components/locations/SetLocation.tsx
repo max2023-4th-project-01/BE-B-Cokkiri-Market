@@ -1,16 +1,16 @@
 import { useState } from 'react';
 import { styled } from 'styled-components';
 import {
-  useLocationQuery,
   useDeleteLocation,
+  useLocationQuery,
   useSelectLocation,
 } from '../../queries/useLocationQuery';
 import { useLocationStore } from '../../stores/useLocationStore';
 import { Alert } from '../Alert';
 import { Button } from '../Button';
 import { Loader } from '../Loader';
-import { LocationButton } from '../LocationButton';
 import { Icon } from '../icon/Icon';
+import { LocationButton } from './LocationButton';
 
 type SetLocationProps = {
   onClose: () => void;

@@ -1,9 +1,9 @@
 import { MouseEvent } from 'react';
 import { styled } from 'styled-components';
-import { useSelectLocation } from '../queries/useLocationQuery';
-import { useLocationStore } from '../stores/useLocationStore';
-import { Button } from './Button';
-import { Icon } from './icon/Icon';
+import { useSelectLocation } from '../../queries/useLocationQuery';
+import { useLocationStore } from '../../stores/useLocationStore';
+import { Button } from '../Button';
+import { Icon } from '../icon/Icon';
 
 type LocationButtonProps = {
   locationData: {

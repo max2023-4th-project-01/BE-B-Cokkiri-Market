@@ -1,6 +1,6 @@
 import { useState } from 'react';
+import { Modal } from '../Modal';
 import { AddLocation } from './AddLocation';
-import { Modal } from './Modal';
 import { SetLocation } from './SetLocation';
 
 type LocationModalProps = {
