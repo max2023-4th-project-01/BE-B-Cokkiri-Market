@@ -51,7 +51,7 @@ const Container = styled.div<{ $rightPosition: number }>`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0 24px;
+  padding: 0 24px 16px;
   position: absolute;
   top: 0;
   right: ${({ $rightPosition }) => `${$rightPosition}px`};
