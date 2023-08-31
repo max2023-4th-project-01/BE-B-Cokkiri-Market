@@ -14,11 +14,10 @@ import { Icon } from '../icon/Icon';
 import { LocationButton } from './LocationButton';
 
 type SetLocationProps = {
-  onClose: () => void;
   onOpenAddModal: () => void;
 };
 
-export function SetLocation({ onClose, onOpenAddModal }: SetLocationProps) {
+export function SetLocation({ onOpenAddModal }: SetLocationProps) {
   const [isAlertOpen, setIsAlertOpen] = useState(false);
 
   const { selectedLocationId } = useLocationStore();
@@ -53,12 +52,6 @@ export function SetLocation({ onClose, onOpenAddModal }: SetLocationProps) {
 
   return (
     <>
-      <Header>
-        <Headline>동네 설정</Headline>
-        <Button styledType="ghost" onClick={onClose}>
-          <Icon name="x" color="neutralTextStrong" />
-        </Button>
-      </Header>
       {isError ? (
         <Error />
       ) : (
@@ -110,19 +103,6 @@ export function SetLocation({ onClose, onOpenAddModal }: SetLocationProps) {
     </>
   );
 }
-
-const Header = styled.header`
-  min-height: 72px;
-  display: flex;
-  padding: 8px 8px 16px 24px;
-  justify-content: space-between;
-  align-items: center;
-  align-self: stretch;
-`;
-
-const Headline = styled.h2`
-  font: ${({ theme }) => theme.font.displayStrong20};
-`;
 
 const Content = styled.div`
   display: flex;

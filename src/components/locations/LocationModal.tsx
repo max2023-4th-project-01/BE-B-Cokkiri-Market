@@ -1,5 +1,8 @@
 import { useState } from 'react';
+import { styled } from 'styled-components';
+import { Button } from '../Button';
 import { Modal } from '../Modal';
+import { Icon } from '../icon/Icon';
 import { AddLocation } from './AddLocation';
 import { SetLocation } from './SetLocation';
 
@@ -21,11 +24,36 @@ export function LocationModal({ isOpen, onClose }: LocationModalProps) {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
+      <Header>
+        {!isAddLocation ? (
+          <Headline>동네 설정</Headline>
+        ) : (
+          <Button styledType="ghost" onClick={onCloseAddModal}>
+            <Icon name="chevronLeft" color="neutralTextStrong" />
+          </Button>
+        )}
+        <Button styledType="ghost" onClick={onClose}>
+          <Icon name="x" color="neutralTextStrong" />
+        </Button>
+      </Header>
       {!isAddLocation ? (
-        <SetLocation onClose={onClose} onOpenAddModal={onOpenAddModal} />
+        <SetLocation onOpenAddModal={onOpenAddModal} />
       ) : (
-        <AddLocation onClose={onClose} onCloseAddModal={onCloseAddModal} />
+        <AddLocation />
       )}
     </Modal>
   );
 }
+
+const Header = styled.header`
+  min-height: 72px;
+  display: flex;
+  padding: 8px 8px 16px 24px;
+  justify-content: space-between;
+  align-items: center;
+  align-self: stretch;
+`;
+
+const Headline = styled.h2`
+  font: ${({ theme }) => theme.font.displayStrong20};
+`;
