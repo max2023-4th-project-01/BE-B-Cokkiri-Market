@@ -1,19 +1,21 @@
 import { Outlet } from 'react-router-dom';
 import { styled } from 'styled-components';
+import { useScreenConfigStore } from '../stores/useScreenConfigStore';
 import { Footer } from './Footer';
 
 export function Layout() {
+  const { screenWidth, screenHeight } = useScreenConfigStore();
   return (
-    <Wrapper>
+    <Wrapper $width={screenWidth} $height={screenHeight}>
       <Outlet />
       <Footer />
     </Wrapper>
   );
 }
 
-const Wrapper = styled.div`
-  width: 393px;
-  height: 852px;
+const Wrapper = styled.div<{ $width: number; $height: number }>`
+  width: ${({ $width }) => `${$width}px`};
+  height: ${({ $height }) => `${$height}px`};
   position: absolute;
   display: flex;
   flex-direction: column;

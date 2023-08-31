@@ -5,6 +5,7 @@ import { getCategories } from '../../api/fetcher';
 import { Button } from '../../components/Button';
 import { Icon } from '../../components/icon/Icon';
 import { IconsType } from '../../components/icon/icons';
+import { useScreenConfigStore } from '../../stores/useScreenConfigStore';
 
 type CategoryFilterPanelProps = {
   closePanel: () => void;
@@ -17,7 +18,8 @@ type CategoryData = {
 };
 
 export function CategoryFilterPanel({ closePanel }: CategoryFilterPanelProps) {
-  const [rightPosition, setRightPosition] = useState(-392);
+  const { screenWidth } = useScreenConfigStore();
+  const [rightPosition, setRightPosition] = useState(-screenWidth);
   const {
     data: categoryData,
     isLoading,
@@ -33,7 +35,7 @@ export function CategoryFilterPanel({ closePanel }: CategoryFilterPanelProps) {
   };
 
   const onClose = () => {
-    setRightPosition(-392);
+    setRightPosition(-screenWidth);
   };
 
   const onClickCategory = (id: number) => {
@@ -48,13 +50,18 @@ export function CategoryFilterPanel({ closePanel }: CategoryFilterPanelProps) {
   return (
     <Div $right={rightPosition} onTransitionEnd={onTransitionEndHandler}>
       <Header>
-        <Button styledType="ghost" onClick={onClose}>
-          <ButtonDiv>
-            <Icon name="chevronLeft" color="neutralTextStrong" />
-            뒤로
-          </ButtonDiv>
-        </Button>
-        <Title>카테고리</Title>
+        <Side>
+          <Button styledType="ghost" onClick={onClose}>
+            <ButtonDiv>
+              <Icon name="chevronLeft" color="neutralTextStrong" />
+              <span>뒤로</span>
+            </ButtonDiv>
+          </Button>
+        </Side>
+        <Center>
+          <Title>카테고리</Title>
+        </Center>
+        <Side></Side>
       </Header>
       {isLoading && <div>Loading...</div>}
       {!isLoading && categoryData && (
@@ -97,12 +104,26 @@ const Header = styled.div`
   width: 100%;
   height: 56px;
   display: flex;
-  justify-content: left;
+  justify-content: space-around;
   align-items: center;
   gap: 54px;
   padding: 0 8px;
   border-bottom: ${({ theme }) => `0.8px solid ${theme.color.neutralBorder}`};
   background: ${({ theme }) => theme.color.neutralBackgroundBlur};
+`;
+
+const Side = styled.div`
+  width: 78px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const Center = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
 `;
 
 const Title = styled.div`
@@ -117,6 +138,7 @@ const Title = styled.div`
 `;
 
 const ButtonDiv = styled.div`
+  width: 78px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -134,6 +156,11 @@ const Body = styled.div`
   grid-template-columns: 80px 80px 80px;
   flex: 1;
   padding: 40px;
+
+  @media (max-width: 375px) {
+    grid-gap: 16px;
+    padding: 20px;
+  }
 `;
 
 const Category = styled.div`
