@@ -15,6 +15,8 @@ if (process.env.NODE_ENV === 'development') {
   });
 }
 
+console.log(process.env.NODE_ENV);
+
 const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
