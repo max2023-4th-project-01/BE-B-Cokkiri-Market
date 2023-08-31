@@ -8,6 +8,7 @@ import {
 import { useLocationStore } from '../../stores/useLocationStore';
 import { Alert } from '../Alert';
 import { Button } from '../Button';
+import { Error } from '../Error';
 import { Loader } from '../Loader';
 import { Icon } from '../icon/Icon';
 import { LocationButton } from './LocationButton';
@@ -58,35 +59,39 @@ export function SetLocation({ onClose, onOpenAddModal }: SetLocationProps) {
           <Icon name="x" color="neutralTextStrong" />
         </Button>
       </Header>
-      <Content>
-        <Notice>
-          지역은 최소 1개,
-          <br /> 최대 2개까지 설정 가능해요.
-        </Notice>
-        <Buttons>
-          {data.locations.map((location, index) => (
-            <LocationButton
-              key={index}
-              locationData={location}
-              onOpenAlert={() => {
-                setIsAlertOpen(true);
-              }}
-            />
-          ))}
-          {!isMaxLocations && (
-            <Button
-              styledType="outline"
-              color="neutralBorder"
-              onClick={onOpenAddModal}
-            >
-              <Plus>
-                <Icon name="plus" color="accentTextWeak" />
-                추가
-              </Plus>
-            </Button>
-          )}
-        </Buttons>
-      </Content>
+      {isError ? (
+        <Error />
+      ) : (
+        <Content>
+          <Notice>
+            지역은 최소 1개,
+            <br /> 최대 2개까지 설정 가능해요.
+          </Notice>
+          <Buttons>
+            {data.locations.map((location, index) => (
+              <LocationButton
+                key={index}
+                locationData={location}
+                onOpenAlert={() => {
+                  setIsAlertOpen(true);
+                }}
+              />
+            ))}
+            {!isMaxLocations && (
+              <Button
+                styledType="outline"
+                color="neutralBorder"
+                onClick={onOpenAddModal}
+              >
+                <Plus>
+                  <Icon name="plus" color="accentTextWeak" />
+                  추가
+                </Plus>
+              </Button>
+            )}
+          </Buttons>
+        </Content>
+      )}
       {isAlertOpen && (
         <Alert
           isOpen={isAlertOpen}
