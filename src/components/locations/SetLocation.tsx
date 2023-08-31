@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { styled } from 'styled-components';
 import {
-  useDeleteLocation,
-  useLocationQuery,
-  useSelectLocation,
+  useGetUserLocation,
+  useSelectUserLocation,
+  useDeleteUserLocation,
 } from '../../queries/useLocationQuery';
 import { useLocationStore } from '../../stores/useLocationStore';
 import { Alert } from '../Alert';
@@ -22,12 +22,12 @@ export function SetLocation({ openSearchPanel }: SetLocationProps) {
 
   const { selectedLocationId } = useLocationStore();
 
-  const { data, isLoading, isError } = useLocationQuery();
-  const selectMutation = useSelectLocation();
-  const deleteMutation = useDeleteLocation();
+  const { data, isLoading, isError } = useGetUserLocation();
+  const selectMutation = useSelectUserLocation();
+  const deleteMutation = useDeleteUserLocation();
 
   if (isLoading) return <Loader />;
-  if (isError) return <div>에러 발생!</div>;
+  if (isError) return <Error />;
 
   const isMaxLocations = data.locations?.length >= 2;
 
