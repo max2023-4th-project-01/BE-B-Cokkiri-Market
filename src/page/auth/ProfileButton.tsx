@@ -1,7 +1,7 @@
 import { ChangeEvent, useState } from 'react';
 import { styled } from 'styled-components';
-import { Alert } from './Alert';
-import { Icon } from './icon/Icon';
+import { Alert } from '../../components/Alert';
+import { Icon } from '../../components/icon/Icon';
 
 type ProfileButtonProps = {
   file: File | undefined;
