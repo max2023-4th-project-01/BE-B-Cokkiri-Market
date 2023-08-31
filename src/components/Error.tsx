@@ -1,11 +1,11 @@
 import { styled } from 'styled-components';
-import pepe from '../assets/image/pepe.png';
+import sadElephant from '../assets/image/sad_elephant.png';
 
 export function Error() {
   return (
     <Wrapper>
-      <DefaultImage src={pepe} />
       <Info>에상치 못한 에러가 발생했습니다.</Info>
+      <DefaultImage src={sadElephant} />
     </Wrapper>
   );
 }
@@ -21,7 +21,7 @@ const Wrapper = styled.div`
 `;
 
 const DefaultImage = styled.img`
-  width: 128px;
+  width: 256px;
 `;
 
 const Info = styled.p`
