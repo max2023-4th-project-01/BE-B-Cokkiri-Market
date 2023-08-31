@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router-dom';
 import { styled } from 'styled-components';
-import { useScreenConfigStore } from '../stores/useDisplayConfigStore';
+import { useScreenConfigStore } from '../stores/useScreenConfigStore';
 import { Footer } from './Footer';
 
 export function Layout() {

@@ -5,7 +5,7 @@ import { getCategories } from '../../api/fetcher';
 import { Button } from '../../components/Button';
 import { Icon } from '../../components/icon/Icon';
 import { IconsType } from '../../components/icon/icons';
-import { useScreenConfigStore } from '../../stores/useDisplayConfigStore';
+import { useScreenConfigStore } from '../../stores/useScreenConfigStore';
 
 type CategoryFilterPanelProps = {
   closePanel: () => void;

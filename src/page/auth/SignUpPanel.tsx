@@ -2,7 +2,7 @@ import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { styled } from 'styled-components';
 import { Button } from '../../components/Button';
 import { Icon } from '../../components/icon/Icon';
-import { useScreenConfigStore } from '../../stores/useDisplayConfigStore';
+import { useScreenConfigStore } from '../../stores/useScreenConfigStore';
 import { AuthInput } from './AuthInput';
 import { ProfileButton } from './ProfileButton';
 
