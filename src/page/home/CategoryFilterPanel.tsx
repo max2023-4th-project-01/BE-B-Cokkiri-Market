@@ -102,7 +102,7 @@ const Header = styled.div`
   gap: 54px;
   padding: 0 8px;
   border-bottom: ${({ theme }) => `0.8px solid ${theme.color.neutralBorder}`};
-  background: ${({ theme }) => theme.color.neutralBackgroundBlur};
+  background: ${({ theme }) => theme.color.neutralBackground};
 `;
 
 const Title = styled.div`
