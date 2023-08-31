@@ -38,7 +38,7 @@ export function SetLocation({ onOpenAddModal }: SetLocationProps) {
       return;
     }
     const shouldSelectAnotherLocation = data.locations.find(
-      location => location.isSelected
+      location => location.id === locationId
     )?.isSelected;
 
     deleteMutation.mutate(locationId);
