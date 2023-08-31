@@ -1,6 +1,7 @@
 package kr.codesquad.user;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -11,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kr.codesquad.location.Location;
 import kr.codesquad.location.LocationRepository;
+import kr.codesquad.location.dto.LocationRequest;
+import kr.codesquad.location.dto.LocationResponse;
 import kr.codesquad.user.dto.UserMapper;
 import kr.codesquad.user.dto.request.UserSignUpRequest;
 import kr.codesquad.util.UuidGenerator;
@@ -35,6 +38,7 @@ public class UserService implements UserDetailsService {
 		locationRepository.save(Location.builder()
 			.userId(user.getId())
 			.locationName(userSignUpRequest.getLocationName())
+			.isSelected(true)
 			.build());
 	}
 
@@ -51,5 +55,56 @@ public class UserService implements UserDetailsService {
 			nickName = loginId + UuidGenerator.generateUuid();
 		}
 		return nickName;
+	}
+
+	@Transactional(readOnly = true)
+	public List<LocationResponse.myLocationOut> getLocations() {
+		Long userId = 1L;
+		return LocationResponse.myLocationOut.toLocationOutList(locationRepository.findAllByUserId(userId));
+	}
+
+	@Transactional
+	public void saveLocation(LocationRequest.LocationAddIn request) {
+		Long userId = 1L;
+
+		if (locationRepository.countByUserId(userId) >= 2) {
+			throw new RuntimeException("동네는 최대 2개까지만 등록할 수 있습니다");
+		}
+
+		locationRepository.save(Location.builder()
+			.userId(userId)
+			.locationName(request.getLocationName())
+			.isSelected(false) // false??
+			.build());
+	}
+
+	@Transactional
+	public void selectLocation(Long locationId) {
+		Long userId = 1L;
+
+		List<Location> locations = locationRepository.findAllByUserIdOrderByIsSelectedDesc(userId);
+
+		if (locations.size() == 0) {
+			throw new RuntimeException("동네는 최소 1개 이상 등록되어야 합니다");
+		}
+
+		for (Location location : locations) {
+			if (location.getId().equals(locationId)) {
+				location.updateIsSelected(true);
+			} else {
+				location.updateIsSelected(false);
+			}
+		}
+	}
+
+	@Transactional
+	public void deleteLocation(Long locationId) {
+		Long userId = 1L;
+
+		if (locationRepository.countByUserId(userId) <= 1) {
+			throw new RuntimeException("동네는 최소 1개 이상 등록되어야 합니다");
+		}
+
+		locationRepository.deleteById(locationId);
 	}
 }
