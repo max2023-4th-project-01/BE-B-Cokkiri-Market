@@ -1,5 +1,5 @@
 export const API_ENDPOINT = {
-  ITEMS: '/api/items',
-  USER_LOCATION: '/api/users/locations',
-  CATEGORIES: '/api/categories',
+  ITEMS: 'http://localhost:8080/api/items',
+  USER_LOCATION: 'http://localhost:8080/api/users/locations',
+  CATEGORIES: 'http://localhost:8080/api/categories',
 };
