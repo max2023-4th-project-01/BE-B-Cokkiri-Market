@@ -1,5 +1,10 @@
+import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { styled } from 'styled-components';
+import { getLocationData } from '../../api/fetcher';
+import { LocationData } from '../../types';
+import { Error } from '../Error';
+import { Loader } from '../Loader';
 
 type AddLocationProps = {
   rightPosition: number;
@@ -12,6 +17,11 @@ export function AddLocation({
   showSearchPanel,
   closeSearchPanel,
 }: AddLocationProps) {
+  const { data, isLoading, isError } = useQuery<LocationData>(
+    ['/locations'],
+    getLocationData
+  );
+
   useEffect(() => {
     showSearchPanel();
   }, []);
@@ -20,6 +30,9 @@ export function AddLocation({
     rightPosition !== 0 && closeSearchPanel();
   };
 
+  if (isLoading) return <Loader />;
+  if (isError) return <Error />;
+
   return (
     <Container
       $rightPosition={rightPosition}
@@ -27,19 +40,9 @@ export function AddLocation({
     >
       <SearchBar placeholder="동명(읍, 면)으로 검색 (ex. 서초동)" />
       <Content>
-        <LocationItem>서울 강남구 개포1동</LocationItem>
-        <LocationItem>서울 강남구 개포1동</LocationItem>
-        <LocationItem>서울 강남구 개포1동</LocationItem>
-        <LocationItem>서울 강남구 개포1동</LocationItem>
-        <LocationItem>서울 강남구 개포1동</LocationItem>
-        <LocationItem>서울 강남구 개포1동</LocationItem>
-        <LocationItem>서울 강남구 개포1동</LocationItem>
-        <LocationItem>서울 강남구 개포1동</LocationItem>
-        <LocationItem>서울 강남구 개포1동</LocationItem>
-        <LocationItem>서울 강남구 개포1동</LocationItem>
-        <LocationItem>서울 강남구 개포1동</LocationItem>
-        <LocationItem>서울 강남구 개포1동</LocationItem>
-        <LocationItem>서울 강남구 개포1동</LocationItem>
+        {data.map(location => (
+          <LocationItem key={location.id}>{location.item}</LocationItem>
+        ))}
       </Content>
     </Container>
   );
