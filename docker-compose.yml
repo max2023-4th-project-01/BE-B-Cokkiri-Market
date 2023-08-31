@@ -9,6 +9,8 @@ services:
   #     - cokkiri-market-app:/app
 
   web:
+    environment: 
+      - VITE_API_URL=http://3.39.67.85:8080
     container_name: cokkiri-market-web
     image: sudago22/cokkiri-market-web:latest
     ports:
