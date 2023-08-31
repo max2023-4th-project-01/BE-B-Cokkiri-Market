@@ -19,12 +19,16 @@ export function LocationModal({ isOpen, onClose }: LocationModalProps) {
     setIsAddLocation(true);
   };
 
-  const moveSearchPanel = () => {
-    setRightPosition(-320);
-  };
-
   const closeSearchPanel = () => {
     setIsAddLocation(false);
+  };
+
+  const showSearchPanel = () => {
+    setRightPosition(0);
+  };
+
+  const hideSearchPanel = () => {
+    setRightPosition(-320);
   };
 
   return (
@@ -33,7 +37,7 @@ export function LocationModal({ isOpen, onClose }: LocationModalProps) {
         {rightPosition !== 0 ? (
           <Headline>동네 설정</Headline>
         ) : (
-          <Button styledType="ghost" onClick={moveSearchPanel}>
+          <Button styledType="ghost" onClick={hideSearchPanel}>
             <Icon name="chevronLeft" color="neutralTextStrong" />
           </Button>
         )}
@@ -42,11 +46,11 @@ export function LocationModal({ isOpen, onClose }: LocationModalProps) {
         </Button>
       </Header>
       <Body>
-        <SetLocation onOpenAddModal={openSearchPanel} />
+        <SetLocation openSearchPanel={openSearchPanel} />
         {isAddLocation && (
           <AddLocation
             rightPosition={rightPosition}
-            setRightPosition={setRightPosition}
+            showSearchPanel={showSearchPanel}
             closeSearchPanel={closeSearchPanel}
           />
         )}

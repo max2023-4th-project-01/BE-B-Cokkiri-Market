@@ -55,7 +55,7 @@ const Dialog = styled.dialog`
   border-radius: 16px;
   border-width: 0;
   padding: 0;
-  overflow-x: hidden;
+  overflow: hidden;
 
   &[open] {
     animation: ${show} 250ms cubic-bezier(0.4, 0, 0.2, 1) forwards;

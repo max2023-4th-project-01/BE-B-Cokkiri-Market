@@ -14,10 +14,10 @@ import { Icon } from '../icon/Icon';
 import { LocationButton } from './LocationButton';
 
 type SetLocationProps = {
-  onOpenAddModal: () => void;
+  openSearchPanel: () => void;
 };
 
-export function SetLocation({ onOpenAddModal }: SetLocationProps) {
+export function SetLocation({ openSearchPanel }: SetLocationProps) {
   const [isAlertOpen, setIsAlertOpen] = useState(false);
 
   const { selectedLocationId } = useLocationStore();
@@ -74,7 +74,7 @@ export function SetLocation({ onOpenAddModal }: SetLocationProps) {
               <Button
                 styledType="outline"
                 color="neutralBorder"
-                onClick={onOpenAddModal}
+                onClick={openSearchPanel}
               >
                 <Plus>
                   <Icon name="plus" color="accentTextWeak" />

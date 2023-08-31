@@ -3,17 +3,17 @@ import { styled } from 'styled-components';
 
 type AddLocationProps = {
   rightPosition: number;
-  setRightPosition: (rightPosition: number) => void;
+  showSearchPanel: () => void;
   closeSearchPanel: () => void;
 };
 
 export function AddLocation({
   rightPosition,
-  setRightPosition,
+  showSearchPanel,
   closeSearchPanel,
 }: AddLocationProps) {
   useEffect(() => {
-    setRightPosition(0);
+    showSearchPanel();
   }, []);
 
   const onTransitionEndHandler = () => {
@@ -25,8 +25,22 @@ export function AddLocation({
       $rightPosition={rightPosition}
       onTransitionEnd={onTransitionEndHandler}
     >
-      <SearchBar />
-      <Content>지역들</Content>
+      <SearchBar placeholder="동명(읍, 면)으로 검색 (ex. 서초동)" />
+      <Content>
+        <LocationItem>서울 강남구 개포1동</LocationItem>
+        <LocationItem>서울 강남구 개포1동</LocationItem>
+        <LocationItem>서울 강남구 개포1동</LocationItem>
+        <LocationItem>서울 강남구 개포1동</LocationItem>
+        <LocationItem>서울 강남구 개포1동</LocationItem>
+        <LocationItem>서울 강남구 개포1동</LocationItem>
+        <LocationItem>서울 강남구 개포1동</LocationItem>
+        <LocationItem>서울 강남구 개포1동</LocationItem>
+        <LocationItem>서울 강남구 개포1동</LocationItem>
+        <LocationItem>서울 강남구 개포1동</LocationItem>
+        <LocationItem>서울 강남구 개포1동</LocationItem>
+        <LocationItem>서울 강남구 개포1동</LocationItem>
+        <LocationItem>서울 강남구 개포1동</LocationItem>
+      </Content>
     </Container>
   );
 }
@@ -42,20 +56,40 @@ const Container = styled.div<{ $rightPosition: number }>`
   top: 0;
   right: ${({ $rightPosition }) => `${$rightPosition}px`};
   transition: right 0.6s;
+  font: ${({ theme }) => theme.font.displayDefault16};
   background-color: ${({ theme }) => theme.color.neutralBackground};
 `;
 
 const SearchBar = styled.input`
   width: 288px;
   padding: 8px;
+  border: none;
+  border-radius: 8px;
+  font: ${({ theme }) => theme.font.displayDefault16};
+  background-color: ${({ theme }) => theme.color.neutralBackgroundBold};
 `;
 
-const Content = styled.div`
+const Content = styled.ul`
   display: flex;
-  padding: 40px 16px;
   flex-direction: column;
   align-items: flex-start;
-  gap: 32px;
   align-self: stretch;
   flex: 1;
+  overflow-y: scroll;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+`;
+
+const LocationItem = styled.li`
+  display: flex;
+  padding: 16px 0px 15px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  align-self: stretch;
+  border-bottom: 1px solid ${({ theme }) => theme.color.neutralBorder};
 `;
