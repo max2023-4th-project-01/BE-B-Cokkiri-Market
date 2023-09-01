@@ -12,5 +12,7 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
 
 	List<Location> findAllByUserId(long userId);
 
+	List<Location> findAllByUserIdOrderByIsSelectedDesc(Long userId);
+
 	Integer countByUserId(Long userId);
 }

@@ -33,4 +33,10 @@ public class UserController {
 		userService.saveLocation(request);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
+
+	@PatchMapping("locations/{locationId}")
+	public ResponseEntity<Void> updateLocation(@PathVariable Long locationId) {
+		userService.selectLocation(locationId);
+		return ResponseEntity.ok().build();
+	}
 }

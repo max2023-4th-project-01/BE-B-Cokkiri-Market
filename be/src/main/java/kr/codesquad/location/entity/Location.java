@@ -35,5 +35,7 @@ public class Location {
 		this.isSelected = isSelected;
 	}
 
+	public void updateIsSelected(boolean isSelected) {
+		this.isSelected = isSelected;
 	}
 }

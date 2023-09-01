@@ -78,4 +78,23 @@ public class UserService implements UserDetailsService {
 				.isSelected(false) // false??
 				.build());
 	}
+
+	@Transactional
+	public void selectLocation(Long locationId) {
+		Long userId = 1L;
+
+		List<Location> locations = locationRepository.findAllByUserIdOrderByIsSelectedDesc(userId);
+
+		if (locations.size() == 0) {
+			throw new RuntimeException("동네는 최소 1개 이상 등록되어야 합니다");
+		}
+
+		for (Location location : locations) {
+			if (location.getId().equals(locationId)) {
+				location.updateIsSelected(true);
+			} else {
+				location.updateIsSelected(false);
+			}
+		}
+	}
 }
