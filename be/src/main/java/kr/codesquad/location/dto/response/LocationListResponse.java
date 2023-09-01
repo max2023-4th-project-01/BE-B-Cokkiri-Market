@@ -23,4 +23,8 @@ public class LocationListResponse {
                 .map(location -> new LocationListResponse(location.getId(), location.getLocationName(), location.getIsSelected()))
                 .collect(java.util.stream.Collectors.toList());
     }
+
+    public static LocationListResponse of(Location location) {
+        return new LocationListResponse(location.getId(), location.getLocationName(), location.getIsSelected());
+    }
 }

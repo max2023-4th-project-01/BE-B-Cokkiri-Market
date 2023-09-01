@@ -29,9 +29,8 @@ public class UserController {
 	}
 
 	@PostMapping("locations")
-	public ResponseEntity<Void> createLocation(@RequestBody LocationCreateRequest request) {
-		userService.saveLocation(request);
-		return ResponseEntity.status(HttpStatus.CREATED).build();
+	public ResponseEntity<LocationListResponse> createLocation(@RequestBody LocationCreateRequest request) {
+		return ResponseEntity.status(HttpStatus.CREATED).body(userService.saveLocation(request));
 	}
 
 	@PatchMapping("locations/{locationId}")
