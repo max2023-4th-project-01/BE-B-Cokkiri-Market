@@ -40,6 +40,7 @@ public class UserService implements UserDetailsService {
 		locationRepository.save(Location.builder()
 			.userId(user.getId())
 			.locationName(userSignUpRequest.getLocationName())
+			.isSelected(true)
 			.build());
 	}
 

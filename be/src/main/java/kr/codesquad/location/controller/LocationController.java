@@ -2,6 +2,8 @@ package kr.codesquad.location.controller;
 
 import java.util.List;
 
+import kr.codesquad.location.dto.response.LocationListResponse;
+import kr.codesquad.location.service.LocationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
