@@ -5,6 +5,7 @@ import { getItem } from '../../api/fetcher';
 import { Header } from '../../components/Header';
 import { ProductItem } from '../../components/ProductItem';
 import { Icon } from '../../components/icon/Icon';
+import { LocationModal } from '../../components/locations/LocationModal';
 import { CategoryFilterPanel } from './CategoryFilterPanel';
 
 type ItemData = {
@@ -30,6 +31,8 @@ type ItemProps = {
 export function Home() {
   const bodyRef = useRef<HTMLDivElement>(null);
   const [isOpenPanel, setIsOpenPanel] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const {
     data: itemData,
     isLoading,
@@ -77,6 +80,12 @@ export function Home() {
           return <ProductItem key={index} {...item} />;
         })}
       </Body>
+      {isModalOpen && (
+        <LocationModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
     </Div>
   );
 }
@@ -103,6 +112,7 @@ const LeftAccessory = styled.div`
   flex: 1;
   gap: 8px;
   padding: 8px;
+  cursor: pointer;
 `;
 
 const RightAccessory = styled.div`
