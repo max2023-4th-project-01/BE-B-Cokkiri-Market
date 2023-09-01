@@ -2,18 +2,15 @@ package kr.codesquad.location;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
+import kr.codesquad.location.dto.response.LocationListResponse;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
-
-import kr.codesquad.location.dto.LocationResponse;
 
 @Service
 public class LocationService {
 
-	public static List<LocationResponse.LocationListOut> getLocations(String query) {
+	public static List<LocationListResponse> getLocations(String query) {
 		// 시간 측정
 		long startTime = System.currentTimeMillis();
 		System.out.println("시간 측정 : " + startTime);
@@ -41,7 +38,7 @@ public class LocationService {
 		long convertTime = System.currentTimeMillis();
 		System.out.println("String 변환 완료 : " + (convertTime - searchTime));
 
-		List<LocationResponse.LocationListOut> locations = new ArrayList<>();
+		List<LocationListResponse> locations = new ArrayList<>();
 
 		int start = 0;
 		int end = 0;
@@ -53,7 +50,7 @@ public class LocationService {
 			}
 			end = resultString.indexOf(",", start);
 			String temp = resultString.substring(start + 8, end);
-			locations.add(new LocationResponse.LocationListOut(null, temp));
+			locations.add(new LocationListResponse(null, temp, null));
 		}
 
 		long endTime = System.currentTimeMillis();

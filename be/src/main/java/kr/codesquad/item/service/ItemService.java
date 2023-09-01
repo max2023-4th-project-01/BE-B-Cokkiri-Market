@@ -9,7 +9,7 @@ import kr.codesquad.item.dto.ItemResponse;
 import kr.codesquad.item.repository.ItemRepository;
 import kr.codesquad.item.entity.Item;
 import kr.codesquad.user.User;
-import kr.codesquad.util.ItemStatus;
+import kr.codesquad.core.util.ItemStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

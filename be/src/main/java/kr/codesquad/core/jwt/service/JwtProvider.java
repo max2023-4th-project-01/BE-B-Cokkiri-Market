@@ -1,4 +1,4 @@
-package kr.codesquad.jwt.service;
+package kr.codesquad.core.jwt.service;
 
 import java.security.Key;
 import java.util.Date;
@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import kr.codesquad.jwt.Jwt;
-import kr.codesquad.jwt.JwtProperties;
+import kr.codesquad.core.jwt.Jwt;
+import kr.codesquad.core.jwt.JwtProperties;
 
 @Service
 public class JwtProvider {

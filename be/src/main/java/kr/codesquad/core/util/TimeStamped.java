@@ -1,4 +1,4 @@
-package kr.codesquad.util;
+package kr.codesquad.core.util;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;

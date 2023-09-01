@@ -1,4 +1,4 @@
-package kr.codesquad.jwt;
+package kr.codesquad.core.jwt;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

@@ -6,7 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import kr.codesquad.util.TimeStamped;
+import kr.codesquad.core.util.TimeStamped;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

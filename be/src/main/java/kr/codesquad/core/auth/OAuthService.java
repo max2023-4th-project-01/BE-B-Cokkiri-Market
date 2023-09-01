@@ -1,4 +1,4 @@
-package kr.codesquad.auth;
+package kr.codesquad.core.auth;
 
 import java.util.Collections;
 import java.util.Map;
@@ -16,7 +16,7 @@ import kr.codesquad.location.Location;
 import kr.codesquad.location.LocationRepository;
 import kr.codesquad.user.User;
 import kr.codesquad.user.UserRepository;
-import kr.codesquad.util.UuidGenerator;
+import kr.codesquad.core.util.UuidGenerator;
 import lombok.RequiredArgsConstructor;
 
 @Service

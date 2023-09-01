@@ -1,4 +1,4 @@
-package kr.codesquad.filter;
+package kr.codesquad.core.filter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ import org.springframework.web.cors.CorsUtils;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.MalformedJwtException;
-import kr.codesquad.jwt.service.JwtProvider;
+import kr.codesquad.core.jwt.service.JwtProvider;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor

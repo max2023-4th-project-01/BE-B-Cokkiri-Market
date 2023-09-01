@@ -2,6 +2,8 @@ package kr.codesquad.user;
 
 import java.util.List;
 
+import kr.codesquad.location.dto.request.LocationCreateRequest;
+import kr.codesquad.location.dto.response.LocationListResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,9 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import kr.codesquad.location.Location;
-import kr.codesquad.location.dto.LocationRequest;
-import kr.codesquad.location.dto.LocationResponse;
 import kr.codesquad.user.dto.request.UserSignUpRequest;
 import lombok.RequiredArgsConstructor;
 
@@ -31,12 +30,12 @@ public class UserController {
 	}
 
 	@GetMapping("locations")
-	public ResponseEntity<List<LocationResponse.myLocationOut>> getLocations() {
+	public ResponseEntity<List<LocationListResponse>> getLocations() {
 		return ResponseEntity.ok(userService.getLocations());
 	}
 
 	@PostMapping("locations")
-	public ResponseEntity<Void> createLocation(@RequestBody LocationRequest.LocationAddIn request) {
+	public ResponseEntity<Void> createLocation(@RequestBody LocationCreateRequest request) {
 		userService.saveLocation(request);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}

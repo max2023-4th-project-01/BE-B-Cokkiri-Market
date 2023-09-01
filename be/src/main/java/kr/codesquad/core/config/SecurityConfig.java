@@ -1,4 +1,4 @@
-package kr.codesquad.config;
+package kr.codesquad.core.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,11 +13,11 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 
-import kr.codesquad.auth.OAuthService;
-import kr.codesquad.filter.AuthenticationFilter;
-import kr.codesquad.filter.AuthorizationFilter;
-import kr.codesquad.jwt.service.JwtAuthenticationSuccessHandler;
-import kr.codesquad.jwt.service.JwtProvider;
+import kr.codesquad.core.auth.OAuthService;
+import kr.codesquad.core.filter.AuthenticationFilter;
+import kr.codesquad.core.filter.AuthorizationFilter;
+import kr.codesquad.core.jwt.service.JwtAuthenticationSuccessHandler;
+import kr.codesquad.core.jwt.service.JwtProvider;
 import kr.codesquad.user.UserService;
 import lombok.RequiredArgsConstructor;
 

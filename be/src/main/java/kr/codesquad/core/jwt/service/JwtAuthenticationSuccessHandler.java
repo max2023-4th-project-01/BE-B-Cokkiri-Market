@@ -1,4 +1,4 @@
-package kr.codesquad.jwt.service;
+package kr.codesquad.core.jwt.service;
 
 import java.io.IOException;
 import java.util.Map;
@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import kr.codesquad.core.jwt.UserRefreshTokenRepository;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -13,9 +14,8 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import kr.codesquad.jwt.Jwt;
-import kr.codesquad.jwt.UserRefreshToken;
-import kr.codesquad.jwt.UserRefreshTokenRepository;
+import kr.codesquad.core.jwt.Jwt;
+import kr.codesquad.core.jwt.UserRefreshToken;
 import lombok.RequiredArgsConstructor;
 
 @Component

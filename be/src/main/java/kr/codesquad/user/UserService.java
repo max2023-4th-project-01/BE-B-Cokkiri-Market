@@ -3,6 +3,8 @@ package kr.codesquad.user;
 import java.util.ArrayList;
 import java.util.List;
 
+import kr.codesquad.location.dto.request.LocationCreateRequest;
+import kr.codesquad.location.dto.response.LocationListResponse;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -12,11 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import kr.codesquad.location.Location;
 import kr.codesquad.location.LocationRepository;
-import kr.codesquad.location.dto.LocationRequest;
-import kr.codesquad.location.dto.LocationResponse;
 import kr.codesquad.user.dto.UserMapper;
 import kr.codesquad.user.dto.request.UserSignUpRequest;
-import kr.codesquad.util.UuidGenerator;
+import kr.codesquad.core.util.UuidGenerator;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -58,13 +58,13 @@ public class UserService implements UserDetailsService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<LocationResponse.myLocationOut> getLocations() {
+	public List<LocationListResponse> getLocations() {
 		Long userId = 1L;
-		return LocationResponse.myLocationOut.toLocationOutList(locationRepository.findAllByUserId(userId));
+		return LocationListResponse.toLocationList(locationRepository.findAllByUserId(userId));
 	}
 
 	@Transactional
-	public void saveLocation(LocationRequest.LocationAddIn request) {
+	public void saveLocation(LocationCreateRequest request) {
 		Long userId = 1L;
 
 		if (locationRepository.countByUserId(userId) >= 2) {

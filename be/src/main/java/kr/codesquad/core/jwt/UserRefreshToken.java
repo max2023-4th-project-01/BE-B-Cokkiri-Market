@@ -1,4 +1,4 @@
-package kr.codesquad.jwt;
+package kr.codesquad.core.jwt;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

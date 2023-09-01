@@ -1,4 +1,4 @@
-package kr.codesquad.jwt;
+package kr.codesquad.core.jwt;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

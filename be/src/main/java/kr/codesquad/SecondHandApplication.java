@@ -1,6 +1,6 @@
 package kr.codesquad;
 
-import kr.codesquad.util.TimeStamped;
+import kr.codesquad.core.util.TimeStamped;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;

@@ -1,4 +1,4 @@
-package kr.codesquad.jwt.dto.request;
+package kr.codesquad.core.jwt.dto.request;
 
 import lombok.Builder;
 import lombok.Getter;

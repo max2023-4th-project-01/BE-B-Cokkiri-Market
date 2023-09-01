@@ -8,8 +8,8 @@ import javax.persistence.Id;
 
 import kr.codesquad.item.dto.ItemRequest;
 import kr.codesquad.item.dto.ItemResponse;
-import kr.codesquad.util.ItemStatus;
-import kr.codesquad.util.TimeStamped;
+import kr.codesquad.core.util.ItemStatus;
+import kr.codesquad.core.util.TimeStamped;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

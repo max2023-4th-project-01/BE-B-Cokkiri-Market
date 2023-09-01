@@ -1,13 +1,13 @@
-package kr.codesquad.jwt.service;
+package kr.codesquad.core.jwt.service;
 
 import java.util.Map;
 
+import kr.codesquad.core.jwt.UserRefreshTokenRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import kr.codesquad.jwt.Jwt;
-import kr.codesquad.jwt.UserRefreshToken;
-import kr.codesquad.jwt.UserRefreshTokenRepository;
+import kr.codesquad.core.jwt.Jwt;
+import kr.codesquad.core.jwt.UserRefreshToken;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
