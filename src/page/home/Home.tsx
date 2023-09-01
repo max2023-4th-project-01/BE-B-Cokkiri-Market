@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useRef, useState } from 'react';
 import { styled } from 'styled-components';
 import { getItem } from '../../api/fetcher';
+import { Header } from '../../components/Header';
 import { ProductItem } from '../../components/ProductItem';
 import { Icon } from '../../components/icon/Icon';
 import { LocationModal } from '../../components/locations/LocationModal';
@@ -57,20 +58,23 @@ export function Home() {
   return (
     <Div>
       {isOpenPanel && <CategoryFilterPanel closePanel={closePanel} />}
-      <Header>
-        {/* TODO: 나중에 드롭다운 컴포넌트로 구현하기 */}
-        <LeftAccessory onClick={() => setIsModalOpen(true)}>
-          {itemData.userLocation}
-          <Icon name="chevronDown" color="neutralTextStrong" />
-        </LeftAccessory>
-        <RightAccessory>
-          <Icon
-            name="layoutGrid"
-            color="neutralTextStrong"
-            onClick={openPanel}
-          />
-        </RightAccessory>
-      </Header>
+      <Header
+        leftButton={
+          <LeftAccessory>
+            {itemData.userLocation}
+            <Icon name="chevronDown" color="neutralTextStrong" />
+          </LeftAccessory>
+        }
+        rightButton={
+          <RightAccessory>
+            <Icon
+              name="layoutGrid"
+              color="neutralTextStrong"
+              onClick={openPanel}
+            />
+          </RightAccessory>
+        }
+      />
       <Body ref={bodyRef}>
         {itemData.items.map((item, index) => {
           return <ProductItem key={index} {...item} />;
@@ -99,21 +103,6 @@ const Div = styled.div`
   }
   -ms-overflow-style: none;
   scrollbar-width: none;
-`;
-
-const Header = styled.div`
-  width: 100%;
-  height: 56px;
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-bottom: ${({ theme }) => `0.8px solid ${theme.color.neutralBorder}`};
-  font: ${({ theme }) => theme.font.displayStrong16};
-  backdrop-filter: ${({ theme }) => theme.backdropFilter.blur};
-
-  color: ${({ theme }) => theme.color.neutralTextStrong};
-  z-index: 1;
 `;
 
 const LeftAccessory = styled.div`
