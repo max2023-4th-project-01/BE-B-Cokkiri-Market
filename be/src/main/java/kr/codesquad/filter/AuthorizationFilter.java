@@ -24,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthorizationFilter implements Filter {
 	private static final String TOKEN_PREFIX = "Bearer ";
-	private static final String USER_ID = "login_id";
+	private static final String LOGIN_ID = "login_id";
 	private static final String[] whiteListUris = {"/h2-console/**", "/api/users", "/api/login",
 		"/api/reissue-access-token", "/api/oauth/**", "/api/redirect/**", "/api/**"};
 
@@ -51,7 +51,7 @@ public class AuthorizationFilter implements Filter {
 		try {
 			String token = getToken(httpServletRequest);
 			Claims claims = jwtProvider.getClaims(token);
-			request.setAttribute(USER_ID, claims.get(USER_ID));
+			request.setAttribute(LOGIN_ID, claims.get(LOGIN_ID));
 			SecurityContextHolder.getContext()
 				.setAuthentication(
 					new UsernamePasswordAuthenticationToken(claims.getSubject(), null, new ArrayList<>()));
