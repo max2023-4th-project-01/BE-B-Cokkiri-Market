@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import { getCategories } from '../../api/fetcher';
 import { Button } from '../../components/Button';
+import { Header } from '../../components/Header';
 import { Icon } from '../../components/icon/Icon';
 import { IconsType } from '../../components/icon/icons';
 import { useScreenConfigStore } from '../../stores/useScreenConfigStore';
@@ -49,20 +50,17 @@ export function CategoryFilterPanel({ closePanel }: CategoryFilterPanelProps) {
 
   return (
     <Div $right={rightPosition} onTransitionEnd={onTransitionEndHandler}>
-      <Header>
-        <Side>
+      <Header
+        leftButton={
           <Button styledType="ghost" onClick={onClose}>
             <ButtonDiv>
               <Icon name="chevronLeft" color="neutralTextStrong" />
               <span>뒤로</span>
             </ButtonDiv>
           </Button>
-        </Side>
-        <Center>
-          <Title>카테고리</Title>
-        </Center>
-        <Side></Side>
-      </Header>
+        }
+        title="카테고리"
+      />
       {isLoading && <div>Loading...</div>}
       {!isLoading && categoryData && (
         <Body>
@@ -100,43 +98,6 @@ const Div = styled.div<{ $right: number }>`
   z-index: 10;
 `;
 
-const Header = styled.div`
-  width: 100%;
-  height: 56px;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  gap: 54px;
-  padding: 0 8px;
-  border-bottom: ${({ theme }) => `0.8px solid ${theme.color.neutralBorder}`};
-  background: ${({ theme }) => theme.color.neutralBackgroundBlur};
-`;
-
-const Side = styled.div`
-  width: 78px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const Center = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex: 1;
-`;
-
-const Title = styled.div`
-  width: 130px;
-  height: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  font: ${({ theme }) => theme.font.displayStrong16};
-  color: ${({ theme }) => theme.color.neutralTextStrong};
-`;
-
 const ButtonDiv = styled.div`
   width: 78px;
   display: flex;
@@ -156,6 +117,7 @@ const Body = styled.div`
   grid-template-columns: 80px 80px 80px;
   flex: 1;
   padding: 40px;
+  margin-top: 56px;
 
   @media (max-width: 375px) {
     grid-gap: 16px;

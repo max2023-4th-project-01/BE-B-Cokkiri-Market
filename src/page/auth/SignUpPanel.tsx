@@ -1,6 +1,7 @@
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { styled } from 'styled-components';
 import { Button } from '../../components/Button';
+import { Header } from '../../components/Header';
 import { Icon } from '../../components/icon/Icon';
 import { useScreenConfigStore } from '../../stores/useScreenConfigStore';
 import { AuthInput } from './AuthInput';
@@ -108,15 +109,23 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
 
   return (
     <Div $right={rightPosition} onTransitionEnd={onTransitionEndHandler}>
-      <Header>
-        <Button styledType="ghost" onClick={onClose}>
-          <ButtonDiv>닫기</ButtonDiv>
-        </Button>
-        <Title>회원가입</Title>
-        <Button styledType="ghost" onClick={submit} disabled={isSignUpDisabled}>
-          <ButtonDiv>완료</ButtonDiv>
-        </Button>
-      </Header>
+      <Header
+        leftButton={
+          <Button styledType="ghost" onClick={onClose}>
+            <ButtonDiv>닫기</ButtonDiv>
+          </Button>
+        }
+        rightButton={
+          <Button
+            styledType="ghost"
+            onClick={submit}
+            disabled={isSignUpDisabled}
+          >
+            <ButtonDiv>완료</ButtonDiv>
+          </Button>
+        }
+        title="회원가입"
+      />
       <Body>
         <ProfileWrapper>
           <ProfileButton
@@ -162,28 +171,6 @@ const Div = styled.div<{ $right: number }>`
   background: ${({ theme }) => theme.color.accentText};
   transition: right 0.6s;
   z-index: 1;
-`;
-
-const Header = styled.div`
-  width: 100%;
-  height: 56px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 8px;
-  border-bottom: ${({ theme }) => `0.8px solid ${theme.color.neutralBorder}`};
-  background: ${({ theme }) => theme.color.neutralBackgroundBlur};
-`;
-
-const Title = styled.div`
-  width: 130px;
-  height: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  font: ${({ theme }) => theme.font.displayStrong16};
-  color: ${({ theme }) => theme.color.neutralTextStrong};
 `;
 
 const Body = styled.div`
