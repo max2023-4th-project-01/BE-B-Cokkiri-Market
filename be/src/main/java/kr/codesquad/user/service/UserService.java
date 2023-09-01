@@ -97,4 +97,15 @@ public class UserService implements UserDetailsService {
 			}
 		}
 	}
+
+	@Transactional
+	public void deleteLocation(Long locationId) {
+		Long userId = 1L;
+
+		if (locationRepository.countByUserId(userId) <= 1) {
+			throw new RuntimeException("동네는 최소 1개 이상 등록되어야 합니다");
+		}
+
+		locationRepository.deleteById(locationId);
+	}
 }

@@ -39,4 +39,10 @@ public class UserController {
 		userService.selectLocation(locationId);
 		return ResponseEntity.ok().build();
 	}
+
+	@DeleteMapping("locations/{locationId}")
+	public ResponseEntity<Void> deleteLocation(@PathVariable Long locationId) {
+		userService.deleteLocation(locationId);
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+	}
 }
