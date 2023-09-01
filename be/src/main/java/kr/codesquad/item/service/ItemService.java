@@ -46,9 +46,9 @@ public class ItemService {
 	private final UserRepository userRepository;
 
 	@Transactional
-	public Long saveItem(List<MultipartFile> imageFiles, ItemSaveRequest itemRequest, User user) {
+	public Long saveItem(List<MultipartFile> imageFiles, ItemSaveRequest itemRequest, String userLoginId) {
 		// 로그인한 유저 아이디
-		Long userId = 1L;
+		Long userId = userRepository.findIdByLoginId(userLoginId);
 
 		// 이미지 처리하고 썸네일 하나 받아옴
 		String thumbnailUrl = "썸네일 url 이지롱";
@@ -97,9 +97,11 @@ public class ItemService {
 
 	@Transactional
 	public void updateItem(Long id, List<MultipartFile> newImageFiles, List<Long> deleteImageIds,
-		ItemUpdateRequest item) {
+		ItemUpdateRequest item, String userLoginId) {
 		// 수정 권한 등 확인
-
+		if (!itemRepository.existsByIdAndUserLoginId(id, userLoginId)) {
+			throw new IllegalArgumentException("해당 아이템을 수정할 수 없습니다.");
+		}
 		// 이미지 삭제
 		// 새로운 이미지 처리
 		String thumbnailUrl = null;
@@ -111,7 +113,10 @@ public class ItemService {
 	}
 
 	@Transactional
-	public void deleteItem(Long id) {
+	public void deleteItem(Long id, String userLoginId) {
+		if (!itemRepository.existsByIdAndUserLoginId(id, userLoginId)) {
+			throw new IllegalArgumentException("해당 아이템을 삭제할 수 없습니다.");
+		}
 		itemRepository.deleteById(id);
 	}
 

@@ -23,7 +23,6 @@ public class Location {
 	private Long userId;
 	@Column(nullable = false, length = 45)
 	private String locationName;
-
 	@Column(nullable = false)
 	private Boolean isSelected;
 

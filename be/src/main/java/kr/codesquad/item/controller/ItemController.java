@@ -36,10 +36,9 @@ public class ItemController {
 
 	@PostMapping()
 	public ResponseEntity<Long> createItem(@RequestPart List<MultipartFile> imageFiles,
-		@RequestPart ItemSaveRequest items) {
-		// 로그인 구현되면 유저 정보 받음
-		User user = null;
-		return ResponseEntity.status(HttpStatus.CREATED).body(itemService.saveItem(imageFiles, items, user));
+		@RequestPart ItemSaveRequest items, HttpServletRequest request) {
+		String userLoginId = (String) request.getAttribute(LOGIN_ID);
+		return ResponseEntity.status(HttpStatus.CREATED).body(itemService.saveItem(imageFiles, items, userLoginId));
 	}
 
 	@GetMapping("/{id}")
@@ -51,8 +50,9 @@ public class ItemController {
 	public ResponseEntity<Void> updateItem(@PathVariable Long id,
 		@RequestPart List<MultipartFile> newImageFiles,
 		@RequestPart List<Long> deleteImageIds,
-		@RequestPart ItemUpdateRequest item) {
-		itemService.updateItem(id, newImageFiles, deleteImageIds, item);
+		@RequestPart ItemUpdateRequest item, HttpServletRequest request) {
+		String userLoginId = (String) request.getAttribute(LOGIN_ID);
+		itemService.updateItem(id, newImageFiles, deleteImageIds, item, userLoginId);
 		return ResponseEntity.ok().build();
 	}
 
@@ -62,8 +62,9 @@ public class ItemController {
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteItem(@PathVariable Long id) {
-		itemService.deleteItem(id);
+	public ResponseEntity<Void> deleteItem(@PathVariable Long id, HttpServletRequest request) {
+		String userLoginId = (String) request.getAttribute(LOGIN_ID);
+		itemService.deleteItem(id, userLoginId);
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
 
