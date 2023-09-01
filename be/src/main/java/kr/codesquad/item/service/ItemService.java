@@ -66,10 +66,6 @@ public class ItemService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<Item> getItems() {
-		return itemRepository.findAll();
-	}
-
 	public ItemDetailResponse getItem(Long id) {
 		// 로그인한 유저 정보 -> 상세 보기는 무조건 있기 때문에 null 처리 안 함
 		User userPS = User.builder()
