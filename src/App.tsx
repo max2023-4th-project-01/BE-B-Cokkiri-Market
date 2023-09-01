@@ -6,11 +6,13 @@ import { Test } from './page/Test';
 import { MyAccount } from './page/auth/MyAccount';
 import { Home } from './page/home/Home';
 import { useAuthStore } from './stores/useAuthStore';
+import { useScreenConfigStore } from './stores/useScreenConfigStore';
 import { getAccessToken, getUserInfo } from './utils/localStorage';
 import elephantImg from '/elephant-bg.png';
 
 export function App() {
   const { setStateAccessToken, setStateUserInfo } = useAuthStore();
+  const { updateConfig } = useScreenConfigStore();
 
   useEffect(() => {
     const accessToken = getAccessToken();
@@ -21,6 +23,20 @@ export function App() {
       setStateUserInfo(userInfo);
     }
   }, [setStateAccessToken, setStateUserInfo]);
+
+  useEffect(() => {
+    updateConfig();
+
+    window.addEventListener('resize', () => {
+      updateConfig();
+    });
+
+    return () => {
+      window.removeEventListener('resize', () => {
+        updateConfig();
+      });
+    };
+  }, [updateConfig]);
 
   return (
     <AppContainer>
