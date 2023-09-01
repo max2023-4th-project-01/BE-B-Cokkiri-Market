@@ -4,13 +4,22 @@ import {
   addUserLocation,
   deleteUserLocation,
   selectUserLocation,
+  getLocationData,
 } from '../api/fetcher';
-import { UserLocationData } from '../types';
+import { LocationData, UserLocationData } from '../types';
 
-const QUERY_KEY = '/users/locations';
+const USER_LOCATION_QUERY_KEY = '/users/locations';
+const LOCATION_QUERY_KEY = '/locations';
 
 export const useGetUserLocation = () => {
-  return useQuery<UserLocationData>([QUERY_KEY], getUserLocations);
+  return useQuery<UserLocationData>(
+    [USER_LOCATION_QUERY_KEY],
+    getUserLocations
+  );
+};
+
+export const useGetLocationData = () => {
+  return useQuery<LocationData>([LOCATION_QUERY_KEY], getLocationData);
 };
 
 export const useAddUserLocation = () => {
@@ -28,15 +37,18 @@ export const useDeleteUserLocation = () => {
   return useMutation(deleteUserLocation, {
     // onSuccess의 첫번쨰 인자 data, 두번째 인자 mutate()로 넘겨준 variables
     onSuccess: (_, locationId) => {
-      queryClient.setQueryData<UserLocationData>([QUERY_KEY], prevData => {
-        return prevData
-          ? {
-              locations: prevData?.locations.filter(
-                location => location.id !== locationId
-              ),
-            }
-          : prevData;
-      });
+      queryClient.setQueryData<UserLocationData>(
+        [USER_LOCATION_QUERY_KEY],
+        prevData => {
+          return prevData
+            ? {
+                locations: prevData?.locations.filter(
+                  location => location.id !== locationId
+                ),
+              }
+            : prevData;
+        }
+      );
     },
     // Always refetch after error or success:
     // onSettled: () => {
@@ -50,15 +62,18 @@ export const useSelectUserLocation = () => {
 
   return useMutation(selectUserLocation, {
     onSuccess: (_, locationId) => {
-      queryClient.setQueryData<UserLocationData>([QUERY_KEY], prevData => {
-        if (!prevData) return;
-        return {
-          locations: prevData.locations.map(location => ({
-            ...location,
-            isSelected: location.id === locationId,
-          })),
-        };
-      });
+      queryClient.setQueryData<UserLocationData>(
+        [USER_LOCATION_QUERY_KEY],
+        prevData => {
+          if (!prevData) return;
+          return {
+            locations: prevData.locations.map(location => ({
+              ...location,
+              isSelected: location.id === locationId,
+            })),
+          };
+        }
+      );
     },
   });
 };
