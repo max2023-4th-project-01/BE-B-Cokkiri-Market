@@ -6,9 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @Entity
@@ -22,9 +20,7 @@ public class Category {
 	@Column(nullable = false, length = 45)
 	private String iconName;
 
-	@Builder
-	public Category(Long id, String name, String iconName) {
-		this.id = id;
+	public Category(String name, String iconName) {
 		this.name = name;
 		this.iconName = iconName;
 	}
