@@ -4,8 +4,6 @@ package kr.codesquad.item.dto;
 import com.sun.istack.NotNull;
 import lombok.Getter;
 
-import java.util.List;
-
 public class ItemRequest {
 
     @Getter
