@@ -1,9 +1,9 @@
 package kr.codesquad.item.repository;
 
-import static kr.codesquad.chat.QChat.*;
-import static kr.codesquad.favorite.QFavorite.*;
+import static kr.codesquad.chat.entity.QChat.*;
+import static kr.codesquad.favorite.entity.QFavorite.*;
 import static kr.codesquad.item.entity.QItem.*;
-import static kr.codesquad.user.QUser.*;
+import static kr.codesquad.user.entity.QUser.*;
 
 import java.util.List;
 
