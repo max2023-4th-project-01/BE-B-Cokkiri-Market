@@ -6,8 +6,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import kr.codesquad.item.dto.ItemRequest;
-import kr.codesquad.item.dto.ItemResponse;
+import kr.codesquad.item.dto.request.ItemUpdateRequest;
+import kr.codesquad.item.dto.response.ItemCountDataResponse;
 import kr.codesquad.util.ItemStatus;
 import kr.codesquad.util.TimeStamped;
 import lombok.Builder;
@@ -41,7 +41,8 @@ public class Item extends TimeStamped {
 	private int viewCount;
 
 	@Builder
-	public Item(Long id, String title, String content, Long categoryId, Integer price, String locationName, String thumbnailUrl,
+	public Item(Long id, String title, String content, Long categoryId, Integer price, String locationName,
+		String thumbnailUrl,
 		ItemStatus status, Long userId, int viewCount) {
 		this.id = id;
 		this.title = title;
@@ -55,7 +56,7 @@ public class Item extends TimeStamped {
 		this.viewCount = viewCount;
 	}
 
-	public void update(ItemRequest.UpdateInDto item, String thumbnailUrl) {
+	public void update(ItemUpdateRequest item, String thumbnailUrl) {
 		this.title = item.getTitle();
 		this.categoryId = item.getCategoryId();
 		this.price = item.getPrice();
@@ -66,8 +67,8 @@ public class Item extends TimeStamped {
 		}
 	}
 
-	public ItemResponse.DetailOutDto.CountData countData(int chatCount, int favoriteCount) {
-		return ItemResponse.DetailOutDto.CountData.builder()
+	public ItemCountDataResponse countData(int chatCount, int favoriteCount) {
+		return ItemCountDataResponse.builder()
 			.chat(chatCount)
 			.favorite(favoriteCount)
 			.view(this.viewCount)

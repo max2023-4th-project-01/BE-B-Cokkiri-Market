@@ -13,9 +13,9 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import kr.codesquad.jwt.Jwt;
-import kr.codesquad.jwt.UserRefreshToken;
-import kr.codesquad.jwt.UserRefreshTokenRepository;
+import kr.codesquad.jwt.entity.Jwt;
+import kr.codesquad.jwt.entity.UserRefreshToken;
+import kr.codesquad.jwt.repository.UserRefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 
 @Component

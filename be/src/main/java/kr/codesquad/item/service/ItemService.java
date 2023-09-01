@@ -8,22 +8,27 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import kr.codesquad.category.CategoryRepository;
-import kr.codesquad.chat.ChatRepository;
-import kr.codesquad.favorite.FavoriteRepository;
-import kr.codesquad.image.ImageRepository;
+import kr.codesquad.category.repository.CategoryRepository;
+import kr.codesquad.chat.repository.ChatRepository;
+import kr.codesquad.favorite.repository.FavoriteRepository;
+import kr.codesquad.image.repository.ImageRepository;
 import kr.codesquad.item.dto.CustomSlice;
-import kr.codesquad.item.dto.ItemListResponse;
 import kr.codesquad.item.dto.ItemListVo;
 import kr.codesquad.item.dto.ItemMapper;
-import kr.codesquad.item.dto.ItemRequest;
-import kr.codesquad.item.dto.ItemResponse;
+import kr.codesquad.item.dto.request.ItemSaveRequest;
+import kr.codesquad.item.dto.request.ItemUpdateRequest;
+import kr.codesquad.item.dto.response.ItemCountDataResponse;
+import kr.codesquad.item.dto.response.ItemDetailResponse;
+import kr.codesquad.item.dto.response.ItemImageResponse;
+import kr.codesquad.item.dto.response.ItemListResponse;
+import kr.codesquad.item.dto.response.ItemStatusResponse;
+import kr.codesquad.item.dto.response.ItemUpdateResponse;
 import kr.codesquad.item.entity.Item;
 import kr.codesquad.item.repository.ItemPaginationRepository;
 import kr.codesquad.item.repository.ItemRepository;
-import kr.codesquad.location.LocationRepository;
-import kr.codesquad.user.User;
-import kr.codesquad.user.UserRepository;
+import kr.codesquad.location.repository.LocationRepository;
+import kr.codesquad.user.entity.User;
+import kr.codesquad.user.repository.UserRepository;
 import kr.codesquad.util.ItemStatus;
 import lombok.RequiredArgsConstructor;
 
@@ -41,7 +46,7 @@ public class ItemService {
 	private final UserRepository userRepository;
 
 	@Transactional
-	public Long saveItem(List<MultipartFile> imageFiles, ItemRequest.SaveInDto itemRequest, User user) {
+	public Long saveItem(List<MultipartFile> imageFiles, ItemSaveRequest itemRequest, User user) {
 		// 로그인한 유저 아이디
 		Long userId = 1L;
 
@@ -65,7 +70,7 @@ public class ItemService {
 		return itemRepository.findAll();
 	}
 
-	public ItemResponse.DetailOutDto getItem(Long id) {
+	public ItemDetailResponse getItem(Long id) {
 		// 로그인한 유저 정보 -> 상세 보기는 무조건 있기 때문에 null 처리 안 함
 		User userPS = User.builder()
 			.id(1L)
@@ -74,16 +79,16 @@ public class ItemService {
 
 		Item item = itemRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 아이템이 없습니다."));
 
-		List<ItemResponse.imageInfo> images = imageRepository.findByItemId(item.getId());
+		List<ItemImageResponse> images = imageRepository.findByItemId(item.getId());
 		String categoryName = categoryRepository.findNameById(item.getCategoryId());
 		int chatCount = chatRepository.countByItemId(item.getId());
 		int favoriteCount = favoriteRepository.countByItemId(item.getId());
 
-		return ItemResponse.DetailOutDto.builder()
+		return ItemDetailResponse.builder()
 			.isSeller(userPS.getId().equals(item.getUserId()))
 			.images(images)
 			.seller(userPS.getNickName())
-			.status(ItemResponse.DetailOutDto.StatusDropdown.of(item.getStatus()))
+			.status(ItemStatusResponse.of(item.getStatus()))
 			.title(item.getTitle())
 			.categoryName(categoryName)
 			.createdAt(item.getCreatedAt())
@@ -96,7 +101,7 @@ public class ItemService {
 
 	@Transactional
 	public void updateItem(Long id, List<MultipartFile> newImageFiles, List<Long> deleteImageIds,
-		ItemRequest.UpdateInDto item) {
+		ItemUpdateRequest item) {
 		// 수정 권한 등 확인
 
 		// 이미지 삭제
@@ -114,13 +119,13 @@ public class ItemService {
 		itemRepository.deleteById(id);
 	}
 
-	public ItemResponse.UpdateOutDto getItemForUpdate(Long id) {
+	public ItemUpdateResponse getItemForUpdate(Long id) {
 		Item item = itemRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 아이템이 없습니다."));
 
 		// 추후 작은 사이즈로 변경
-		List<ItemResponse.imageInfo> images = imageRepository.findByItemId(item.getId());
+		List<ItemImageResponse> images = imageRepository.findByItemId(item.getId());
 
-		return ItemResponse.UpdateOutDto.builder()
+		return ItemUpdateResponse.builder()
 			.images(images)
 			.title(item.getTitle())
 			.categoryId(item.getCategoryId())
@@ -145,7 +150,7 @@ public class ItemService {
 		List<ItemListVo> itemListVos = response.getContent();
 		List<ItemListResponse> items = itemListVos.stream()
 			.map(itemListVo -> ItemMapper.INSTANCE.toItemListResponse(itemListVo,
-				ItemResponse.DetailOutDto.CountData.builder()
+				ItemCountDataResponse.builder()
 					.chat(itemListVo.getChat().intValue())
 					.favorite(itemListVo.getFavorite().intValue())
 					.build(),

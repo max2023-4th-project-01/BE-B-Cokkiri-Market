@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import kr.codesquad.jwt.Jwt;
-import kr.codesquad.jwt.JwtProperties;
+import kr.codesquad.jwt.entity.Jwt;
+import kr.codesquad.jwt.entity.JwtProperties;
 
 @Service
 public class JwtProvider {
