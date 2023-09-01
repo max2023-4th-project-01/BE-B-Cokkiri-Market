@@ -7,7 +7,7 @@ import {
 } from '../api/fetcher';
 import { UserLocationData } from '../types';
 
-export const QUERY_KEY = '/users/locations';
+const QUERY_KEY = '/users/locations';
 
 export const useGetUserLocation = () => {
   return useQuery<UserLocationData>([QUERY_KEY], getUserLocations);

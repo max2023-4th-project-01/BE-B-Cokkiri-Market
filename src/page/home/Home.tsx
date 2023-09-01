@@ -4,6 +4,7 @@ import { styled } from 'styled-components';
 import { getItem } from '../../api/fetcher';
 import { ProductItem } from '../../components/ProductItem';
 import { Icon } from '../../components/icon/Icon';
+import { LocationModal } from '../../components/locations/LocationModal';
 import { CategoryFilterPanel } from './CategoryFilterPanel';
 
 type ItemData = {
@@ -29,6 +30,8 @@ type ItemProps = {
 export function Home() {
   const bodyRef = useRef<HTMLDivElement>(null);
   const [isOpenPanel, setIsOpenPanel] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const {
     data: itemData,
     isLoading,
@@ -55,7 +58,8 @@ export function Home() {
     <Div>
       {isOpenPanel && <CategoryFilterPanel closePanel={closePanel} />}
       <Header>
-        <LeftAccessory>
+        {/* TODO: 나중에 드롭다운 컴포넌트로 구현하기 */}
+        <LeftAccessory onClick={() => setIsModalOpen(true)}>
           {itemData.userLocation}
           <Icon name="chevronDown" color="neutralTextStrong" />
         </LeftAccessory>
@@ -72,6 +76,12 @@ export function Home() {
           return <ProductItem key={index} {...item} />;
         })}
       </Body>
+      {isModalOpen && (
+        <LocationModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
     </Div>
   );
 }
@@ -113,6 +123,7 @@ const LeftAccessory = styled.div`
   flex: 1;
   gap: 8px;
   padding: 8px;
+  cursor: pointer;
 `;
 
 const RightAccessory = styled.div`
