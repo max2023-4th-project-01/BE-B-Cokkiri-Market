@@ -2,13 +2,9 @@ import { rest } from 'msw';
 
 export const authHandlers = [
   rest.post('/api/login', (req, res, ctx) => {
-    console.log(req.body);
-
     return res(ctx.status(200), ctx.json(user));
   }),
   rest.post('/api/signup', (req, res, ctx) => {
-    console.log(req.body);
-
     return res(ctx.status(200), ctx.json('201'));
   }),
 ];
