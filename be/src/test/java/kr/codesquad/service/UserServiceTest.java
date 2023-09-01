@@ -11,12 +11,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import kr.codesquad.location.Location;
-import kr.codesquad.location.LocationRepository;
-import kr.codesquad.user.User;
-import kr.codesquad.user.UserRepository;
-import kr.codesquad.user.UserService;
+import kr.codesquad.location.entity.Location;
+import kr.codesquad.location.repository.LocationRepository;
 import kr.codesquad.user.dto.request.UserSignUpRequest;
+import kr.codesquad.user.entity.User;
+import kr.codesquad.user.repository.UserRepository;
+import kr.codesquad.user.service.UserService;
 
 @SpringBootTest
 @ActiveProfiles("test")

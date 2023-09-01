@@ -18,12 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import kr.codesquad.item.dto.CustomSlice;
-import kr.codesquad.item.dto.ItemListResponse;
-import kr.codesquad.item.dto.ItemRequest;
-import kr.codesquad.item.dto.ItemResponse;
-import kr.codesquad.item.entity.Item;
+import kr.codesquad.item.dto.request.ItemSaveRequest;
+import kr.codesquad.item.dto.request.ItemUpdateRequest;
+import kr.codesquad.item.dto.response.ItemDetailResponse;
+import kr.codesquad.item.dto.response.ItemListResponse;
+import kr.codesquad.item.dto.response.ItemUpdateResponse;
 import kr.codesquad.item.service.ItemService;
-import kr.codesquad.user.User;
+import kr.codesquad.user.entity.User;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -35,19 +36,14 @@ public class ItemController {
 
 	@PostMapping()
 	public ResponseEntity<Long> createItem(@RequestPart List<MultipartFile> imageFiles,
-		@RequestPart ItemRequest.SaveInDto items) {
+		@RequestPart ItemSaveRequest items) {
 		// 로그인 구현되면 유저 정보 받음
 		User user = null;
 		return ResponseEntity.status(HttpStatus.CREATED).body(itemService.saveItem(imageFiles, items, user));
 	}
 
-	@GetMapping()
-	public ResponseEntity<List<Item>> getItems() {
-		return ResponseEntity.ok(itemService.getItems());
-	}
-
 	@GetMapping("/{id}")
-	public ResponseEntity<ItemResponse.DetailOutDto> getItem(@PathVariable Long id) {
+	public ResponseEntity<ItemDetailResponse> getItem(@PathVariable Long id) {
 		return ResponseEntity.ok(itemService.getItem(id));
 	}
 
@@ -55,13 +51,13 @@ public class ItemController {
 	public ResponseEntity<Void> updateItem(@PathVariable Long id,
 		@RequestPart List<MultipartFile> newImageFiles,
 		@RequestPart List<Long> deleteImageIds,
-		@RequestPart ItemRequest.UpdateInDto item) {
+		@RequestPart ItemUpdateRequest item) {
 		itemService.updateItem(id, newImageFiles, deleteImageIds, item);
 		return ResponseEntity.ok().build();
 	}
 
 	@GetMapping("/{id}/edit")
-	public ResponseEntity<ItemResponse.UpdateOutDto> getItemForUpdate(@PathVariable Long id) {
+	public ResponseEntity<ItemUpdateResponse> getItemForUpdate(@PathVariable Long id) {
 		return ResponseEntity.ok(itemService.getItemForUpdate(id));
 	}
 
@@ -71,7 +67,7 @@ public class ItemController {
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
 
-	@GetMapping("/list")
+	@GetMapping()
 	public ResponseEntity<CustomSlice<ItemListResponse>> readAll(
 		@RequestParam(required = false) Long cursor,
 		@RequestParam(required = false) Long categoryId,

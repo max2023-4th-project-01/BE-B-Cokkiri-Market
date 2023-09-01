@@ -9,9 +9,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import kr.codesquad.jwt.Jwt;
-import kr.codesquad.jwt.UserRefreshToken;
-import kr.codesquad.jwt.UserRefreshTokenRepository;
+import kr.codesquad.jwt.entity.Jwt;
+import kr.codesquad.jwt.entity.UserRefreshToken;
+import kr.codesquad.jwt.repository.UserRefreshTokenRepository;
 import kr.codesquad.jwt.service.JwtService;
 
 @SpringBootTest
