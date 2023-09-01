@@ -14,7 +14,7 @@ export const locationHandlers = [
     userLocations = {
       locations: [
         ...userLocations.locations,
-        { id: 21, name: req.body?.name.split(' ').at(-1), isSelected: false },
+        { id: 3, name: req.body?.name.split(' ').at(-1), isSelected: false },
       ],
     };
     return res(ctx.status(200), ctx.json({ message: '동네 추가 성공' }));

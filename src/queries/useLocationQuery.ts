@@ -1,6 +1,7 @@
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import {
   getUserLocations,
+  addUserLocation,
   deleteUserLocation,
   selectUserLocation,
 } from '../api/fetcher';
@@ -10,6 +11,15 @@ export const QUERY_KEY = '/users/locations';
 
 export const useGetUserLocation = () => {
   return useQuery<UserLocationData>([QUERY_KEY], getUserLocations);
+};
+
+export const useAddUserLocation = () => {
+  const queryClient = useQueryClient();
+  return useMutation(addUserLocation, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['/users/locations']);
+    },
+  });
 };
 
 export const useDeleteUserLocation = () => {

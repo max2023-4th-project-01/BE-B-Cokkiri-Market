@@ -1,7 +1,8 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { styled } from 'styled-components';
-import { addUserLocation, getLocationData } from '../../api/fetcher';
+import { getLocationData } from '../../api/fetcher';
+import { useAddUserLocation } from '../../queries/useLocationQuery';
 import { LocationData } from '../../types';
 import { Error } from '../Error';
 import { Loader } from '../Loader';
@@ -23,17 +24,16 @@ export function AddLocation({
     ['/locations'],
     getLocationData
   );
-  const queryClient = useQueryClient();
-  const addMutation = useMutation(addUserLocation, {
-    onSuccess: () => {
-      queryClient.invalidateQueries(['/users/locations']);
-      hideSearchPanel();
-    },
-  });
+  const addMutation = useAddUserLocation();
 
   useEffect(() => {
     showSearchPanel();
   }, []);
+
+  const onClickLocationItem = (locationName: string) => {
+    addMutation.mutate(locationName);
+    hideSearchPanel();
+  };
 
   const onTransitionEndHandler = () => {
     rightPosition !== 0 && closeSearchPanel();
@@ -52,9 +52,7 @@ export function AddLocation({
         {data.map(location => (
           <LocationItem
             key={location.id}
-            onClick={() => {
-              addMutation.mutate(location.item);
-            }}
+            onClick={() => onClickLocationItem(location.item)}
           >
             {location.item}
           </LocationItem>
