@@ -1,7 +1,7 @@
 spring:
   profiles:
     active:
-      - dev
+      - prod
       - oauth # 로컬에서는 prod 지우고 dev로 수정
 ---
 spring:
