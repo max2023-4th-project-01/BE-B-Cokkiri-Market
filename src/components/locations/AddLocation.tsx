@@ -110,4 +110,8 @@ const LocationItem = styled.li`
   align-self: stretch;
   border-bottom: 1px solid ${({ theme }) => theme.color.neutralBorder};
   cursor: pointer;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.color.neutralBackgroundBold};
+  }
 `;
