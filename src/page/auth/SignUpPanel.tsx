@@ -1,5 +1,7 @@
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { styled } from 'styled-components';
+import axios from '../../api/axios';
+import { API_ENDPOINT } from '../../api/endPoint';
 import { Button } from '../../components/Button';
 import { Header } from '../../components/Header';
 import { Icon } from '../../components/icon/Icon';
@@ -87,22 +89,31 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
 
   const submit = async () => {
     const formData = new FormData();
-    formData.append('id', id);
-    formData.append('password', password);
-    formData.append('locationName', location);
+    const signupData = {
+      username: id,
+      nickName: 'JayJay', // TODO : 닉네임 입력 받아 추가
+      password: password,
+      locationName: location,
+    };
+
+    formData.append(
+      'signupData',
+      new Blob([JSON.stringify(signupData)], { type: 'application/json' }),
+      'signupData'
+    );
 
     if (file) {
       formData.append('profileImageFile', file);
     }
 
-    const res = await fetch('/api/signup', {
-      method: 'POST',
-      body: formData,
+    const res = await axios.post(API_ENDPOINT.SIGNUP, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
     });
 
-    if (res.ok) {
-      const data = await res.json();
-      console.log('Response:', data);
+    if (res.statusText === 'OK') {
+      console.log('Response:', res.data);
       closePanel();
     }
   };

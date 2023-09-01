@@ -1,5 +1,7 @@
 import { ChangeEvent, useState } from 'react';
 import { styled } from 'styled-components';
+import axios from '../../api/axios';
+import { API_ENDPOINT } from '../../api/endPoint';
 import { Button } from '../../components/Button';
 import { Icon } from '../../components/icon/Icon';
 import { useAuthStore } from '../../stores/useAuthStore';
@@ -36,16 +38,13 @@ export function LoginPage() {
   };
 
   const submit = async () => {
-    const res = await fetch('/api/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ id, password }),
+    const res = await axios.post(API_ENDPOINT.LOGIN, {
+      username: id,
+      password,
     });
 
-    if (res.ok) {
-      const data = await res.json();
+    if (res.statusText === 'OK') {
+      const data = res.data;
       const { accessToken, ...userInfo } = data;
 
       setAccessToken(accessToken);
