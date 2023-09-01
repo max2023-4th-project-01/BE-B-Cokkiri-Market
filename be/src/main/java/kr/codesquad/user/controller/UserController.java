@@ -27,4 +27,10 @@ public class UserController {
 	public ResponseEntity<List<LocationListResponse>> getLocations() {
 		return ResponseEntity.ok(userService.getLocations());
 	}
+
+	@PostMapping("locations")
+	public ResponseEntity<Void> createLocation(@RequestBody LocationCreateRequest request) {
+		userService.saveLocation(request);
+		return ResponseEntity.status(HttpStatus.CREATED).build();
+	}
 }

@@ -63,4 +63,19 @@ public class UserService implements UserDetailsService {
 		Long userId = 1L;
 		return LocationListResponse.toLocationList(locationRepository.findAllByUserId(userId));
 	}
+
+	@Transactional
+	public void saveLocation(LocationCreateRequest request) {
+		Long userId = 1L;
+
+		if (locationRepository.countByUserId(userId) >= 2) {
+			throw new RuntimeException("동네는 최대 2개까지만 등록할 수 있습니다");
+		}
+
+		locationRepository.save(Location.builder()
+				.userId(userId)
+				.locationName(request.getLocationName())
+				.isSelected(false) // false??
+				.build());
+	}
 }
