@@ -1,10 +1,11 @@
 import { rest } from 'msw';
+import { API_ENDPOINT } from '../api/endPoint';
 
 export const authHandlers = [
-  rest.post('/api/login', (req, res, ctx) => {
+  rest.post(API_ENDPOINT.LOGIN, (req, res, ctx) => {
     return res(ctx.status(200), ctx.json(user));
   }),
-  rest.post('/api/signup', (req, res, ctx) => {
+  rest.post(API_ENDPOINT.SIGNUP, (req, res, ctx) => {
     return res(ctx.status(200), ctx.json('201'));
   }),
 ];

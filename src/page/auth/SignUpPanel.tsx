@@ -1,6 +1,7 @@
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { styled } from 'styled-components';
 import axios from '../../api/axios';
+import { API_ENDPOINT } from '../../api/endPoint';
 import { Button } from '../../components/Button';
 import { Icon } from '../../components/icon/Icon';
 import { useScreenConfigStore } from '../../stores/useScreenConfigStore';
@@ -104,7 +105,7 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
       formData.append('profileImageFile', file);
     }
 
-    const res = await axios.post('/api/signup', formData, {
+    const res = await axios.post(API_ENDPOINT.SIGNUP, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
