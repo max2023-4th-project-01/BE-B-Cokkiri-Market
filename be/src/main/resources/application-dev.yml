@@ -1,9 +1,3 @@
-server:
-  servlet:
-    encoding:
-      charset: utf-8
-      force: true
-  port: 8080
 spring:
   datasource:
     url: jdbc:h2:mem:test;MODE=MySQL
@@ -13,11 +7,3 @@ spring:
   h2:
     console:
       enabled: true
-  jpa:
-    hibernate:
-      ddl-auto: create
-    defer-datasource-initialization: true
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
