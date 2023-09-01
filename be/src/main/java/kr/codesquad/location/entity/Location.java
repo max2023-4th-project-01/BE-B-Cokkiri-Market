@@ -24,10 +24,16 @@ public class Location {
 	@Column(nullable = false, length = 45)
 	private String locationName;
 
+	@Column(nullable = false)
+	private Boolean isSelected;
+
 	@Builder
-	public Location(Long id, Long userId, String locationName) {
+	public Location(Long id, Long userId, String locationName, Boolean isSelected) {
 		this.id = id;
 		this.userId = userId;
 		this.locationName = locationName;
+		this.isSelected = isSelected;
+	}
+
 	}
 }

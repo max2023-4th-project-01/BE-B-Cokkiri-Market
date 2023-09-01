@@ -1,7 +1,10 @@
 package kr.codesquad.user.service;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import kr.codesquad.location.dto.request.LocationCreateRequest;
+import kr.codesquad.location.dto.response.LocationListResponse;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -53,5 +56,11 @@ public class UserService implements UserDetailsService {
 			nickName = loginId + UuidGenerator.generateUuid();
 		}
 		return nickName;
+	}
+
+	@Transactional(readOnly = true)
+	public List<LocationListResponse> getLocations() {
+		Long userId = 1L;
+		return LocationListResponse.toLocationList(locationRepository.findAllByUserId(userId));
 	}
 }
