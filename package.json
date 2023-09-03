@@ -12,7 +12,7 @@
     "prepreview": "node generateIcons.js",
     "preview": "vite preview",
     "prestart": "node generateIcons.js",
-    "start": "cross-env NODE_ENV=production vite"
+    "start": "cross-env NODE_ENV=production vite --host 0.0.0.0"
   },
   "dependencies": {
     "@faker-js/faker": "^8.0.2",
