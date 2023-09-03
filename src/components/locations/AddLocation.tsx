@@ -1,5 +1,7 @@
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { styled } from 'styled-components';
+import { getLocationData } from '../../api/fetcher';
 import {
   useAddUserLocation,
   useGetLocationData,
@@ -14,13 +16,31 @@ type AddLocationProps = {
   hideSearchPanel: () => void;
 };
 
+type PostData = {
+  locations: {
+    id: number;
+    name: string;
+  }[];
+  nextId: number | null;
+};
+
 export function AddLocation({
   rightPosition,
   showSearchPanel,
   closeSearchPanel,
   hideSearchPanel,
 }: AddLocationProps) {
-  const { data, isLoading, isError } = useGetLocationData();
+  // const { data, isLoading, isError } = useGetLocationData();
+  const {
+    fetchNextPage, //function
+    hasNextPage, // boolean
+    isFetchingNextPage, // boolean
+    data,
+    status,
+    error,
+  } = useInfiniteQuery<PostData>(['/locations'], getLocationData, {
+    getNextPageParam: lastPage => lastPage.nextId ?? undefined,
+  });
   const addMutation = useAddUserLocation();
 
   useEffect(() => {
@@ -36,7 +56,7 @@ export function AddLocation({
     rightPosition !== 0 && closeSearchPanel();
   };
 
-  if (isError) return <Error />;
+  if (error) return <Error />;
 
   return (
     <Container
@@ -44,18 +64,20 @@ export function AddLocation({
       onTransitionEnd={onTransitionEndHandler}
     >
       <SearchBar placeholder="동명(읍, 면)으로 검색 (ex. 서초동)" />
-      {isLoading ? (
+      {isFetchingNextPage ? (
         <Loader />
       ) : (
         <Content>
-          {data.map(location => (
-            <LocationItem
-              key={location.id}
-              onClick={() => onClickLocationItem(location.item)}
-            >
-              {location.item}
-            </LocationItem>
-          ))}
+          {data?.pages.map(page => {
+            return page.locations.map(location => (
+              <LocationItem
+                key={location.id}
+                onClick={() => onClickLocationItem(location.name)}
+              >
+                {location.name}
+              </LocationItem>
+            ));
+          })}
         </Content>
       )}
     </Container>

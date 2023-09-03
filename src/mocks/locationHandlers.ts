@@ -6,8 +6,23 @@ export const locationHandlers = [
     return res(ctx.status(200), ctx.json(userLocations));
   }),
 
-  rest.get(API_ENDPOINT.LOCATION_DATA, (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json(locationData));
+  rest.get(API_ENDPOINT.LOCATION_DATA, (req, res, ctx) => {
+    const cursor = parseInt(req.url.searchParams.get('cursor') ?? '0');
+    const pageSize = 15;
+
+    const data = Array(pageSize)
+      .fill(0)
+      .map((_, i) => {
+        return {
+          id: i + cursor,
+          name: 'Location No.' + (i + cursor),
+        };
+      });
+
+    const nextId = cursor < 30 ? data[data.length - 1].id + 1 : null;
+
+    // setTimeout(() => res.json({ data, nextId }), 1000);
+    return res(ctx.status(200), ctx.json({ locations: data, nextId }));
   }),
 
   rest.post(API_ENDPOINT.USER_LOCATION, (req, res, ctx) => {
