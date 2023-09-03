@@ -1,6 +1,10 @@
 import { rest } from 'msw';
 import { API_ENDPOINT } from '../api/endPoint';
 
+type PostUserLocationRequestBody = {
+  name: string;
+};
+
 export const locationHandlers = [
   rest.get(API_ENDPOINT.USER_LOCATION, (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(userLocations));
@@ -25,15 +29,23 @@ export const locationHandlers = [
     return res(ctx.status(200), ctx.json({ locations: data, nextId }));
   }),
 
-  rest.post(API_ENDPOINT.USER_LOCATION, (req, res, ctx) => {
-    userLocations = {
-      locations: [
-        ...userLocations.locations,
-        { id: 3, name: req.body?.name.split(' ').at(-1), isSelected: false },
-      ],
-    };
-    return res(ctx.status(200), ctx.json({ message: '동네 추가 성공' }));
-  }),
+  rest.post<PostUserLocationRequestBody>(
+    API_ENDPOINT.USER_LOCATION,
+    (req, res, ctx) => {
+      const { name } = req.body;
+      userLocations = {
+        locations: [
+          ...userLocations.locations,
+          {
+            id: 3,
+            name: name.split(' ').at(-1) ?? '',
+            isSelected: false,
+          },
+        ],
+      };
+      return res(ctx.status(200), ctx.json({ message: '동네 추가 성공' }));
+    }
+  ),
 
   rest.patch(`${API_ENDPOINT.USER_LOCATION}/:id`, (req, res, ctx) => {
     const { id } = req.params;
