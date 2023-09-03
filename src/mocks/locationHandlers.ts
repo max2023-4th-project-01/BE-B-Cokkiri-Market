@@ -19,9 +19,9 @@ export const locationHandlers = [
         };
       });
 
+    // 지역 데이터는 최대 45개까지만 제공
     const nextId = cursor < 30 ? data[data.length - 1].id + 1 : null;
 
-    // setTimeout(() => res.json({ data, nextId }), 1000);
     return res(ctx.status(200), ctx.json({ locations: data, nextId }));
   }),
 

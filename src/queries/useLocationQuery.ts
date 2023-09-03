@@ -18,9 +18,9 @@ export const useGetUserLocation = () => {
   );
 };
 
-// export const useGetLocationData = () => {
-//   return useQuery<LocationData>([LOCATION_QUERY_KEY], getLocationData);
-// };
+export const useGetLocationData = () => {
+  return useQuery<LocationData>([LOCATION_QUERY_KEY], getLocationData);
+};
 
 export const useAddUserLocation = () => {
   const queryClient = useQueryClient();
