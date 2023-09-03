@@ -7,7 +7,7 @@ export const locationHandlers = [
   }),
 
   rest.get(API_ENDPOINT.LOCATION_DATA, (req, res, ctx) => {
-    const cursor = parseInt(req.url.searchParams.get('cursor') ?? '0');
+    const cursor = parseInt(req.url.searchParams.get('cursor')!);
     const pageSize = 15;
 
     const data = Array(pageSize)
@@ -15,7 +15,7 @@ export const locationHandlers = [
       .map((_, i) => {
         return {
           id: i + cursor,
-          name: 'Location No.' + (i + cursor),
+          name: `${i + cursor}. ` + DummyLocation[(i + cursor) % 15].item,
         };
       });
 
@@ -74,7 +74,7 @@ let userLocations = {
   ],
 };
 
-const locationData = [
+const DummyLocation = [
   {
     id: 1,
     item: '서울특별시 송파구 가락동',
@@ -134,25 +134,5 @@ const locationData = [
   {
     id: 15,
     item: '서울특별시 은평구 가좌로',
-  },
-  {
-    id: 16,
-    item: '서울특별시 서대문구 가좌로',
-  },
-  {
-    id: 17,
-    item: '서울특별시 종로구 가회동',
-  },
-  {
-    id: 18,
-    item: '서울특별시 서대문구 간호대로',
-  },
-  {
-    id: 19,
-    item: '서울특별시 용산구 갈월동',
-  },
-  {
-    id: 20,
-    item: '서울특별시 은평구 갈현동',
   },
 ];

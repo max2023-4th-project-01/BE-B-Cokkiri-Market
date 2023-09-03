@@ -4,22 +4,16 @@ import {
   addUserLocation,
   deleteUserLocation,
   selectUserLocation,
-  getLocationData,
 } from '../api/fetcher';
-import { LocationData, UserLocationData } from '../types';
+import { UserLocationData } from '../types';
 
 const USER_LOCATION_QUERY_KEY = '/users/locations';
-const LOCATION_QUERY_KEY = '/locations';
 
 export const useGetUserLocation = () => {
   return useQuery<UserLocationData>(
     [USER_LOCATION_QUERY_KEY],
     getUserLocations
   );
-};
-
-export const useGetLocationData = () => {
-  return useQuery<LocationData>([LOCATION_QUERY_KEY], getLocationData);
 };
 
 export const useAddUserLocation = () => {

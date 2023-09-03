@@ -1,6 +1,7 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useEffect, useRef, useCallback } from 'react';
 import { styled } from 'styled-components';
+import { API_ENDPOINT } from '../../api/endPoint';
 import { getLocationData } from '../../api/fetcher';
 import { useAddUserLocation } from '../../queries/useLocationQuery';
 import { Error } from '../Error';
@@ -26,16 +27,16 @@ export function AddLocation({
   closeSearchPanel,
   hideSearchPanel,
 }: AddLocationProps) {
-  // const { data, isLoading, isError } = useGetLocationData();
-  const {
-    fetchNextPage, //function
-    hasNextPage, // boolean
-    isFetchingNextPage, // boolean
-    data,
-    error,
-  } = useInfiniteQuery<PostData>(['/locations'], getLocationData, {
-    getNextPageParam: lastPage => lastPage.nextId ?? undefined,
-  });
+  // TODO: SeachBar 인풋에 입력받은 단어를 searchParam으로 넘겨주기
+  const { fetchNextPage, hasNextPage, isFetchingNextPage, data, error } =
+    useInfiniteQuery<PostData>(
+      [API_ENDPOINT.LOCATION_DATA],
+      ({ pageParam = 0 }) =>
+        getLocationData({ pageParam, searchParam: '역삼' }),
+      {
+        getNextPageParam: lastPage => lastPage.nextId ?? undefined,
+      }
+    );
 
   const intObserver = useRef<IntersectionObserver>();
   const lastPostRef = useCallback(
