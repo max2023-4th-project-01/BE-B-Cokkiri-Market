@@ -4,6 +4,7 @@ import { styled } from 'styled-components';
 import { getItem } from '../api/fetcher';
 import { Badge } from '../components/Badge';
 import { Button } from '../components/Button';
+import { Dropdown } from '../components/Dropdown';
 import { ProductItem } from '../components/ProductItem';
 import { Icon } from '../components/icon/Icon';
 import { LocationModal } from '../components/locations/LocationModal';
@@ -87,6 +88,7 @@ export function Test() {
       {isOpen && (
         <LocationModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
       )}
+      <Dropdown />
     </Div>
   );
 }
