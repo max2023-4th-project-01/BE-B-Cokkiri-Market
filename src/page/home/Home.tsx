@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useRef, useState } from 'react';
 import { styled } from 'styled-components';
 import { getItem } from '../../api/fetcher';
+import { Error } from '../../components/Error';
 import { Header } from '../../components/Header';
 import { ProductItem } from '../../components/ProductItem';
 import { Icon } from '../../components/icon/Icon';
@@ -76,9 +77,12 @@ export function Home() {
         }
       />
       <Body ref={bodyRef}>
-        {itemData.items.map((item, index) => {
-          return <ProductItem key={index} {...item} />;
+        {itemData.items.map(item => {
+          return <ProductItem key={item.id} {...item} />;
         })}
+        {itemData.items.length === 0 && (
+          <Error message="판매 상품이 없습니다." />
+        )}
       </Body>
       {isModalOpen && (
         <LocationModal

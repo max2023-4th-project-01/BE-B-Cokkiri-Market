@@ -64,10 +64,10 @@ export function CategoryFilterPanel({ closePanel }: CategoryFilterPanelProps) {
       {isLoading && <div>Loading...</div>}
       {!isLoading && categoryData && (
         <Body>
-          {categoryData.map((category, index) => {
+          {categoryData.map(category => {
             return (
               <Category
-                key={index}
+                key={category.id}
                 onClick={() => onClickCategory(category.id)}
               >
                 <CategoryIcon>
