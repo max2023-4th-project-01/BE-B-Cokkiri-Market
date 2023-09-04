@@ -1,5 +1,5 @@
 import { styled } from 'styled-components';
-import { Button } from '../components/button/Button2';
+import { Button } from '../components/button/Button';
 import { Icon } from '../components/icon/Icon';
 
 export function Test() {
@@ -18,6 +18,7 @@ export function Test() {
         color="neutralBorder"
         fontColor="accentTextWeak"
         align="center"
+        disabled
       >
         <Icon name="plus" color="accentTextWeak" />
         추가
@@ -38,7 +39,7 @@ export function Test() {
         GitHub 로그인
       </Button>
 
-      <Button styledType="text" size="L">
+      <Button styledType="text" size="L" disabled>
         닫기
       </Button>
       <Button styledType="text" size="L">
