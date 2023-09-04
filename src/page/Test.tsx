@@ -1,92 +1,61 @@
-import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
 import { styled } from 'styled-components';
-import { getItem } from '../api/fetcher';
-import { Badge } from '../components/Badge';
-import { Button } from '../components/Button';
-import { ProductItem } from '../components/ProductItem';
+import { Button } from '../components/button/Button';
 import { Icon } from '../components/icon/Icon';
-import { LocationModal } from '../components/locations/LocationModal';
 
 export function Test() {
-  const [isOpen, setIsOpen] = useState(false);
-  const { data: itemData, isLoading, isError } = useQuery(['items'], getItem);
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (isError) {
-    return <div>Error occurred</div>;
-  }
   return (
     <Div>
-      <ProductItem {...itemData.items[0]} />
-      <Button styledType="container" color="accentPrimary">
-        <Login>로그인</Login>
+      <Button
+        color="accentPrimary"
+        fontColor="accentText"
+        align="space-between"
+      >
+        역삼 1동
+        <Icon name="circleXFilled" color="accentText" />
       </Button>
-      <Button styledType="outline" color="neutralBorder">
-        <Add>추가</Add>
-      </Button>
-      <Button styledType="ghost">
-        <SignUp>회원가입</SignUp>
-      </Button>
-      <Button styledType="circle" color="accentPrimary">
-        <Plus>+</Plus>
-      </Button>
-      <Wrapper>
-        <Icon name="camera" color="accentPrimary" />
-        <Icon name="check" color="accentSecondary" />
-        <Icon name="chevronDown" color="systemWarning" />
-        <Icon name="chevronLeft" color="accentTextWeak" />
-        <Icon name="chevronRight" color="neutralTextWeak" />
-        <Icon name="chevronUp" color="neutralTextStrong" />
-        <Icon name="circleXFilled" color="neutralBackgroundBold" />
-        <Icon name="dots" color="neutralOverlay" />
-        <Icon name="exclamationCircle" color="neutralBorderStrong" />
-        <Icon name="heart" color="neutralOverlay" />
-        <Icon name="home" color="neutralText" />
-      </Wrapper>
-      <Wrapper>
-        <Badge
-          type="container"
-          size="S"
-          text="예약중"
-          fontColor="accentText"
-          badgeColor="accentSecondary"
-        />
-        <Badge
-          type="container"
-          size="M"
-          text="기타중고물품"
-          fontColor="accentText"
-          badgeColor="accentPrimary"
-        />
-        <Badge
-          type="outline"
-          size="M"
-          text="여성패션"
-          fontColor="accentTextWeak"
-          badgeColor="neutralBorder"
-        />
-        <Badge
-          type="container"
-          size="M"
-          text="1 / 2"
-          fontColor="neutralTextWeak"
-          badgeColor="neutralBackgroundBlur"
-        />
-      </Wrapper>
       <Button
         styledType="outline"
         color="neutralBorder"
-        onClick={() => setIsOpen(true)}
+        fontColor="accentTextWeak"
+        align="center"
+        disabled
       >
-        Open Modal
+        <Icon name="plus" color="accentTextWeak" />
+        추가
       </Button>
-      {isOpen && (
-        <LocationModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
-      )}
+      <Button styledType="circle" color="accentPrimary">
+        <Icon name="plus" color="accentText" />
+      </Button>
+      <Button size="M" styledType="circle" color="accentPrimary">
+        <Icon name="send" size={16} color="accentText" />
+      </Button>
+      <Button
+        style={{ height: '42px' }}
+        size="L"
+        styledType="outline"
+        color="neutralText"
+      >
+        <Icon name="octocat" color="accentText" />
+        GitHub 로그인
+      </Button>
+
+      <Button styledType="text" size="L" disabled>
+        닫기
+      </Button>
+      <Button styledType="text" size="L">
+        완료
+      </Button>
+      <Button styledType="text" size="L">
+        <Icon name="chevronLeft" color="neutralText" />
+        뒤로
+      </Button>
+      <Button styledType="text" size="L">
+        <Icon name="mapPinFilled" color="neutralText" />
+        역삼 1동
+      </Button>
+      <Button styledType="text" size="M">
+        회원가입
+      </Button>
     </Div>
   );
 }
@@ -99,51 +68,5 @@ const Div = styled.div`
   align-items: center;
   flex-direction: column;
   gap: 10px;
-`;
-
-const Login = styled.div`
-  width: 297px;
-  height: 24px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font: ${({ theme }) => theme.font.availableStrong16};
-  color: ${({ theme }) => theme.color.systemBackgroundWeak};
-`;
-
-const Add = styled.div`
-  width: 256px;
-  height: 24px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font: ${({ theme }) => theme.font.availableStrong16};
-  color: ${({ theme }) => theme.color.accentTextWeak};
-`;
-
-const SignUp = styled.div`
-  width: 45px;
-  height: 16px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font: ${({ theme }) => theme.font.availableStrong12};
-  color: ${({ theme }) => theme.color.neutralText};
-`;
-
-const Plus = styled.div`
-  width: 20px;
-  height: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font: ${({ theme }) => theme.font.availableStrong16};
-  color: ${({ theme }) => theme.color.accentText};
-`;
-
-const Wrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
+  padding: 0 32px;
 `;

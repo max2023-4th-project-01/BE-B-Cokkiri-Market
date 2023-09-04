@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { styled } from 'styled-components';
-import { Button } from '../Button';
 import { Modal } from '../Modal';
+import { Button } from '../button/Button';
 import { Icon } from '../icon/Icon';
 import { AddLocation } from './AddLocation';
 import { SetLocation } from './SetLocation';
@@ -37,11 +37,11 @@ export function LocationModal({ isOpen, onClose }: LocationModalProps) {
         {rightPosition !== 0 ? (
           <Headline>동네 설정</Headline>
         ) : (
-          <Button styledType="ghost" onClick={hideSearchPanel}>
+          <Button styledType="text" onClick={hideSearchPanel}>
             <Icon name="chevronLeft" color="neutralTextStrong" />
           </Button>
         )}
-        <Button styledType="ghost" onClick={onClose}>
+        <Button styledType="text" onClick={onClose}>
           <Icon name="x" color="neutralTextStrong" />
         </Button>
       </Header>
