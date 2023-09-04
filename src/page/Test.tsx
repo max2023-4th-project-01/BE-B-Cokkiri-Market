@@ -28,6 +28,15 @@ export function Test() {
       <Button size="M" styledType="circle" color="accentPrimary">
         <Icon name="send" size={16} color="accentText" />
       </Button>
+      <Button
+        style={{ height: '42px' }}
+        size="L"
+        styledType="outline"
+        color="neutralText"
+      >
+        <Icon name="octocat" color="accentText" />
+        GitHub 로그인
+      </Button>
 
       <Button styledType="text" size="L">
         닫기
@@ -58,4 +67,5 @@ const Div = styled.div`
   align-items: center;
   flex-direction: column;
   gap: 10px;
+  padding: 0 32px;
 `;
