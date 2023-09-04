@@ -1,24 +1,39 @@
 import { ButtonHTMLAttributes } from 'react';
 import { css, styled } from 'styled-components';
 import { ColorType } from '../../styles/designSystem';
-import { Size } from './Button2';
+import { Size } from './Button';
 
 type TextButtonProps = {
   children: React.ReactNode;
   size: Size;
   fontColor: ColorType;
+  isDisabled?: boolean;
 } & ButtonHTMLAttributes<HTMLButtonElement>;
 
-export function TextButton({ children, fontColor, size }: TextButtonProps) {
+export function TextButton({
+  children,
+  fontColor,
+  size,
+  isDisabled,
+  ...rest
+}: TextButtonProps) {
   return (
-    <StyledButton $size={size} $fontColor={fontColor}>
+    <StyledButton
+      $size={size}
+      $fontColor={fontColor}
+      $isDisabled={isDisabled}
+      {...rest}
+    >
       {children}
     </StyledButton>
   );
 }
 
-const StyledButton = styled.button<{ $size: Size; $fontColor: ColorType }>`
-  width: auto;
+const StyledButton = styled.button<{
+  $size: Size;
+  $fontColor: ColorType;
+  $isDisabled?: boolean;
+}>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -26,6 +41,7 @@ const StyledButton = styled.button<{ $size: Size; $fontColor: ColorType }>`
   padding: 8px 16px;
   color: ${({ theme, $fontColor }) => theme.color[$fontColor]};
   ${({ $size }) => sizeToCss($size)};
+  ${({ $isDisabled }) => $isDisabled && `opacity: 0.32;`}
 `;
 
 const sizeToCss = ($size: Size) => {

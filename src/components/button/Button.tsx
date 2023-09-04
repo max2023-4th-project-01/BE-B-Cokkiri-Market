@@ -27,10 +27,17 @@ export function Button({
   align = 'center',
   ...rest
 }: ButtonProps) {
+  const isDisabled = rest.disabled;
+
   return (
     <>
       {styledType === 'text' ? (
-        <TextButton size={size} fontColor={fontColor}>
+        <TextButton
+          size={size}
+          fontColor={fontColor}
+          isDisabled={isDisabled}
+          {...rest}
+        >
           {children}
         </TextButton>
       ) : (
@@ -40,6 +47,7 @@ export function Button({
           $color={color}
           $fontColor={fontColor}
           $align={align}
+          $isDisabled={isDisabled}
           {...rest}
         >
           {children}
@@ -55,6 +63,7 @@ const StyledButton = styled.button<{
   $color: ColorType;
   $fontColor: ColorType;
   $align: Align;
+  $isDisabled?: boolean;
 }>`
   ${({ $type, $size }) => sizeToCss($type, $size)}
   display: flex;
@@ -63,6 +72,7 @@ const StyledButton = styled.button<{
   gap: 4px;
   color: ${({ theme, $fontColor }) => theme.color[$fontColor]};
   ${({ $type, $color }) => typeToCss($type, $color)};
+  ${({ $isDisabled }) => $isDisabled && `opacity: 0.32;`}
   cursor: pointer;
 `;
 
