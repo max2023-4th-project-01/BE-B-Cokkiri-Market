@@ -5,7 +5,7 @@ import { TextButton } from './TextButton';
 
 type ButtonType = 'container' | 'outline' | 'circle' | 'text';
 
-type Size = 'S' | 'M' | 'L';
+export type Size = 'S' | 'M' | 'L';
 
 type Align = 'center' | 'space-between';
 
@@ -75,6 +75,7 @@ const sizeToCss = ($type: ButtonType, $size: Size) => {
         font: ${({ theme }) => theme.font.availableStrong16};
       `;
     }
+
     case 'M': {
       return css`
         width: ${$type === 'circle' ? '32px' : 'auto'};

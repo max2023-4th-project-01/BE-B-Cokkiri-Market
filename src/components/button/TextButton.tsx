@@ -1,8 +1,7 @@
 import { ButtonHTMLAttributes } from 'react';
 import { css, styled } from 'styled-components';
 import { ColorType } from '../../styles/designSystem';
-
-type Size = 'L' | 'M' | 'S';
+import { Size } from './Button2';
 
 type TextButtonProps = {
   children: React.ReactNode;
