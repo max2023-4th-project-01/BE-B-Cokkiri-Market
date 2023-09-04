@@ -1,4 +1,5 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
 import { styled } from 'styled-components';
 import {
   useAddUserLocation,
@@ -23,32 +24,21 @@ export function AddLocation({
   const { fetchNextPage, hasNextPage, isFetchingNextPage, data, isError } =
     useGetLocationResult('역삼');
 
-  const intObserver = useRef<IntersectionObserver>();
-  const lastPostRef = useCallback(
-    (locationItem: HTMLLIElement) => {
-      if (isFetchingNextPage) return;
-      if (intObserver.current) intObserver.current.disconnect();
-
-      intObserver.current = new IntersectionObserver(posts => {
-        if (posts[0].isIntersecting && hasNextPage) {
-          console.log('마지막 요소 도달');
-          fetchNextPage();
-        }
-      });
-
-      if (locationItem) intObserver.current.observe(locationItem);
-    },
-    [isFetchingNextPage, fetchNextPage, hasNextPage]
-  );
-
   const addMutation = useAddUserLocation();
+  const { ref: lastItemRef, inView } = useInView();
+
+  useEffect(() => {
+    if (inView && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, fetchNextPage]);
 
   useEffect(() => {
     showSearchPanel();
   }, []);
 
   const onClickLocationItem = (locationName: string) => {
-    console.log(intObserver.current);
+    console.log(locationName);
     addMutation.mutate(locationName);
     hideSearchPanel();
   };
@@ -71,7 +61,7 @@ export function AddLocation({
             return page.locations.map((location, index) =>
               index === page.locations.length - 1 ? (
                 <LocationItem
-                  ref={lastPostRef}
+                  ref={lastItemRef}
                   key={location.id}
                   onClick={() => onClickLocationItem(location.name)}
                 >
