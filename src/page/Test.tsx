@@ -11,6 +11,7 @@ import { LocationModal } from '../components/locations/LocationModal';
 
 export function Test() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { data: itemData, isLoading, isError } = useQuery(['items'], getItem);
 
   if (isLoading) {
@@ -88,6 +89,7 @@ export function Test() {
       {isOpen && (
         <LocationModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
       )}
+
       <Dropdown />
     </Div>
   );
