@@ -21,7 +21,7 @@ export const useGetLocationResult = (searchParam: string) => {
     [LOCATION_QUERY_KEY],
     ({ pageParam = 0 }) => getLocationData({ pageParam, searchParam }),
     {
-      getNextPageParam: lastPage => lastPage.nextId ?? undefined,
+      getNextPageParam: lastPage => lastPage.nextCursor ?? undefined,
     }
   );
 };
