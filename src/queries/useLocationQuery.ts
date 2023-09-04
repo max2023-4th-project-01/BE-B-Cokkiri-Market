@@ -1,13 +1,30 @@
-import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
+import {
+  useQuery,
+  useQueryClient,
+  useMutation,
+  useInfiniteQuery,
+} from '@tanstack/react-query';
 import {
   getUserLocations,
+  getLocationData,
   addUserLocation,
   deleteUserLocation,
   selectUserLocation,
 } from '../api/fetcher';
-import { UserLocationData } from '../types';
+import { UserLocationData, LocationResultData } from '../types';
 
 const USER_LOCATION_QUERY_KEY = '/users/locations';
+const LOCATION_QUERY_KEY = '/locations';
+
+export const useGetLocationResult = (searchParam: string) => {
+  return useInfiniteQuery<LocationResultData>(
+    [LOCATION_QUERY_KEY],
+    ({ pageParam = 0 }) => getLocationData({ pageParam, searchParam }),
+    {
+      getNextPageParam: lastPage => lastPage.nextId ?? undefined,
+    }
+  );
+};
 
 export const useGetUserLocation = () => {
   return useQuery<UserLocationData>(
@@ -20,7 +37,7 @@ export const useAddUserLocation = () => {
   const queryClient = useQueryClient();
   return useMutation(addUserLocation, {
     onSuccess: () => {
-      queryClient.invalidateQueries(['/users/locations']);
+      queryClient.invalidateQueries([USER_LOCATION_QUERY_KEY]);
     },
   });
 };

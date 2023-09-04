@@ -1,9 +1,9 @@
-import { useInfiniteQuery } from '@tanstack/react-query';
 import { useEffect, useRef, useCallback } from 'react';
 import { styled } from 'styled-components';
-import { API_ENDPOINT } from '../../api/endPoint';
-import { getLocationData } from '../../api/fetcher';
-import { useAddUserLocation } from '../../queries/useLocationQuery';
+import {
+  useAddUserLocation,
+  useGetLocationResult,
+} from '../../queries/useLocationQuery';
 import { Error } from '../Error';
 
 type AddLocationProps = {
@@ -13,14 +13,6 @@ type AddLocationProps = {
   hideSearchPanel: () => void;
 };
 
-type PostData = {
-  locations: {
-    id: number;
-    name: string;
-  }[];
-  nextId: number | null;
-};
-
 export function AddLocation({
   rightPosition,
   showSearchPanel,
@@ -28,15 +20,8 @@ export function AddLocation({
   hideSearchPanel,
 }: AddLocationProps) {
   // TODO: SeachBar 인풋에 입력받은 단어를 searchParam으로 넘겨주기
-  const { fetchNextPage, hasNextPage, isFetchingNextPage, data, error } =
-    useInfiniteQuery<PostData>(
-      [API_ENDPOINT.LOCATION_DATA],
-      ({ pageParam = 0 }) =>
-        getLocationData({ pageParam, searchParam: '역삼' }),
-      {
-        getNextPageParam: lastPage => lastPage.nextId ?? undefined,
-      }
-    );
+  const { fetchNextPage, hasNextPage, isFetchingNextPage, data, isError } =
+    useGetLocationResult('역삼');
 
   const intObserver = useRef<IntersectionObserver>();
   const lastPostRef = useCallback(
@@ -72,37 +57,39 @@ export function AddLocation({
     rightPosition !== 0 && closeSearchPanel();
   };
 
-  if (error) return <Error />;
-
   return (
     <Container
       $rightPosition={rightPosition}
       onTransitionEnd={onTransitionEndHandler}
     >
       <SearchBar placeholder="동명(읍, 면)으로 검색 (ex. 서초동)" />
-      <Content>
-        {data?.pages.map(page => {
-          return page.locations.map((location, index) =>
-            index === page.locations.length - 1 ? (
-              <LocationItem
-                ref={lastPostRef}
-                key={location.id}
-                onClick={() => onClickLocationItem(location.name)}
-              >
-                {location.name}
-              </LocationItem>
-            ) : (
-              <LocationItem
-                key={location.id}
-                onClick={() => onClickLocationItem(location.name)}
-              >
-                {location.name}
-              </LocationItem>
-            )
-          );
-        })}
-        {isFetchingNextPage && <LoadingMessage>Loading...</LoadingMessage>}
-      </Content>
+      {isError ? (
+        <Error />
+      ) : (
+        <Content>
+          {data?.pages.map(page => {
+            return page.locations.map((location, index) =>
+              index === page.locations.length - 1 ? (
+                <LocationItem
+                  ref={lastPostRef}
+                  key={location.id}
+                  onClick={() => onClickLocationItem(location.name)}
+                >
+                  {location.name}
+                </LocationItem>
+              ) : (
+                <LocationItem
+                  key={location.id}
+                  onClick={() => onClickLocationItem(location.name)}
+                >
+                  {location.name}
+                </LocationItem>
+              )
+            );
+          })}
+          {isFetchingNextPage && <LoadingMessage>Loading...</LoadingMessage>}
+        </Content>
+      )}
     </Container>
   );
 }
