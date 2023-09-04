@@ -4,14 +4,15 @@ import { styled } from 'styled-components';
 import { getItem } from '../api/fetcher';
 import { Badge } from '../components/Badge';
 import { Button } from '../components/Button';
-import { Dropdown } from '../components/Dropdown';
 import { ProductItem } from '../components/ProductItem';
+import { Dropdown } from '../components/dropdown/Dropdown';
+import { MenuItem } from '../components/dropdown/MenuItem';
 import { Icon } from '../components/icon/Icon';
 import { LocationModal } from '../components/locations/LocationModal';
 
 export function Test() {
   const [isOpen, setIsOpen] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
   const { data: itemData, isLoading, isError } = useQuery(['items'], getItem);
 
   if (isLoading) {
@@ -23,6 +24,29 @@ export function Test() {
   }
   return (
     <Div>
+      <Dropdown text="역삼 1동" iconName="chevronDown">
+        <MenuItem
+          onClick={() => {
+            console.log('아이템1 클릭');
+          }}
+        >
+          역삼 1동
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            console.log('아이템2 클릭');
+          }}
+        >
+          역삼 2동
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            console.log('아이템3 클릭');
+          }}
+        >
+          내 동네 설정하기
+        </MenuItem>
+      </Dropdown>
       <ProductItem {...itemData.items[0]} />
       <Button styledType="container" color="accentPrimary">
         <Login>로그인</Login>
@@ -89,8 +113,6 @@ export function Test() {
       {isOpen && (
         <LocationModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
       )}
-
-      <Dropdown />
     </Div>
   );
 }
