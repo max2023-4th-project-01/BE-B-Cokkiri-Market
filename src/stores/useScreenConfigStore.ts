@@ -1,4 +1,3 @@
-// stores/useScreenConfigStore.js
 import { create } from 'zustand';
 
 const BASE_WIDTH = 393;
@@ -20,7 +19,6 @@ export const useScreenConfigStore = create<screenConfigState>(set => ({
     const screenWidth = isMobile ? window.innerWidth : BASE_WIDTH;
     const screenHeight = isMobile ? window.innerHeight : BASE_HEIGHT;
 
-    set({ screenWidth });
-    set({ screenHeight });
+    set({ screenWidth, screenHeight });
   },
 }));

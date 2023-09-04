@@ -25,16 +25,10 @@ export function App() {
   }, [setStateAccessToken, setStateUserInfo]);
 
   useEffect(() => {
-    updateConfig();
-
-    window.addEventListener('resize', () => {
-      updateConfig();
-    });
+    window.addEventListener('resize', updateConfig);
 
     return () => {
-      window.removeEventListener('resize', () => {
-        updateConfig();
-      });
+      window.removeEventListener('resize', updateConfig);
     };
   }, [updateConfig]);
 

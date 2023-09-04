@@ -1,33 +1,33 @@
 import { useState } from 'react';
 import { styled } from 'styled-components';
 import {
-  useDeleteLocation,
-  useLocationQuery,
-  useSelectLocation,
+  useGetUserLocation,
+  useSelectUserLocation,
+  useDeleteUserLocation,
 } from '../../queries/useLocationQuery';
 import { useLocationStore } from '../../stores/useLocationStore';
 import { Alert } from '../Alert';
 import { Button } from '../Button';
+import { Error } from '../Error';
 import { Loader } from '../Loader';
 import { Icon } from '../icon/Icon';
 import { LocationButton } from './LocationButton';
 
 type SetLocationProps = {
-  onClose: () => void;
-  onOpenAddModal: () => void;
+  openSearchPanel: () => void;
 };
 
-export function SetLocation({ onClose, onOpenAddModal }: SetLocationProps) {
+export function SetLocation({ openSearchPanel }: SetLocationProps) {
   const [isAlertOpen, setIsAlertOpen] = useState(false);
 
   const { selectedLocationId } = useLocationStore();
 
-  const { data, isLoading, isError } = useLocationQuery();
-  const selectMutation = useSelectLocation();
-  const deleteMutation = useDeleteLocation();
+  const { data, isLoading, isError } = useGetUserLocation();
+  const selectMutation = useSelectUserLocation();
+  const deleteMutation = useDeleteUserLocation();
 
   if (isLoading) return <Loader />;
-  if (isError) return <div>에러 발생!</div>;
+  if (isError) return <Error />;
 
   const isMaxLocations = data.locations?.length >= 2;
 
@@ -38,7 +38,7 @@ export function SetLocation({ onClose, onOpenAddModal }: SetLocationProps) {
       return;
     }
     const shouldSelectAnotherLocation = data.locations.find(
-      location => location.isSelected
+      location => location.id === locationId
     )?.isSelected;
 
     deleteMutation.mutate(locationId);
@@ -52,41 +52,39 @@ export function SetLocation({ onClose, onOpenAddModal }: SetLocationProps) {
 
   return (
     <>
-      <Header>
-        <Headline>동네 설정</Headline>
-        <Button styledType="ghost" onClick={onClose}>
-          <Icon name="x" color="neutralTextStrong" />
-        </Button>
-      </Header>
-      <Content>
-        <Notice>
-          지역은 최소 1개,
-          <br /> 최대 2개까지 설정 가능해요.
-        </Notice>
-        <Buttons>
-          {data.locations.map((location, index) => (
-            <LocationButton
-              key={index}
-              locationData={location}
-              onOpenAlert={() => {
-                setIsAlertOpen(true);
-              }}
-            />
-          ))}
-          {!isMaxLocations && (
-            <Button
-              styledType="outline"
-              color="neutralBorder"
-              onClick={onOpenAddModal}
-            >
-              <Plus>
-                <Icon name="plus" color="accentTextWeak" />
-                추가
-              </Plus>
-            </Button>
-          )}
-        </Buttons>
-      </Content>
+      {isError ? (
+        <Error />
+      ) : (
+        <Content>
+          <Notice>
+            지역은 최소 1개,
+            <br /> 최대 2개까지 설정 가능해요.
+          </Notice>
+          <Buttons>
+            {data.locations.map((location, index) => (
+              <LocationButton
+                key={index}
+                locationData={location}
+                onOpenAlert={() => {
+                  setIsAlertOpen(true);
+                }}
+              />
+            ))}
+            {!isMaxLocations && (
+              <Button
+                styledType="outline"
+                color="neutralBorder"
+                onClick={openSearchPanel}
+              >
+                <Plus>
+                  <Icon name="plus" color="accentTextWeak" />
+                  추가
+                </Plus>
+              </Button>
+            )}
+          </Buttons>
+        </Content>
+      )}
       {isAlertOpen && (
         <Alert
           isOpen={isAlertOpen}
@@ -105,19 +103,6 @@ export function SetLocation({ onClose, onOpenAddModal }: SetLocationProps) {
     </>
   );
 }
-
-const Header = styled.header`
-  min-height: 72px;
-  display: flex;
-  padding: 8px 8px 16px 24px;
-  justify-content: space-between;
-  align-items: center;
-  align-self: stretch;
-`;
-
-const Headline = styled.h2`
-  font: ${({ theme }) => theme.font.displayStrong20};
-`;
 
 const Content = styled.div`
   display: flex;
