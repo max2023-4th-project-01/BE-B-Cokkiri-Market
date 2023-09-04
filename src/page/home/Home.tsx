@@ -5,6 +5,8 @@ import { getItem } from '../../api/fetcher';
 import { Error } from '../../components/Error';
 import { Header } from '../../components/Header';
 import { ProductItem } from '../../components/ProductItem';
+import { Dropdown } from '../../components/dropdown/Dropdown';
+import { MenuItem } from '../../components/dropdown/MenuItem';
 import { Icon } from '../../components/icon/Icon';
 import { LocationModal } from '../../components/locations/LocationModal';
 import { CategoryFilterPanel } from './CategoryFilterPanel';
@@ -48,6 +50,10 @@ export function Home() {
     return <div>Error occurred</div>;
   }
 
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
   const openPanel = () => {
     setIsOpenPanel(true);
   };
@@ -62,8 +68,25 @@ export function Home() {
       <Header
         leftButton={
           <LeftAccessory>
-            {itemData.userLocation}
-            <Icon name="chevronDown" color="neutralTextStrong" />
+            <Dropdown text="역삼 1동" iconName="chevronDown">
+              <MenuItem
+                onClick={() => {
+                  console.log('아이템1 클릭');
+                }}
+              >
+                역삼 1동
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  console.log('아이템2 클릭');
+                }}
+              >
+                역삼 2동
+              </MenuItem>
+              <MenuItem onClick={openModal}>내 동네 설정하기</MenuItem>
+            </Dropdown>
+            {/* {itemData.userLocation}
+            <Icon name="chevronDown" color="neutralTextStrong" /> */}
           </LeftAccessory>
         }
         rightButton={
