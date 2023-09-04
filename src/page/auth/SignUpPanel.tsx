@@ -53,35 +53,25 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
   const onChangeFile = (event: ChangeEvent<HTMLInputElement>) => {
     const fileList = event.target.files;
 
-    if (!fileList) return;
+    if (!fileList?.length) return;
 
-    if (fileList) {
-      const file = fileList[0];
+    const file = fileList[0];
 
-      if (file && file.type.startsWith('image/')) {
-        setFile(file);
-        const reader = new FileReader();
+    if (file && file.type.startsWith('image/')) {
+      const url = URL.createObjectURL(file);
 
-        reader.onload = function (event) {
-          if (event.target && event.target.readyState === FileReader.DONE) {
-            setBackgroundImage(event.target.result as string);
-          }
-        };
-
-        reader.readAsDataURL(file);
-      } else {
-        event.target.value = '';
-
-        // TODO : toast alert 추가?
-        alert('이미지 파일만 업로드 가능합니다.');
-      }
+      setFile(file);
+      setBackgroundImage(url);
+    } else {
+      event.target.value = '';
+      alert('이미지 파일만 업로드 가능합니다.');
     }
   };
 
   const onRemoveProfile = () => {
-    // TODO : alert component 추가해서 사용자의 동의 받기
     setFile(undefined);
     setBackgroundImage(undefined);
+
     if (inputRef.current) {
       inputRef.current.value = '';
     }
@@ -91,7 +81,7 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
     const formData = new FormData();
     const signupData = {
       username: id,
-      nickName: 'JayJay', // TODO : 닉네임 입력 받아 추가
+      nickName: 'JayJay',
       password: password,
       locationName: location,
     };
