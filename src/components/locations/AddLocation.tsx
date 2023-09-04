@@ -58,24 +58,18 @@ export function AddLocation({
       ) : (
         <Content>
           {data?.pages.map(page => {
-            return page.locations.map((location, index) =>
-              index === page.locations.length - 1 ? (
+            return page.locations.map((location, index) => {
+              const isLastItem = index === page.locations.length - 1;
+              return (
                 <LocationItem
-                  ref={lastItemRef}
+                  ref={isLastItem ? lastItemRef : null}
                   key={location.id}
                   onClick={() => onClickLocationItem(location.name)}
                 >
                   {location.name}
                 </LocationItem>
-              ) : (
-                <LocationItem
-                  key={location.id}
-                  onClick={() => onClickLocationItem(location.name)}
-                >
-                  {location.name}
-                </LocationItem>
-              )
-            );
+              );
+            });
           })}
           {isFetchingNextPage && <LoadingMessage>Loading...</LoadingMessage>}
         </Content>
