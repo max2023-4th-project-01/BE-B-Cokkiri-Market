@@ -39,7 +39,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		return ResponseEntity.status(errorCode.getHttpStatus())
 			.body(ErrorResponse.builder()
 				.statusCode(errorCode.getHttpStatus())
-				.message(errorCode.getMessage()).build());
+				.message(errorCode.getMessage())
+				.detail(ex.getMessage()).build());
 	}
 
 	// 500 에러
@@ -78,6 +79,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		return ResponseEntity.status(errorCode.getHttpStatus())
 			.body(ErrorResponse.builder()
 				.statusCode(errorCode.getHttpStatus())
-				.message(errorCode.getMessage()).build());
+				.message(errorCode.getMessage())
+				.detail(ex.getMessage()).build());
 	}
 }
