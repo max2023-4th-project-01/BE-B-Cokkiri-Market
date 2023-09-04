@@ -1,6 +1,9 @@
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { styled } from 'styled-components';
+import axios from '../../api/axios';
+import { API_ENDPOINT } from '../../api/endPoint';
 import { Button } from '../../components/Button';
+import { Header } from '../../components/Header';
 import { Icon } from '../../components/icon/Icon';
 import { useScreenConfigStore } from '../../stores/useScreenConfigStore';
 import { AuthInput } from './AuthInput';
@@ -50,35 +53,25 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
   const onChangeFile = (event: ChangeEvent<HTMLInputElement>) => {
     const fileList = event.target.files;
 
-    if (!fileList) return;
+    if (!fileList?.length) return;
 
-    if (fileList) {
-      const file = fileList[0];
+    const file = fileList[0];
 
-      if (file && file.type.startsWith('image/')) {
-        setFile(file);
-        const reader = new FileReader();
+    if (file && file.type.startsWith('image/')) {
+      const url = URL.createObjectURL(file);
 
-        reader.onload = function (event) {
-          if (event.target && event.target.readyState === FileReader.DONE) {
-            setBackgroundImage(event.target.result as string);
-          }
-        };
-
-        reader.readAsDataURL(file);
-      } else {
-        event.target.value = '';
-
-        // TODO : toast alert 추가?
-        alert('이미지 파일만 업로드 가능합니다.');
-      }
+      setFile(file);
+      setBackgroundImage(url);
+    } else {
+      event.target.value = '';
+      alert('이미지 파일만 업로드 가능합니다.');
     }
   };
 
   const onRemoveProfile = () => {
-    // TODO : alert component 추가해서 사용자의 동의 받기
     setFile(undefined);
     setBackgroundImage(undefined);
+
     if (inputRef.current) {
       inputRef.current.value = '';
     }
@@ -86,37 +79,54 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
 
   const submit = async () => {
     const formData = new FormData();
-    formData.append('id', id);
-    formData.append('password', password);
-    formData.append('locationName', location);
+    const signupData = {
+      username: id,
+      nickName: 'JayJay',
+      password: password,
+      locationName: location,
+    };
+
+    formData.append(
+      'signupData',
+      new Blob([JSON.stringify(signupData)], { type: 'application/json' }),
+      'signupData'
+    );
 
     if (file) {
       formData.append('profileImageFile', file);
     }
 
-    const res = await fetch('/api/signup', {
-      method: 'POST',
-      body: formData,
+    const res = await axios.post(API_ENDPOINT.SIGNUP, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
     });
 
-    if (res.ok) {
-      const data = await res.json();
-      console.log('Response:', data);
+    if (res.statusText === 'OK') {
+      console.log('Response:', res.data);
       closePanel();
     }
   };
 
   return (
     <Div $right={rightPosition} onTransitionEnd={onTransitionEndHandler}>
-      <Header>
-        <Button styledType="ghost" onClick={onClose}>
-          <ButtonDiv>닫기</ButtonDiv>
-        </Button>
-        <Title>회원가입</Title>
-        <Button styledType="ghost" onClick={submit} disabled={isSignUpDisabled}>
-          <ButtonDiv>완료</ButtonDiv>
-        </Button>
-      </Header>
+      <Header
+        leftButton={
+          <Button styledType="ghost" onClick={onClose}>
+            <ButtonDiv>닫기</ButtonDiv>
+          </Button>
+        }
+        rightButton={
+          <Button
+            styledType="ghost"
+            onClick={submit}
+            disabled={isSignUpDisabled}
+          >
+            <ButtonDiv>완료</ButtonDiv>
+          </Button>
+        }
+        title="회원가입"
+      />
       <Body>
         <ProfileWrapper>
           <ProfileButton
@@ -162,28 +172,6 @@ const Div = styled.div<{ $right: number }>`
   background: ${({ theme }) => theme.color.accentText};
   transition: right 0.6s;
   z-index: 1;
-`;
-
-const Header = styled.div`
-  width: 100%;
-  height: 56px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 8px;
-  border-bottom: ${({ theme }) => `0.8px solid ${theme.color.neutralBorder}`};
-  background: ${({ theme }) => theme.color.neutralBackgroundBlur};
-`;
-
-const Title = styled.div`
-  width: 130px;
-  height: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  font: ${({ theme }) => theme.font.displayStrong16};
-  color: ${({ theme }) => theme.color.neutralTextStrong};
 `;
 
 const Body = styled.div`

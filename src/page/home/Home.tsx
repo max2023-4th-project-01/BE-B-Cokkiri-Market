@@ -2,8 +2,11 @@ import { useQuery } from '@tanstack/react-query';
 import { useRef, useState } from 'react';
 import { styled } from 'styled-components';
 import { getItem } from '../../api/fetcher';
+import { Error } from '../../components/Error';
+import { Header } from '../../components/Header';
 import { ProductItem } from '../../components/ProductItem';
 import { Icon } from '../../components/icon/Icon';
+import { LocationModal } from '../../components/locations/LocationModal';
 import { CategoryFilterPanel } from './CategoryFilterPanel';
 
 type ItemData = {
@@ -29,6 +32,8 @@ type ItemProps = {
 export function Home() {
   const bodyRef = useRef<HTMLDivElement>(null);
   const [isOpenPanel, setIsOpenPanel] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const {
     data: itemData,
     isLoading,
@@ -54,24 +59,37 @@ export function Home() {
   return (
     <Div>
       {isOpenPanel && <CategoryFilterPanel closePanel={closePanel} />}
-      <Header>
-        <LeftAccessory>
-          {itemData.userLocation}
-          <Icon name="chevronDown" color="neutralTextStrong" />
-        </LeftAccessory>
-        <RightAccessory>
-          <Icon
-            name="layoutGrid"
-            color="neutralTextStrong"
-            onClick={openPanel}
-          />
-        </RightAccessory>
-      </Header>
+      <Header
+        leftButton={
+          <LeftAccessory>
+            {itemData.userLocation}
+            <Icon name="chevronDown" color="neutralTextStrong" />
+          </LeftAccessory>
+        }
+        rightButton={
+          <RightAccessory>
+            <Icon
+              name="layoutGrid"
+              color="neutralTextStrong"
+              onClick={openPanel}
+            />
+          </RightAccessory>
+        }
+      />
       <Body ref={bodyRef}>
-        {itemData.items.map((item, index) => {
-          return <ProductItem key={index} {...item} />;
+        {itemData.items.map(item => {
+          return <ProductItem key={item.id} {...item} />;
         })}
+        {itemData.items.length === 0 && (
+          <Error message="판매 상품이 없습니다." />
+        )}
       </Body>
+      {isModalOpen && (
+        <LocationModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
     </Div>
   );
 }
@@ -91,21 +109,6 @@ const Div = styled.div`
   scrollbar-width: none;
 `;
 
-const Header = styled.div`
-  width: 100%;
-  height: 56px;
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-bottom: ${({ theme }) => `0.8px solid ${theme.color.neutralBorder}`};
-  font: ${({ theme }) => theme.font.displayStrong16};
-  backdrop-filter: ${({ theme }) => theme.backdropFilter.blur};
-
-  color: ${({ theme }) => theme.color.neutralTextStrong};
-  z-index: 1;
-`;
-
 const LeftAccessory = styled.div`
   display: flex;
   justify-content: left;
@@ -113,6 +116,7 @@ const LeftAccessory = styled.div`
   flex: 1;
   gap: 8px;
   padding: 8px;
+  cursor: pointer;
 `;
 
 const RightAccessory = styled.div`

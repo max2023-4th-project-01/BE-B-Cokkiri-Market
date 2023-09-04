@@ -55,6 +55,7 @@ const Dialog = styled.dialog`
   border-radius: 16px;
   border-width: 0;
   padding: 0;
+  overflow: hidden;
 
   &[open] {
     animation: ${show} 250ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
@@ -79,7 +80,6 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
   flex-shrink: 0;
-  overflow-x: hidden;
 
   @media (max-height: 750px) {
     height: 90vh;

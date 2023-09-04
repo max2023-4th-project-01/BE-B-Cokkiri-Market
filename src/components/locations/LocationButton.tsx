@@ -1,6 +1,6 @@
 import { MouseEvent } from 'react';
 import { styled } from 'styled-components';
-import { useSelectLocation } from '../../queries/useLocationQuery';
+import { useSelectUserLocation } from '../../queries/useLocationQuery';
 import { useLocationStore } from '../../stores/useLocationStore';
 import { Button } from '../Button';
 import { Icon } from '../icon/Icon';
@@ -19,7 +19,7 @@ export function LocationButton({
   onOpenAlert,
 }: LocationButtonProps) {
   const { setSelectedLocationId } = useLocationStore();
-  const selectMutation = useSelectLocation();
+  const selectMutation = useSelectUserLocation();
 
   const onDeleteLocation = (event: MouseEvent) => {
     event.stopPropagation();
