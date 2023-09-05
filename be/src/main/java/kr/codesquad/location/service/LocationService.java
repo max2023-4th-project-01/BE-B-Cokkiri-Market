@@ -4,29 +4,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kr.codesquad.location.dto.response.LocationListResponse;
+import kr.codesquad.util.SecretProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
 public class LocationService {
 
-    public static List<LocationListResponse> getLocations(String query) {
+    private final String V_WORLD_ENDPOINT;
+    private final String V_WORLD_KEY;
+    private final String V_WORLD_DOMAIN;
 
-        final String API_URL = "https://api.vworld.kr/req/data";
-        String key = "E6435510-7BE8-3FB3-B456-9A65D1E5CA36";
-        String domain = "http://hyowon.site";
-        String data = "LT_C_ADEMD_INFO";
-        String request = "GetFeature";
-        String geometry = "false";
-        String attrFilter = "emd_kor_nm:like:" + query;
+    public LocationService(SecretProperties secretProperties) {
+        V_WORLD_ENDPOINT = secretProperties.getVworld().getEndpoint();
+        V_WORLD_KEY = secretProperties.getVworld().getKey();
+        V_WORLD_DOMAIN = secretProperties.getVworld().getDomain();
+    }
 
-        String url = API_URL + "?service=data&request=" + request + "&key=" + key + "&domain=" + domain + "&data=" + data
-                + "&attrFilter=" + attrFilter + "&geometry=" + geometry;
+    public List<LocationListResponse> getLocations(String query) {
+
+        final String endpoint = V_WORLD_ENDPOINT;
+        String key = "&key=" + V_WORLD_KEY;
+        String domain = "&domain=" + V_WORLD_DOMAIN;
+        String search = "&attrFilter=emd_kor_nm:like:" + query;
+
+        String url = endpoint + key + domain + search;
 
         RestTemplate restTemplate = new RestTemplate();
-
-
-
 
         String result = restTemplate.getForObject(url, String.class);
 
