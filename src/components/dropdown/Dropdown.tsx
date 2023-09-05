@@ -1,6 +1,6 @@
 import { ReactNode, useState } from 'react';
 import { styled } from 'styled-components';
-import { Button } from '../Button';
+import { Button } from '../button/Button';
 import { Icon } from '../icon/Icon';
 import { IconsType } from '../icon/icons';
 import { Backdrop } from './Backdrop';
@@ -25,7 +25,7 @@ export function Dropdown({ text, iconName, gap, children }: DropdownProps) {
 
   return (
     <>
-      <Button styledType="ghost" onClick={onToggle}>
+      <Button styledType="text" onClick={onToggle}>
         <Text>{text}</Text>
         <Icon name={iconName} color="neutralTextStrong" />
       </Button>
@@ -40,7 +40,6 @@ export function Dropdown({ text, iconName, gap, children }: DropdownProps) {
 }
 
 const Text = styled.span`
-  margin-right: 8px;
   font: ${({ theme }) => theme.font.availableStrong16};
   color: ${({ theme }) => theme.color.neutralText};
 `;
