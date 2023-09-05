@@ -9,6 +9,7 @@ import { Dropdown } from '../../components/dropdown/Dropdown';
 import { MenuItem } from '../../components/dropdown/MenuItem';
 import { Icon } from '../../components/icon/Icon';
 import { LocationModal } from '../../components/locations/LocationModal';
+import { useGetUserLocation } from '../../queries/useLocationQuery';
 import { CategoryFilterPanel } from './CategoryFilterPanel';
 
 type ItemData = {
@@ -42,6 +43,8 @@ export function Home() {
     isError,
   } = useQuery<ItemData, Error>(['items'], getItem);
 
+  const { data: userLocationData } = useGetUserLocation();
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -68,21 +71,23 @@ export function Home() {
       <Header
         leftButton={
           <LeftAccessory>
-            <Dropdown text="역삼 1동" iconName="chevronDown" gap={56}>
-              <MenuItem
-                onClick={() => {
-                  console.log('아이템1 클릭');
-                }}
-              >
-                역삼 1동
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  console.log('아이템2 클릭');
-                }}
-              >
-                역삼 2동
-              </MenuItem>
+            <Dropdown
+              text={itemData.userLocation}
+              iconName="chevronDown"
+              gap={56}
+            >
+              {userLocationData?.locations.map(location => {
+                return (
+                  <MenuItem
+                    key={location.id}
+                    onClick={() => {
+                      console.log(`${location.name} 클릭됨`);
+                    }}
+                  >
+                    {location.name}
+                  </MenuItem>
+                );
+              })}
               <MenuItem onClick={openModal}>내 동네 설정하기</MenuItem>
             </Dropdown>
             {/* {itemData.userLocation}
