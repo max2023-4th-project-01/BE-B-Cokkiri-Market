@@ -6,10 +6,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class ItemCountDataResponse {
-	@Builder.Default
-	private int chat = 0;
-	@Builder.Default
-	private int favorite = 0;
-	@Builder.Default
-	private int view = 0;
+	private int chat;
+	private int favorite;
+	private int view;
 }
