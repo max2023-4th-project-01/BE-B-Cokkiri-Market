@@ -1,4 +1,4 @@
-import { ReactNode, MouseEvent, useState } from 'react';
+import { ReactNode, MouseEvent, useState, useEffect } from 'react';
 import { styled, css } from 'styled-components';
 import { useScrollLock } from '../../hooks/useScrollLock';
 import { Button } from '../button/Button';
@@ -23,17 +23,18 @@ export function Dropdown({
   const [isOpen, setIsOpen] = useState(false);
   const [lockScroll, unlockScroll] = useScrollLock();
 
+  useEffect(() => {
+    if (isOpen) {
+      lockScroll();
+    }
+    return () => {
+      unlockScroll();
+    };
+  }, [isOpen]);
+
   const onToggle = (event: MouseEvent) => {
     event.stopPropagation();
-    setIsOpen(prev => {
-      if (prev === false) {
-        lockScroll();
-        return true;
-      } else {
-        unlockScroll();
-        return false;
-      }
-    });
+    setIsOpen(!isOpen);
   };
 
   const onClose = (event: MouseEvent) => {
