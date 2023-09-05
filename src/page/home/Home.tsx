@@ -105,7 +105,7 @@ export function Home() {
           </RightAccessory>
         }
       />
-      <Body ref={bodyRef} id="items-body">
+      <Body ref={bodyRef} id="home--body__items">
         {itemData.items.map(item => {
           return <ProductItem key={item.id} {...item} />;
         })}

@@ -21,7 +21,7 @@ export function Dropdown({
   children,
 }: DropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [lockScroll, unlockScroll] = useScrollLock();
+  const [lockScroll, unlockScroll] = useScrollLock('home--body__items');
 
   useEffect(() => {
     if (isOpen) {
@@ -30,7 +30,7 @@ export function Dropdown({
     return () => {
       unlockScroll();
     };
-  }, [isOpen]);
+  }, [isOpen, lockScroll, unlockScroll]);
 
   const onToggle = (event: MouseEvent) => {
     event.stopPropagation();
