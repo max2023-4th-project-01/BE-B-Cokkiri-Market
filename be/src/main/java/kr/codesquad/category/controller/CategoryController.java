@@ -2,6 +2,7 @@ package kr.codesquad.category.controller;
 
 import java.util.List;
 
+import kr.codesquad.category.dto.response.CategoryResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,12 +21,12 @@ public class CategoryController {
 	private final CategoryService categoryService;
 
 	@GetMapping("/categories")
-	public ResponseEntity<List<Category>> getCategories() {
+	public ResponseEntity<List<CategoryResponse>> getCategories() {
 		return ResponseEntity.ok(categoryService.getCategories());
 	}
 
 	@GetMapping("/categories/recommend")
-	public ResponseEntity<List<Category>> createCategory(String title) {
+	public ResponseEntity<List<CategoryResponse>> createCategory(String title) {
 		return ResponseEntity.ok(categoryService.recommendCategory(title));
 	}
 }

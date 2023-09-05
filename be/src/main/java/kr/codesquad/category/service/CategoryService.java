@@ -8,6 +8,7 @@ import java.util.Map;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kr.codesquad.category.dto.response.CategoryResponse;
 import kr.codesquad.util.CategoryConverter;
 import kr.codesquad.util.SecretProperties;
 import lombok.AllArgsConstructor;
@@ -37,11 +38,11 @@ public class CategoryService {
 		this.OPEN_AI_PROMPT = secretProperties.getOpenai().getPrompt();
 	}
 
-	public List<Category> getCategories() {
-		return categoryRepository.findAll();
+	public List<CategoryResponse> getCategories() {
+		return categoryRepository.findAlltoDto();
 	}
 
-    public List<Category> recommendCategory(String title) {
+    public List<CategoryResponse> recommendCategory(String title) {
 		String endpoint = OEPN_AI_ENDPOINT;
 		String key = OPEN_AI_KEY;
 		String prompt = String.format(OPEN_AI_PROMPT, title);
