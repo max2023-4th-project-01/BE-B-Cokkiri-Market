@@ -24,20 +24,19 @@ import kr.codesquad.item.dto.response.ItemDetailResponse;
 import kr.codesquad.item.dto.response.ItemListResponse;
 import kr.codesquad.item.dto.response.ItemUpdateResponse;
 import kr.codesquad.item.service.ItemService;
-import kr.codesquad.user.entity.User;
+import kr.codesquad.util.Constants;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/items")
 @RequiredArgsConstructor
 public class ItemController {
-	private static final String LOGIN_ID = "login_id";
 	private final ItemService itemService;
 
 	@PostMapping()
 	public ResponseEntity<Long> createItem(@RequestPart List<MultipartFile> imageFiles,
 		@RequestPart ItemSaveRequest items, HttpServletRequest request) {
-		String userLoginId = (String) request.getAttribute(LOGIN_ID);
+		String userLoginId = (String)request.getAttribute(Constants.LOGIN_ID);
 		return ResponseEntity.status(HttpStatus.CREATED).body(itemService.saveItem(imageFiles, items, userLoginId));
 	}
 
@@ -51,7 +50,7 @@ public class ItemController {
 		@RequestPart List<MultipartFile> newImageFiles,
 		@RequestPart List<Long> deleteImageIds,
 		@RequestPart ItemUpdateRequest item, HttpServletRequest request) {
-		String userLoginId = (String) request.getAttribute(LOGIN_ID);
+		String userLoginId = (String)request.getAttribute(Constants.LOGIN_ID);
 		itemService.updateItem(id, newImageFiles, deleteImageIds, item, userLoginId);
 		return ResponseEntity.ok().build();
 	}
@@ -63,7 +62,7 @@ public class ItemController {
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteItem(@PathVariable Long id, HttpServletRequest request) {
-		String userLoginId = (String) request.getAttribute(LOGIN_ID);
+		String userLoginId = (String)request.getAttribute(Constants.LOGIN_ID);
 		itemService.deleteItem(id, userLoginId);
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
