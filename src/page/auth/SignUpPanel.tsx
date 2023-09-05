@@ -7,15 +7,13 @@ import { Icon } from '../../components/icon/Icon';
 import { useScreenConfigStore } from '../../stores/useScreenConfigStore';
 import { AuthInput } from './AuthInput';
 import { ProfileButton } from './ProfileButton';
+import { isValid } from './authConstant';
 
 type SignUpPanelProps = {
   closePanel: () => void;
 };
 
 export function SignUpPanel({ closePanel }: SignUpPanelProps) {
-  const COMMON_REGEX = /^[A-Za-z0-9]{6,20}$/;
-  const NICKNAME_REGEX = /^(?=.*[가-힣A-Za-z0-9])[가-힣A-Za-z0-9]{2,16}$/;
-
   const { screenWidth } = useScreenConfigStore();
   const [rightPosition, setRightPosition] = useState(-screenWidth);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -27,11 +25,9 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
   const [file, setFile] = useState<File>();
   const [backgroundImage, setBackgroundImage] = useState<string>();
 
-  const isValid = (value: string, regex: RegExp): boolean => regex.test(value);
-
-  const isValidId = isValid(id, COMMON_REGEX);
-  const isValidPassword = isValid(password, COMMON_REGEX);
-  const isValidNickname = isValid(nickname, NICKNAME_REGEX);
+  const isValidId = isValid(id, 'common');
+  const isValidPassword = isValid(password, 'common');
+  const isValidNickname = isValid(nickname, 'nickname');
 
   const isNullLocation = location === null;
 
@@ -198,7 +194,7 @@ const Body = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
-  gap: 40px;
+  gap: 15px;
   flex: 1;
   padding: 0 32px;
   margin-top: 138px;
