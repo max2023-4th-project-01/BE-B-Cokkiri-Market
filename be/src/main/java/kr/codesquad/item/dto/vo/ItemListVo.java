@@ -1,4 +1,4 @@
-package kr.codesquad.item.dto;
+package kr.codesquad.item.dto.vo;
 
 import java.time.ZonedDateTime;
 
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class ItemListVo {
 	private Long id;
 	private String title;
-	private String loginId;
+	private Long userId;
 	private String locationName;
 	private ZonedDateTime createdAt;
 	private ItemStatus status;
@@ -22,11 +22,11 @@ public class ItemListVo {
 	private Long favorite;
 
 	@Builder
-	public ItemListVo(Long id, String title, String loginId, String locationName, ZonedDateTime createdAt,
+	public ItemListVo(Long id, String title, Long userId, String locationName, ZonedDateTime createdAt,
 		ItemStatus status, Integer price, String thumbnailUrl, Long chat, Long favorite) {
 		this.id = id;
 		this.title = title;
-		this.loginId = loginId;
+		this.userId = userId;
 		this.locationName = locationName;
 		this.createdAt = createdAt;
 		this.status = status;

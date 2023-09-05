@@ -8,12 +8,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import kr.codesquad.category.entity.Category;
 import kr.codesquad.category.repository.CategoryRepository;
 import kr.codesquad.chat.repository.ChatRepository;
 import kr.codesquad.favorite.repository.FavoriteRepository;
 import kr.codesquad.image.repository.ImageRepository;
-import kr.codesquad.item.dto.CustomSlice;
-import kr.codesquad.item.dto.ItemListVo;
 import kr.codesquad.item.dto.ItemMapper;
 import kr.codesquad.item.dto.request.ItemSaveRequest;
 import kr.codesquad.item.dto.request.ItemUpdateRequest;
@@ -23,8 +22,12 @@ import kr.codesquad.item.dto.response.ItemImageResponse;
 import kr.codesquad.item.dto.response.ItemListResponse;
 import kr.codesquad.item.dto.response.ItemStatusResponse;
 import kr.codesquad.item.dto.response.ItemUpdateResponse;
+import kr.codesquad.item.dto.response.UserItemListResponse;
+import kr.codesquad.item.dto.slice.ItemListSlice;
+import kr.codesquad.item.dto.slice.UserItemListSlice;
+import kr.codesquad.item.dto.vo.ItemListVo;
 import kr.codesquad.item.entity.Item;
-import kr.codesquad.item.repository.ItemPaginationRepository;
+import kr.codesquad.item.entity.ItemConditions;
 import kr.codesquad.item.repository.ItemRepository;
 import kr.codesquad.location.repository.LocationRepository;
 import kr.codesquad.user.entity.User;
@@ -42,7 +45,6 @@ public class ItemService {
 	private final FavoriteRepository favoriteRepository;
 	private final LocationRepository locationRepository;
 	private final ChatRepository chatRepository;
-	private final ItemPaginationRepository itemPaginationRepository;
 	private final UserRepository userRepository;
 
 	@Transactional
@@ -136,7 +138,7 @@ public class ItemService {
 			.build();
 	}
 
-	public CustomSlice<ItemListResponse> readAll(Long itemId, Long categoryId, int pageSize,
+	public ItemListSlice readAll(Long itemId, Long categoryId, int pageSize,
 		String loginId) {
 		String categoryName = null;
 		if (categoryId != null) {
@@ -145,35 +147,97 @@ public class ItemService {
 		User user = userRepository.findByLoginId(loginId);
 		String locationName = locationRepository.findByUserId(user.getId()).getLocationName();
 
-		Slice<ItemListVo> response = itemPaginationRepository.findByIdAndLocationName(itemId,
-			locationName,
-			categoryId, pageSize);
+		Slice<ItemListVo> response = ItemConditions.builder()
+			.itemId(itemId)
+			.locationName(locationName)
+			.categoryId(categoryId).build().findItems();
+
 		List<ItemListVo> itemListVos = response.getContent();
+		Long nextCursor = setNextCursor(itemListVos);
+
 		List<ItemListResponse> items = itemListVos.stream()
 			.map(itemListVo -> ItemMapper.INSTANCE.toItemListResponse(itemListVo,
 				ItemCountDataResponse.builder()
 					.chat(itemListVo.getChat().intValue())
 					.favorite(itemListVo.getFavorite().intValue())
 					.build(),
-				ItemStatus.판매중.name(), loginId.equals(itemListVo.getLoginId())))
+				itemListVo.getStatus().name(), user.getId().equals(itemListVo.getUserId())))
 			.collect(Collectors.toList());
 
-		Long nextCursor = setNextCursor(items);
-
-		return CustomSlice.<ItemListResponse>builder()
+		return ItemListSlice.builder()
 			.items(items)
 			.categoryName(categoryName)
 			.userLocation(locationName)
-			.hasNext(response.hasNext())
 			.nextCursor(nextCursor)
 			.build();
 	}
 
-	private Long setNextCursor(List<ItemListResponse> content) {
+	private Long setNextCursor(List<ItemListVo> content) {
 		Long nextCursor = null;
 		if (!content.isEmpty()) {
 			nextCursor = content.get(content.size() - 1).getId();
 		}
 		return nextCursor;
+	}
+
+	public UserItemListSlice getUserItems(Long itemId, Boolean isSold, int size, String loginId) {
+		User user = userRepository.findByLoginId(loginId);
+
+		Slice<ItemListVo> response = ItemConditions.builder()
+			.isSold(isSold)
+			.pageSize(size)
+			.userId(user.getId())
+			.itemId(itemId)
+			.build().findItems();
+
+		List<ItemListVo> itemListVos = response.getContent();
+		Long nextCursor = setNextCursor(itemListVos);
+
+		List<UserItemListResponse> items = itemListVos.stream()
+			.map(itemListVo -> ItemMapper.INSTANCE.toUserItemListResponse(itemListVo,
+				ItemCountDataResponse.builder()
+					.chat(itemListVo.getChat().intValue())
+					.favorite(itemListVo.getFavorite().intValue())
+					.build(),
+				itemListVo.getStatus().name()))
+			.collect(Collectors.toList());
+
+		return UserItemListSlice.builder()
+			.items(items)
+			.nextCursor(nextCursor)
+			.build();
+	}
+
+	public Object getFavoriteItems(Long itemId, Long categoryId, int size, String loginId) {
+		User user = userRepository.findByLoginId(loginId);
+
+		Slice<ItemListVo> response = ItemConditions.builder()
+			.categoryId(categoryId)
+			.pageSize(size)
+			.userId(user.getId())
+			.isFavorite(true)
+			.itemId(itemId)
+			.build().findItems();
+
+		List<ItemListVo> itemListVos = response.getContent();
+		Long nextCursor = setNextCursor(itemListVos);
+
+		List<Category> categories = itemListVos.stream().map(itemListVo -> {
+			itemRepository.
+		})
+
+		List<UserItemListResponse> items = itemListVos.stream()
+			.map(itemListVo -> ItemMapper.INSTANCE.toUserItemListResponse(itemListVo,
+				ItemCountDataResponse.builder()
+					.chat(itemListVo.getChat().intValue())
+					.favorite(itemListVo.getFavorite().intValue())
+					.build(),
+				itemListVo.getStatus().name()))
+			.collect(Collectors.toList());
+
+		return UserItemListSlice.builder()
+			.items(items)
+			.nextCursor(nextCursor)
+			.build();
 	}
 }

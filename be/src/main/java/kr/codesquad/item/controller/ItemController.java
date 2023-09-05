@@ -17,12 +17,11 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import kr.codesquad.item.dto.CustomSlice;
 import kr.codesquad.item.dto.request.ItemSaveRequest;
 import kr.codesquad.item.dto.request.ItemUpdateRequest;
 import kr.codesquad.item.dto.response.ItemDetailResponse;
-import kr.codesquad.item.dto.response.ItemListResponse;
 import kr.codesquad.item.dto.response.ItemUpdateResponse;
+import kr.codesquad.item.dto.slice.ItemListSlice;
 import kr.codesquad.item.service.ItemService;
 import kr.codesquad.util.Constants;
 import lombok.RequiredArgsConstructor;
@@ -68,11 +67,11 @@ public class ItemController {
 	}
 
 	@GetMapping()
-	public ResponseEntity<CustomSlice<ItemListResponse>> readAll(
+	public ResponseEntity<ItemListSlice> readAll(
 		@RequestParam(required = false) Long cursor,
 		@RequestParam(required = false) Long categoryId,
 		@RequestParam(required = false, defaultValue = "10") int size, HttpServletRequest request) {
-		String loginId = (String)request.getAttribute(LOGIN_ID);
+		String loginId = (String)request.getAttribute(Constants.LOGIN_ID);
 		return ResponseEntity.ok()
 			.body(itemService.readAll(cursor, categoryId, size, loginId));
 	}
