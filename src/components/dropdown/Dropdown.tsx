@@ -1,5 +1,6 @@
 import { ReactNode, MouseEvent, useState } from 'react';
 import { styled, css } from 'styled-components';
+import { useScrollLock } from '../../hooks/useScrollLock';
 import { Button } from '../button/Button';
 import { Icon } from '../icon/Icon';
 import { IconsType } from '../icon/icons';
@@ -13,13 +14,24 @@ type DropdownProps = {
 
 export function Dropdown({ text, iconName, gap, children }: DropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [lockScroll, unlockScroll] = useScrollLock();
 
   const onToggle = (event: MouseEvent) => {
     event.stopPropagation();
-    setIsOpen(!isOpen);
+    setIsOpen(prev => {
+      if (prev === false) {
+        lockScroll();
+        return true;
+      } else {
+        unlockScroll();
+        return false;
+      }
+    });
   };
 
-  const onClose = () => {
+  const onClose = (event: MouseEvent) => {
+    event.stopPropagation();
+    unlockScroll();
     setIsOpen(false);
   };
 
