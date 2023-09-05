@@ -1,15 +1,15 @@
 import { useState } from 'react';
 import { styled } from 'styled-components';
 import {
+  useDeleteUserLocation,
   useGetUserLocation,
   useSelectUserLocation,
-  useDeleteUserLocation,
 } from '../../queries/useLocationQuery';
 import { useLocationStore } from '../../stores/useLocationStore';
 import { Alert } from '../Alert';
-import { Button } from '../Button';
 import { Error } from '../Error';
 import { Loader } from '../Loader';
+import { Button } from '../button/Button';
 import { Icon } from '../icon/Icon';
 import { LocationButton } from './LocationButton';
 
@@ -74,12 +74,11 @@ export function SetLocation({ openSearchPanel }: SetLocationProps) {
               <Button
                 styledType="outline"
                 color="neutralBorder"
+                fontColor="accentTextWeak"
                 onClick={openSearchPanel}
               >
-                <Plus>
-                  <Icon name="plus" color="accentTextWeak" />
-                  추가
-                </Plus>
+                <Icon name="plus" color="accentTextWeak" />
+                추가
               </Button>
             )}
           </Buttons>
@@ -126,16 +125,4 @@ const Buttons = styled.div`
   align-items: flex-start;
   gap: 8px;
   align-self: stretch;
-`;
-
-const Plus = styled.div`
-  width: 254px;
-  height: 22px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 4px;
-  align-self: stretch;
-  font: ${({ theme }) => theme.font.availableStrong16};
-  color: ${({ theme }) => theme.color.accentTextWeak};
 `;

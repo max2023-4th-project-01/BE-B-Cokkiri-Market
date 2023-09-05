@@ -2,8 +2,8 @@ import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { styled } from 'styled-components';
 import axios from '../../api/axios';
 import { API_ENDPOINT } from '../../api/endPoint';
-import { Button } from '../../components/Button';
 import { Header } from '../../components/Header';
+import { Button } from '../../components/button/Button';
 import { Icon } from '../../components/icon/Icon';
 import { useScreenConfigStore } from '../../stores/useScreenConfigStore';
 import { AuthInput } from './AuthInput';
@@ -112,17 +112,22 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
     <Div $right={rightPosition} onTransitionEnd={onTransitionEndHandler}>
       <Header
         leftButton={
-          <Button styledType="ghost" onClick={onClose}>
-            <ButtonDiv>닫기</ButtonDiv>
+          <Button
+            styledType="text"
+            fontColor="neutralTextStrong"
+            onClick={onClose}
+          >
+            닫기
           </Button>
         }
         rightButton={
           <Button
-            styledType="ghost"
+            styledType="text"
+            fontColor="neutralTextStrong"
             onClick={submit}
             disabled={isSignUpDisabled}
           >
-            <ButtonDiv>완료</ButtonDiv>
+            완료
           </Button>
         }
         title="회원가입"
@@ -147,12 +152,11 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
         <Button
           styledType="outline"
           color="neutralBorder"
+          fontColor="accentTextWeak"
           onClick={() => setLocation('역삼1동')}
         >
-          <AddLocation>
-            <Icon name="plus" color="accentTextWeak" />
-            위치 추가
-          </AddLocation>
+          <Icon name="plus" color="accentTextWeak" />
+          위치 추가
         </Button>
       </Body>
     </Div>
@@ -183,10 +187,6 @@ const Body = styled.div`
   flex: 1;
   padding: 0 32px;
   margin-top: 138px;
-
-  & > button {
-    width: 100%;
-  }
 `;
 
 const ProfileWrapper = styled.div`
@@ -200,19 +200,4 @@ const ProfileWrapper = styled.div`
   & input {
     display: none;
   }
-`;
-
-const ButtonDiv = styled.div`
-  font: ${({ theme }) => theme.font.availableStrong16};
-  color: ${({ theme }) => theme.color.neutralTextStrong};
-`;
-
-const AddLocation = styled.div`
-  width: 100%;
-  height: 24px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font: ${({ theme }) => theme.font.availableStrong16};
-  color: ${({ theme }) => theme.color.accentTextWeak};
 `;
