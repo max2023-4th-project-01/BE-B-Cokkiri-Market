@@ -23,4 +23,12 @@ public class SecretProperties {
         private String key;
         private String domain;
     }
+
+    @Getter
+    @Setter
+    public static class Openai {
+        private String endpoint;
+        private String key;
+        private String prompt;
+    }
 }
