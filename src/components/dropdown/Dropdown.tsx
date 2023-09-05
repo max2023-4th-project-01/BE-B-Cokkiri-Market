@@ -8,10 +8,11 @@ import { Backdrop } from './Backdrop';
 type DropdownProps = {
   text?: string;
   iconName: IconsType;
+  gap: number;
   children: ReactNode;
 };
 
-export function Dropdown({ text, iconName, children }: DropdownProps) {
+export function Dropdown({ text, iconName, gap, children }: DropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const onToggle = () => {
@@ -29,7 +30,7 @@ export function Dropdown({ text, iconName, children }: DropdownProps) {
         <Icon name={iconName} color="neutralTextStrong" />
       </Button>
       {isOpen && (
-        <Container $isOpen={isOpen}>
+        <Container $isOpen={isOpen} $gap={gap}>
           <Menus onClick={onClose}>{children}</Menus>
         </Container>
       )}
@@ -44,11 +45,11 @@ const Text = styled.span`
   color: ${({ theme }) => theme.color.neutralText};
 `;
 // TODO: 드롭다운 position 값을 부모요소에 따라서 변경해야함
-const Container = styled.div<{ $isOpen: boolean }>`
+const Container = styled.div<{ $isOpen: boolean; $gap: number }>`
   border-radius: 12px;
   background-color: ${({ theme }) => theme.color.neutralBackground};
   position: absolute;
-  top: 56px;
+  top: ${({ $gap }) => $gap}px;
   z-index: 10;
 `;
 const Menus = styled.ul`

@@ -68,7 +68,7 @@ export function Home() {
       <Header
         leftButton={
           <LeftAccessory>
-            <Dropdown text="역삼 1동" iconName="chevronDown">
+            <Dropdown text="역삼 1동" iconName="chevronDown" gap={56}>
               <MenuItem
                 onClick={() => {
                   console.log('아이템1 클릭');

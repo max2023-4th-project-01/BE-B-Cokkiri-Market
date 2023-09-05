@@ -2,6 +2,8 @@ import { styled } from 'styled-components';
 import { addCommasToNumber } from '../utils/addCommasToNumber';
 import { getElapsedSince } from '../utils/getElapsedSince';
 import { Badge } from './Badge';
+import { Dropdown } from './dropdown/Dropdown';
+import { MenuItem } from './dropdown/MenuItem';
 import { Icon } from './icon/Icon';
 
 type ItemProps = {
@@ -53,7 +55,24 @@ export function ProductItem({
       <Information>
         <Title>
           <span>{title}</span>
-          {isSeller && <Icon name="dots" color="neutralTextStrong" />}
+          {isSeller && (
+            <Dropdown iconName="dots" gap={40}>
+              <MenuItem
+                onClick={() => {
+                  console.log('아이템1 클릭');
+                }}
+              >
+                게시글 수정
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  console.log('아이템2 클릭');
+                }}
+              >
+                삭제
+              </MenuItem>
+            </Dropdown>
+          )}
         </Title>
         <LocationAndTimestamp>
           {locationName}・{getElapsedSince(createdAt)}
@@ -125,6 +144,7 @@ const Information = styled.div`
 const Title = styled.div`
   font: ${({ theme }) => theme.font.displayDefault16};
   color: ${({ theme }) => theme.color.neutralText};
+  position: relative;
 
   & span {
     flex: 1;
