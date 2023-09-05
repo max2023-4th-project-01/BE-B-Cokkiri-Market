@@ -1,10 +1,6 @@
 package kr.codesquad.user.service;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import kr.codesquad.location.dto.request.LocationCreateRequest;
-import kr.codesquad.location.dto.response.LocationListResponse;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -57,56 +53,5 @@ public class UserService implements UserDetailsService {
 			nickName = loginId + UuidGenerator.generateUuid();
 		}
 		return nickName;
-	}
-
-	@Transactional(readOnly = true)
-	public List<LocationListResponse> getLocations() {
-		Long userId = 1L;
-		return LocationListResponse.toLocationList(locationRepository.findAllByUserId(userId));
-	}
-
-	@Transactional
-	public LocationListResponse saveLocation(LocationCreateRequest request) {
-		Long userId = 1L;
-
-		if (locationRepository.countByUserId(userId) >= 2) {
-			throw new RuntimeException("동네는 최대 2개까지만 등록할 수 있습니다");
-		}
-
-		return LocationListResponse.of(locationRepository.save(Location.builder()
-				.userId(userId)
-				.locationName(request.getLocationName())
-				.isSelected(false) // false??
-				.build()));
-	}
-
-	@Transactional
-	public void selectLocation(Long locationId) {
-		Long userId = 1L;
-
-		List<Location> locations = locationRepository.findAllByUserIdOrderByIsSelectedDesc(userId);
-
-		if (locations.size() == 0) {
-			throw new RuntimeException("동네는 최소 1개 이상 등록되어야 합니다");
-		}
-
-		for (Location location : locations) {
-			if (location.getId().equals(locationId)) {
-				location.updateIsSelected(true);
-			} else {
-				location.updateIsSelected(false);
-			}
-		}
-	}
-
-	@Transactional
-	public void deleteLocation(Long locationId) {
-		Long userId = 1L;
-
-		if (locationRepository.countByUserId(userId) <= 1) {
-			throw new RuntimeException("동네는 최소 1개 이상 등록되어야 합니다");
-		}
-
-		locationRepository.deleteById(locationId);
 	}
 }
