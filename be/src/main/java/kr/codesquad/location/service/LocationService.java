@@ -25,11 +25,10 @@ public class LocationService {
 
         RestTemplate restTemplate = new RestTemplate();
 
-        Object result = restTemplate.getForObject(url, Object.class);
 
 
-        String resultString = result.toString();
 
+        String result = restTemplate.getForObject(url, String.class);
 
         List<LocationListResponse> locations = new ArrayList<>();
 
@@ -37,13 +36,14 @@ public class LocationService {
         int end = 0;
 
         while (true) {
-            start = resultString.indexOf("full_nm=", end);
+            start = result.indexOf("full_nm", end);
             if (start == -1) {
                 break;
             }
-            end = resultString.indexOf(",", start);
-            String temp = resultString.substring(start + 8, end);
-            locations.add(new LocationListResponse(null, temp, null));
+            end = result.indexOf(",", start);
+            String name = result.substring(start + 10, end - 1);
+            Long id = Long.parseLong(result.substring(end + 11, end + 19));
+            locations.add(new LocationListResponse(id, name, null));
         }
 
         return locations;
