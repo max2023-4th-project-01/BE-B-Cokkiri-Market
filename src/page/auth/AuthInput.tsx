@@ -4,15 +4,19 @@ import { styled } from 'styled-components';
 type AuthInputProps = {
   id: string;
   password: string;
+  nickname?: string;
   onChangeId: (event: ChangeEvent<HTMLInputElement>) => void;
   onChangePassword: (event: ChangeEvent<HTMLInputElement>) => void;
+  onChangeNickname?: (event: ChangeEvent<HTMLInputElement>) => void;
 };
 
 export function AuthInput({
   id,
   password,
+  nickname,
   onChangeId,
   onChangePassword,
+  onChangeNickname,
 }: AuthInputProps) {
   return (
     <>
@@ -33,6 +37,16 @@ export function AuthInput({
           onChange={onChangePassword}
         />
       </InputWrapper>
+      {nickname !== undefined && onChangeNickname && (
+        <InputWrapper>
+          <Label>닉네임</Label>
+          <input
+            placeholder="내용을 입력해 주세요"
+            value={nickname}
+            onChange={onChangeNickname}
+          />
+        </InputWrapper>
+      )}
     </>
   );
 }

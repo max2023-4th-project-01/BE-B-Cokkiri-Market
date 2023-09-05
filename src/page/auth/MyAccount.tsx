@@ -4,12 +4,18 @@ import { LoginPage } from './LoginPage';
 import { MyProfilePage } from './MyProfilePage';
 
 export function MyAccount() {
-  const authStore = useAuthStore();
+  const { accessToken, refreshToken, nickname, profileImageUrl } =
+    useAuthStore();
+  const isLogin =
+    accessToken !== '' &&
+    refreshToken !== '' &&
+    nickname !== '' &&
+    profileImageUrl !== '';
 
   return (
     <>
       <Header title="내 계정" />
-      {authStore.accessToken ? <MyProfilePage /> : <LoginPage />}
+      {isLogin ? <MyProfilePage /> : <LoginPage />}
     </>
   );
 }

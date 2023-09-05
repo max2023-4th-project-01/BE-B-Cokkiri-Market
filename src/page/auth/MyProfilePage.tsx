@@ -58,7 +58,7 @@ export function MyProfilePage() {
           onChangeFile={onChangeFile}
           onRemoveProfile={onRemoveProfile}
         />
-        <UserName>{userInfo?.username}</UserName>
+        <UserName>{userInfo?.nickname}</UserName>
         {/* TODO : 이미지 변경 시 저장 취소 버튼이 나오게한다. 취소하면 원래 이미지로, 저장하면 api 요청 */}
       </ProfileWrapper>
       <Button

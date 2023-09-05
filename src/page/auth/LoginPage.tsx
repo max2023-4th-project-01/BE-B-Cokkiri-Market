@@ -1,16 +1,13 @@
 import { ChangeEvent, useState } from 'react';
 import { styled } from 'styled-components';
-import axios from '../../api/axios';
-import { API_ENDPOINT } from '../../api/endPoint';
+import { useLogin } from '../../api/authFetcher';
 import { Button } from '../../components/button/Button';
 import { Icon } from '../../components/icon/Icon';
-import { useAuthStore } from '../../stores/useAuthStore';
-import { setAccessToken, setUserInfo } from '../../utils/localStorage';
 import { AuthInput } from './AuthInput';
 import { SignUpPanel } from './SignUpPanel';
 
 export function LoginPage() {
-  const { setStateAccessToken, setStateUserInfo } = useAuthStore();
+  const { login } = useLogin();
 
   const [isOpenPanel, setIsOpenPanel] = useState(false);
   const [id, setId] = useState('');
@@ -38,21 +35,12 @@ export function LoginPage() {
   };
 
   const submit = async () => {
-    const res = await axios.post(API_ENDPOINT.LOGIN, {
+    const res = await login({
       username: id,
       password,
     });
 
-    if (res.statusText === 'OK') {
-      const data = res.data;
-      const { accessToken, ...userInfo } = data;
-
-      setAccessToken(accessToken);
-      setUserInfo(userInfo);
-
-      setStateAccessToken(accessToken);
-      setStateUserInfo(userInfo);
-    }
+    console.log(res);
   };
 
   return (
