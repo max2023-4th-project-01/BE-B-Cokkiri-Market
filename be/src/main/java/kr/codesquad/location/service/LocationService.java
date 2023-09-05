@@ -11,9 +11,6 @@ import org.springframework.web.client.RestTemplate;
 public class LocationService {
 
     public static List<LocationListResponse> getLocations(String query) {
-        // 시간 측정
-        long startTime = System.currentTimeMillis();
-        System.out.println("시간 측정 : " + startTime);
 
         final String API_URL = "https://api.vworld.kr/req/data";
         String key = "E6435510-7BE8-3FB3-B456-9A65D1E5CA36";
@@ -30,13 +27,9 @@ public class LocationService {
 
         Object result = restTemplate.getForObject(url, Object.class);
 
-        long searchTime = System.currentTimeMillis();
-        System.out.println("검색 완료 : " + (searchTime - startTime));
 
         String resultString = result.toString();
 
-        long convertTime = System.currentTimeMillis();
-        System.out.println("String 변환 완료 : " + (convertTime - searchTime));
 
         List<LocationListResponse> locations = new ArrayList<>();
 
@@ -52,9 +45,6 @@ public class LocationService {
             String temp = resultString.substring(start + 8, end);
             locations.add(new LocationListResponse(null, temp, null));
         }
-
-        long endTime = System.currentTimeMillis();
-        System.out.println("최종 완료 : " + (endTime - convertTime));
 
         return locations;
     }
