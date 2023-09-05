@@ -56,7 +56,7 @@ export function ProductItem({
         <Title>
           <span>{title}</span>
           {isSeller && (
-            <Dropdown iconName="dots" gap={40}>
+            <Dropdown iconName="dots" gap={40} align="right">
               <MenuItem
                 onClick={() => {
                   console.log('아이템1 클릭');

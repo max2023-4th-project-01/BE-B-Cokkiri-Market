@@ -75,6 +75,7 @@ export function Home() {
               text={itemData.userLocation}
               iconName="chevronDown"
               gap={56}
+              align="left"
             >
               {userLocationData?.locations.map(location => {
                 return (

@@ -9,10 +9,17 @@ type DropdownProps = {
   text?: string;
   iconName: IconsType;
   gap: number;
+  align: 'left' | 'right';
   children: ReactNode;
 };
 
-export function Dropdown({ text, iconName, gap, children }: DropdownProps) {
+export function Dropdown({
+  text,
+  iconName,
+  gap,
+  align,
+  children,
+}: DropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [lockScroll, unlockScroll] = useScrollLock();
 
@@ -38,11 +45,11 @@ export function Dropdown({ text, iconName, gap, children }: DropdownProps) {
   return (
     <>
       <StyledButton styledType="text" onClick={onToggle} $isOpen={isOpen}>
-        <Text>{text}</Text>
+        {text && <Text>{text}</Text>}
         <Icon name={iconName} color="neutralTextStrong" />
       </StyledButton>
       {isOpen && (
-        <Container $isOpen={isOpen} $gap={gap}>
+        <Container $isOpen={isOpen} $gap={gap} $align={align}>
           <Menus onClick={onClose}>{children}</Menus>
         </Container>
       )}
@@ -74,11 +81,16 @@ const Text = styled.span`
   color: ${({ theme }) => theme.color.neutralText};
 `;
 // TODO: 드롭다운 position 값을 부모요소에 따라서 변경해야함
-const Container = styled.div<{ $isOpen: boolean; $gap: number }>`
+const Container = styled.div<{
+  $isOpen: boolean;
+  $gap: number;
+  $align: string;
+}>`
   border-radius: 12px;
   background-color: ${({ theme }) => theme.color.neutralBackground};
   position: absolute;
   top: ${({ $gap }) => $gap}px;
+  right: ${({ $align }) => ($align === 'right' ? 0 : 'auto')};
   z-index: 10;
 `;
 
