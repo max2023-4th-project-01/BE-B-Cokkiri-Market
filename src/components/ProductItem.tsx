@@ -45,18 +45,19 @@ export function ProductItem({
     }
   };
 
+  // TODO: 각 드롭다운 메뉴 아이템들에 맞는 액션 추가하기
   const dropdownActions = {
     edit: () => {
-      console.log('게시슬 수정');
+      console.log('게시글 수정');
     },
     reserved: () => {
-      console.log('게시슬 수정');
+      console.log('예약중');
     },
     sold: () => {
-      console.log('게시슬 수정');
+      console.log('판매완료');
     },
     delete: () => {
-      console.log('게시슬 수정');
+      console.log('삭제');
     },
   };
 
