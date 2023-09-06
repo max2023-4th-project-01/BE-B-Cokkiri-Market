@@ -74,7 +74,6 @@ export function Home() {
             <Dropdown
               btnText={itemData.userLocation}
               iconName="chevronDown"
-              top={56}
               align="left"
             >
               {userLocationData?.locations.map(location => {

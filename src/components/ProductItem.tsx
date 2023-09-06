@@ -72,7 +72,7 @@ export function ProductItem({
         <Title>
           <span>{title}</span>
           {isSeller && (
-            <Dropdown iconName="dots" top={40} align="right">
+            <Dropdown iconName="dots" align="right">
               <MenuItem onAction={dropdownActions['edit']}>
                 게시글 수정
               </MenuItem>

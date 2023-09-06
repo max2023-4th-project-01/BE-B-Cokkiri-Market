@@ -1,5 +1,5 @@
-import { ReactNode, MouseEvent, useState, useEffect } from 'react';
-import { styled, css } from 'styled-components';
+import { MouseEvent, ReactNode, useEffect, useState } from 'react';
+import { css, styled } from 'styled-components';
 import { useScrollLock } from '../../hooks/useScrollLock';
 import { Button } from '../button/Button';
 import { Icon } from '../icon/Icon';
@@ -9,7 +9,6 @@ type DropdownProps = {
   children: ReactNode;
   btnText?: string;
   iconName: IconsType;
-  top: number;
   align?: 'left' | 'right';
 };
 
@@ -17,7 +16,6 @@ export function Dropdown({
   children,
   btnText,
   iconName,
-  top,
   align = 'left',
 }: DropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -44,17 +42,17 @@ export function Dropdown({
   };
 
   return (
-    <>
+    <div>
       <StyledButton styledType="text" onClick={onToggle} $isOpen={isOpen}>
         {btnText && <Text>{btnText}</Text>}
         <Icon name={iconName} color="neutralTextStrong" />
       </StyledButton>
       {isOpen && (
-        <Container $isOpen={isOpen} $top={top} $align={align}>
+        <Container $isOpen={isOpen} $align={align}>
           <Menus onClick={onClose}>{children}</Menus>
         </Container>
       )}
-    </>
+    </div>
   );
 }
 
@@ -84,14 +82,10 @@ const Text = styled.span`
 
 const Container = styled.div<{
   $isOpen: boolean;
-  $top: number;
   $align: string;
 }>`
-  margin-left: ${({ $align }) => ($align === 'left' ? '16px' : 'auto')};
   border-radius: 12px;
   position: absolute;
-  top: ${({ $top }) => $top}px;
-  left: ${({ $align }) => ($align === 'left' ? 0 : 'auto')};
   right: ${({ $align }) => ($align === 'right' ? 0 : 'auto')};
   z-index: 10;
   background-color: ${({ theme }) => theme.color.neutralBackground};
