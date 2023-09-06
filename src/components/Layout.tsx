@@ -2,6 +2,7 @@ import { Outlet } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { useScreenConfigStore } from '../stores/useScreenConfigStore';
 import { Footer } from './Footer';
+import { ToastContainer } from './Toast';
 
 export function Layout() {
   const { screenWidth, screenHeight } = useScreenConfigStore();
@@ -9,6 +10,7 @@ export function Layout() {
     <Wrapper $width={screenWidth} $height={screenHeight}>
       <Outlet />
       <Footer />
+      <ToastContainer />
     </Wrapper>
   );
 }

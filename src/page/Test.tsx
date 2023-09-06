@@ -1,60 +1,38 @@
 import { styled } from 'styled-components';
 import { Button } from '../components/button/Button';
-import { Icon } from '../components/icon/Icon';
+import { useToastStore } from '../stores/useToastStore';
 
 export function Test() {
+  const { showToast } = useToastStore();
+
+  const handleError = () => {
+    showToast({ message: 'This is a error', type: 'error', duration: 5000 });
+  };
+
+  const handleSuccess = () => {
+    showToast({
+      message: 'This is a success',
+      type: 'success',
+      duration: 1000,
+    });
+  };
+
   return (
     <Div>
       <Button
         color="accentPrimary"
         fontColor="accentText"
-        align="space-between"
+        onClick={handleSuccess}
       >
-        역삼 1동
-        <Icon name="circleXFilled" color="accentText" />
+        성공
       </Button>
       <Button
         styledType="outline"
         color="neutralBorder"
         fontColor="accentTextWeak"
-        align="center"
-        disabled
+        onClick={handleError}
       >
-        <Icon name="plus" color="accentTextWeak" />
-        추가
-      </Button>
-      <Button styledType="circle" color="accentPrimary">
-        <Icon name="plus" color="accentText" />
-      </Button>
-      <Button size="M" styledType="circle" color="accentPrimary">
-        <Icon name="send" size={16} color="accentText" />
-      </Button>
-      <Button
-        style={{ height: '42px' }}
-        size="L"
-        styledType="outline"
-        color="neutralText"
-      >
-        <Icon name="octocat" color="accentText" />
-        GitHub 로그인
-      </Button>
-
-      <Button styledType="text" size="L" disabled>
-        닫기
-      </Button>
-      <Button styledType="text" size="L">
-        완료
-      </Button>
-      <Button styledType="text" size="L">
-        <Icon name="chevronLeft" color="neutralText" />
-        뒤로
-      </Button>
-      <Button styledType="text" size="L">
-        <Icon name="mapPinFilled" color="neutralText" />
-        역삼 1동
-      </Button>
-      <Button styledType="text" size="M">
-        회원가입
+        에러
       </Button>
     </Div>
   );
