@@ -19,12 +19,11 @@ import org.springframework.web.cors.CorsUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.MalformedJwtException;
 import kr.codesquad.jwt.service.JwtProvider;
+import kr.codesquad.util.Constants;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class AuthorizationFilter implements Filter {
-	private static final String TOKEN_PREFIX = "Bearer ";
-	private static final String LOGIN_ID = "login_id";
 	private static final String[] whiteListUris = {"/h2-console/**", "/api/users", "/api/login",
 		"/api/reissue-access-token", "/api/oauth/**", "/api/redirect/**"};
 
@@ -51,7 +50,7 @@ public class AuthorizationFilter implements Filter {
 		try {
 			String token = getToken(httpServletRequest);
 			Claims claims = jwtProvider.getClaims(token);
-			request.setAttribute(LOGIN_ID, claims.get(LOGIN_ID));
+			request.setAttribute(Constants.LOGIN_ID, claims.get(Constants.LOGIN_ID));
 			SecurityContextHolder.getContext()
 				.setAuthentication(
 					new UsernamePasswordAuthenticationToken(claims.getSubject(), null, new ArrayList<>()));
@@ -67,7 +66,7 @@ public class AuthorizationFilter implements Filter {
 
 	private boolean isContainToken(HttpServletRequest request) {
 		String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
-		return authorization != null && authorization.startsWith(TOKEN_PREFIX);
+		return authorization != null && authorization.startsWith(Constants.TOKEN_PREFIX);
 	}
 
 	private String getToken(HttpServletRequest request) {
