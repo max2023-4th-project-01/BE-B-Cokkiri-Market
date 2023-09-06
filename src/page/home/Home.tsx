@@ -61,7 +61,11 @@ export function Home() {
       {isOpenPanel && <CategoryFilterPanel closePanel={closePanel} />}
       <Header
         leftButton={
-          <LeftAccessory>
+          <LeftAccessory
+            onClick={() => {
+              setIsModalOpen(true);
+            }}
+          >
             {itemData.userLocation}
             <Icon name="chevronDown" color="neutralTextStrong" />
           </LeftAccessory>

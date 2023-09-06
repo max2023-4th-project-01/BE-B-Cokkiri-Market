@@ -10,12 +10,13 @@ import {
   addUserLocation,
   deleteUserLocation,
   selectUserLocation,
-} from '../api/fetcher';
+} from '../api/locationFetcher';
 import { UserLocationData, LocationResultData } from '../types';
 
 const USER_LOCATION_QUERY_KEY = '/users/locations';
 const LOCATION_QUERY_KEY = '/locations';
 
+// 홈: 동네설정 지역리스트 검색
 export const useGetLocationResult = (searchParam: string) => {
   return useInfiniteQuery<LocationResultData>(
     [LOCATION_QUERY_KEY],
@@ -26,6 +27,7 @@ export const useGetLocationResult = (searchParam: string) => {
   );
 };
 
+// 홈: 동네설정 내 동네 목록 불러오기
 export const useGetUserLocation = () => {
   return useQuery<UserLocationData>(
     [USER_LOCATION_QUERY_KEY],
@@ -33,8 +35,10 @@ export const useGetUserLocation = () => {
   );
 };
 
+// 홈: 동네설정 내 동네 추가하기
 export const useAddUserLocation = () => {
   const queryClient = useQueryClient();
+
   return useMutation(addUserLocation, {
     onSuccess: () => {
       queryClient.invalidateQueries([USER_LOCATION_QUERY_KEY]);
@@ -42,6 +46,7 @@ export const useAddUserLocation = () => {
   });
 };
 
+// 홈: 동네설정 내 동네 삭제하기
 export const useDeleteUserLocation = () => {
   const queryClient = useQueryClient();
 
@@ -61,13 +66,10 @@ export const useDeleteUserLocation = () => {
         }
       );
     },
-    // Always refetch after error or success:
-    // onSettled: () => {
-    //   queryClient.invalidateQueries(['todos']);
-    // },
   });
 };
 
+// 홈: 동네설정 내 동네 선택하기
 export const useSelectUserLocation = () => {
   const queryClient = useQueryClient();
 
