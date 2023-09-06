@@ -4,6 +4,7 @@ import {
   useMutation,
   useInfiniteQuery,
 } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 import {
   getUserLocations,
   getLocationData,
@@ -20,9 +21,9 @@ const LOCATION_QUERY_KEY = '/locations';
 export const useGetLocationResult = (searchParam: string) => {
   return useInfiniteQuery<LocationResultData>(
     [LOCATION_QUERY_KEY],
-    ({ pageParam = 0 }) => getLocationData({ pageParam, searchParam }),
+    ({ pageParam = 1 }) => getLocationData({ pageParam, searchParam }),
     {
-      getNextPageParam: lastPage => lastPage.nextCursor ?? undefined,
+      getNextPageParam: lastPage => lastPage.nextPage ?? undefined,
     }
   );
 };
@@ -40,8 +41,24 @@ export const useAddUserLocation = () => {
   const queryClient = useQueryClient();
 
   return useMutation(addUserLocation, {
-    onSuccess: () => {
-      queryClient.invalidateQueries([USER_LOCATION_QUERY_KEY]);
+    onSuccess: data => {
+      queryClient.setQueryData<UserLocationData>(
+        [USER_LOCATION_QUERY_KEY],
+        prevData => {
+          return prevData
+            ? {
+                locations: [...prevData.locations, data],
+              }
+            : prevData;
+        }
+      );
+    },
+    onError: (error: AxiosError) => {
+      const statueCode = error?.response?.status;
+      if (statueCode === 500) {
+        // TODO: 토스트 메세지로 에러 표시
+        console.log('서버에서 요청이 제대로 처리되지 못했습니다.');
+      }
     },
   });
 };

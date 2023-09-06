@@ -15,14 +15,14 @@ export const getLocationData = async ({
   searchParam: string;
 }) => {
   const res = await fetcher.get(
-    `${API_ENDPOINT.LOCATION_DATA}?cursor=${pageParam}&search=${searchParam}`
+    `${API_ENDPOINT.LOCATION_DATA}?query=${searchParam}&page=${pageParam}`
   );
   return res.data;
 };
 
-export const addUserLocation = async (locationName: string) => {
+export const addUserLocation = async (locationId: number) => {
   const res = await fetcher.post(API_ENDPOINT.USER_LOCATION, {
-    name: locationName,
+    locationId,
   });
   return res.data;
 };

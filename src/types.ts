@@ -16,5 +16,5 @@ export type LocationResultData = {
     id: number;
     name: string;
   }[];
-  nextCursor: number | null;
+  nextPage: number | null;
 };

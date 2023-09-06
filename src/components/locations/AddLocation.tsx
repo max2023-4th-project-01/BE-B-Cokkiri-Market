@@ -37,9 +37,8 @@ export function AddLocation({
     showSearchPanel();
   }, []);
 
-  const onClickLocationItem = (locationName: string) => {
-    console.log(locationName);
-    addMutation.mutate(locationName);
+  const onClickLocationItem = (locationId: number) => {
+    addMutation.mutate(locationId);
     hideSearchPanel();
   };
 
@@ -64,7 +63,7 @@ export function AddLocation({
                 <LocationItem
                   ref={isLastItem ? lastItemRef : null}
                   key={location.id}
-                  onClick={() => onClickLocationItem(location.name)}
+                  onClick={() => onClickLocationItem(location.id)}
                 >
                   {location.name}
                 </LocationItem>
