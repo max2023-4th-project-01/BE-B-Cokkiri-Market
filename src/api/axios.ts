@@ -1,17 +1,12 @@
 import axios from 'axios';
 const BASE_URL = import.meta.env.DEV ? '' : import.meta.env.VITE_API_URL;
 
-export default axios.create({
+export const fetcher = axios.create({
   baseURL: BASE_URL,
   headers: { 'Content-Type': 'application/json' },
 });
 
-export const axiosAuth = axios.create({
-  baseURL: BASE_URL,
-  headers: { 'Content-Type': 'application/json' },
-});
-
-axiosAuth.interceptors.request.use(
+fetcher.interceptors.request.use(
   config => {
     const accessToken = localStorage.getItem('accessToken');
     if (accessToken) {

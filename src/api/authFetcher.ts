@@ -1,5 +1,5 @@
 import { useAuthStore } from '../stores/useAuthStore';
-import axios from './axios';
+import { fetcher } from './axios';
 import { API_ENDPOINT } from './endPoint';
 
 type loginInfo = {
@@ -8,7 +8,7 @@ type loginInfo = {
 };
 
 export const singup = async (formData: FormData) => {
-  const res = await axios.post(API_ENDPOINT.SIGNUP, formData, {
+  const res = await fetcher.post(API_ENDPOINT.SIGNUP, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
@@ -23,7 +23,7 @@ export const useLogin = () => {
     useAuthStore();
 
   const login = async (loginInfo: loginInfo) => {
-    const res = await axios.post(API_ENDPOINT.LOGIN, loginInfo);
+    const res = await fetcher.post(API_ENDPOINT.LOGIN, loginInfo);
 
     if (res.statusText === 'OK') {
       const accessToken = res.headers['authorization'];
