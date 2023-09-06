@@ -3,20 +3,20 @@ import { styled } from 'styled-components';
 import { ColorType, FontType } from '../../styles/designSystem';
 
 type MenuItemProps = {
+  children: ReactNode;
   font?: FontType;
   color?: ColorType;
-  onClick: () => void;
-  children: ReactNode;
+  onAction: () => void;
 };
 
 export function MenuItem({
+  children,
   font = 'availableDefault16',
   color = 'neutralTextStrong',
-  onClick,
-  children,
+  onAction,
 }: MenuItemProps) {
   return (
-    <Item $font={font} $color={color} onClick={onClick}>
+    <Item $font={font} $color={color} onClick={onAction}>
       {children}
     </Item>
   );

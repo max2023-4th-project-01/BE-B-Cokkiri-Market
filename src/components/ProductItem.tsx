@@ -58,7 +58,7 @@ export function ProductItem({
           {isSeller && (
             <Dropdown iconName="dots" gap={40} align="right">
               <MenuItem
-                onClick={() => {
+                onAction={() => {
                   console.log('아이템1 클릭');
                 }}
               >
@@ -66,7 +66,7 @@ export function ProductItem({
               </MenuItem>
               <MenuItem
                 color="systemWarning"
-                onClick={() => {
+                onAction={() => {
                   console.log('아이템2 클릭');
                 }}
               >

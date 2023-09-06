@@ -72,7 +72,7 @@ export function Home() {
         leftButton={
           <LeftAccessory>
             <Dropdown
-              text={itemData.userLocation}
+              btnText={itemData.userLocation}
               iconName="chevronDown"
               gap={56}
               align="left"
@@ -86,7 +86,7 @@ export function Home() {
                         ? 'enabledStrong16'
                         : 'availableDefault16'
                     }
-                    onClick={() => {
+                    onAction={() => {
                       console.log(`${location.name} 클릭됨`);
                     }}
                   >
@@ -94,7 +94,7 @@ export function Home() {
                   </MenuItem>
                 );
               })}
-              <MenuItem onClick={openModal}>내 동네 설정하기</MenuItem>
+              <MenuItem onAction={openModal}>내 동네 설정하기</MenuItem>
             </Dropdown>
           </LeftAccessory>
         }
