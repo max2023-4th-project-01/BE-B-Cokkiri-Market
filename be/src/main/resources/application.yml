@@ -3,6 +3,7 @@ spring:
     active:
       - prod
       - oauth
+      - cloud
 ---
 server:
   servlet:

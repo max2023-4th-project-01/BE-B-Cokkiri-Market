@@ -57,6 +57,9 @@ dependencies {
     //mapstruct
     annotationProcessor "org.mapstruct:mapstruct-processor:1.4.1.Final"
     implementation 'org.mapstruct:mapstruct:1.4.1.Final'
+
+    // AWS S3
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 }
 
 tasks.named('test') {
