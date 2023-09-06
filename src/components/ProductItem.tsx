@@ -65,6 +65,7 @@ export function ProductItem({
                 게시글 수정
               </MenuItem>
               <MenuItem
+                color="systemWarning"
                 onClick={() => {
                   console.log('아이템2 클릭');
                 }}

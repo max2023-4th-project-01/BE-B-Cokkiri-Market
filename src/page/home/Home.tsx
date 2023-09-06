@@ -81,6 +81,11 @@ export function Home() {
                 return (
                   <MenuItem
                     key={location.id}
+                    font={
+                      location.isSelected
+                        ? 'enabledStrong16'
+                        : 'availableDefault16'
+                    }
                     onClick={() => {
                       console.log(`${location.name} 클릭됨`);
                     }}
@@ -91,8 +96,6 @@ export function Home() {
               })}
               <MenuItem onClick={openModal}>내 동네 설정하기</MenuItem>
             </Dropdown>
-            {/* {itemData.userLocation}
-            <Icon name="chevronDown" color="neutralTextStrong" /> */}
           </LeftAccessory>
         }
         rightButton={
