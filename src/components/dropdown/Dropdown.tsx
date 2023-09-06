@@ -9,7 +9,7 @@ type DropdownProps = {
   children: ReactNode;
   btnText?: string;
   iconName: IconsType;
-  gap: number;
+  top: number;
   align?: 'left' | 'right';
 };
 
@@ -17,7 +17,7 @@ export function Dropdown({
   children,
   btnText,
   iconName,
-  gap,
+  top,
   align = 'left',
 }: DropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -50,7 +50,7 @@ export function Dropdown({
         <Icon name={iconName} color="neutralTextStrong" />
       </StyledButton>
       {isOpen && (
-        <Container $isOpen={isOpen} $gap={gap} $align={align}>
+        <Container $isOpen={isOpen} $top={top} $align={align}>
           <Menus onClick={onClose}>{children}</Menus>
         </Container>
       )}
@@ -84,13 +84,13 @@ const Text = styled.span`
 
 const Container = styled.div<{
   $isOpen: boolean;
-  $gap: number;
+  $top: number;
   $align: string;
 }>`
   margin-left: ${({ $align }) => ($align === 'left' ? '16px' : 'auto')};
   border-radius: 12px;
   position: absolute;
-  top: ${({ $gap }) => $gap}px;
+  top: ${({ $top }) => $top}px;
   left: ${({ $align }) => ($align === 'left' ? 0 : 'auto')};
   right: ${({ $align }) => ($align === 'right' ? 0 : 'auto')};
   z-index: 10;

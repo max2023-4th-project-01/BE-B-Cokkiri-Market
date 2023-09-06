@@ -45,6 +45,21 @@ export function ProductItem({
     }
   };
 
+  const dropdownActions = {
+    edit: () => {
+      console.log('게시슬 수정');
+    },
+    reserved: () => {
+      console.log('게시슬 수정');
+    },
+    sold: () => {
+      console.log('게시슬 수정');
+    },
+    delete: () => {
+      console.log('게시슬 수정');
+    },
+  };
+
   return (
     <Div
       onClick={() => {
@@ -56,19 +71,19 @@ export function ProductItem({
         <Title>
           <span>{title}</span>
           {isSeller && (
-            <Dropdown iconName="dots" gap={40} align="right">
-              <MenuItem
-                onAction={() => {
-                  console.log('아이템1 클릭');
-                }}
-              >
+            <Dropdown iconName="dots" top={40} align="right">
+              <MenuItem onAction={dropdownActions['edit']}>
                 게시글 수정
+              </MenuItem>
+              <MenuItem onAction={dropdownActions['reserved']}>
+                예약중 상태로 전환
+              </MenuItem>
+              <MenuItem onAction={dropdownActions['sold']}>
+                판매완료 상태로 전환
               </MenuItem>
               <MenuItem
                 color="systemWarning"
-                onAction={() => {
-                  console.log('아이템2 클릭');
-                }}
+                onAction={dropdownActions['delete']}
               >
                 삭제
               </MenuItem>

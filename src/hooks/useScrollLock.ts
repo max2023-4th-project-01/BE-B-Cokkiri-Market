@@ -4,10 +4,17 @@ export const useScrollLock = (targetElId: string) => {
   const scroll = useRef(false);
   const targetEl: HTMLElement =
     document.getElementById(targetElId) ?? document.body;
+  const keys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
 
   const preventScroll = (event: WheelEvent | TouchEvent) => {
     event.preventDefault();
-    event.stopPropagation();
+  };
+
+  const preventKeydownScroll = (event: KeyboardEvent) => {
+    if (keys.includes(event.key)) {
+      event.preventDefault();
+      return false;
+    }
   };
 
   const lockScroll = () => {
@@ -16,6 +23,7 @@ export const useScrollLock = (targetElId: string) => {
 
     targetEl.addEventListener('wheel', preventScroll, { passive: false });
     targetEl.addEventListener('touchmove', preventScroll, { passive: false });
+    targetEl.addEventListener('keydown', preventKeydownScroll);
     console.log('lockScroll');
     scroll.current = true;
   };
@@ -26,6 +34,7 @@ export const useScrollLock = (targetElId: string) => {
 
     targetEl.removeEventListener('wheel', preventScroll);
     targetEl.removeEventListener('touchmove', preventScroll);
+    targetEl.removeEventListener('keydown', preventKeydownScroll);
     console.log('unlockScroll');
     scroll.current = false;
   };
