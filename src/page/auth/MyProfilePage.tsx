@@ -2,22 +2,19 @@ import { ChangeEvent, useRef, useState } from 'react';
 import { styled } from 'styled-components';
 import { Button } from '../../components/button/Button';
 import { useAuthStore } from '../../stores/useAuthStore';
-import { clearAuthInfo, getUserInfo } from '../../utils/localStorage';
 import { ProfileButton } from './ProfileButton';
 
 export function MyProfilePage() {
-  const userInfo = getUserInfo();
-  const { clearUserState } = useAuthStore();
+  const { nickname, profileImageUrl, clearUserState } = useAuthStore();
 
   const [file, setFile] = useState<File>();
   const [backgroundImage, setBackgroundImage] = useState<string | undefined>(
-    userInfo?.profileImageUrl
+    profileImageUrl
   );
 
   const inputRef = useRef<HTMLInputElement>(null);
 
   const logout = () => {
-    clearAuthInfo();
     clearUserState();
   };
 
@@ -58,7 +55,7 @@ export function MyProfilePage() {
           onChangeFile={onChangeFile}
           onRemoveProfile={onRemoveProfile}
         />
-        <UserName>{userInfo?.username}</UserName>
+        <UserName>{nickname}</UserName>
         {/* TODO : 이미지 변경 시 저장 취소 버튼이 나오게한다. 취소하면 원래 이미지로, 저장하면 api 요청 */}
       </ProfileWrapper>
       <Button
