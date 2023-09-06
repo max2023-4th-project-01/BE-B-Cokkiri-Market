@@ -16,6 +16,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import kr.codesquad.item.dto.vo.ItemListVo;
+import kr.codesquad.item.entity.ItemConditions;
 import kr.codesquad.util.ItemStatus;
 import lombok.RequiredArgsConstructor;
 
@@ -25,8 +26,7 @@ public class ItemPaginationRepository {
 
 	private final JPAQueryFactory queryFactory;
 
-	public Slice<ItemListVo> readByConditions(Long itemId, String locationName,
-		Long categoryId, Boolean isSold, Long userId, Boolean isFavorite, int pageSize) {
+	public Slice<ItemListVo> readByConditions(ItemConditions itemConditions) {
 		List<ItemListVo> itemListVos = queryFactory
 			.select(Projections.fields(ItemListVo.class,
 				item.id,
@@ -43,17 +43,18 @@ public class ItemPaginationRepository {
 			.from(item)
 			.leftJoin(chat).on(item.id.eq(chat.itemId))
 			.leftJoin(favorite).on(item.id.eq(favorite.itemId))
-			.where(lessThanItemId(itemId), equalLocationName(locationName)
-				, equalCategoryId(categoryId), checkStatus(isSold), equalUserId(userId)
-				, lookForFavorite(isFavorite, userId)
+			.where(lessThanItemId(itemConditions.getItemId()), equalLocationName(itemConditions.getLocationName())
+				, equalCategoryId(itemConditions.getCategoryId()), checkStatus(itemConditions.getIsSold()),
+				equalUserId(itemConditions.getUserId())
+				, lookForFavorite(itemConditions.getIsFavorite(), itemConditions.getUserId())
 			)
 			.groupBy(item.id, item.thumbnailUrl, item.title, item.locationName, item.createdAt, item.price, item.status,
 				item.userId)
 			.orderBy(item.createdAt.desc())
-			.limit(pageSize + 1)    // 다음 요소가 있는지 확인하기 위해 +1개 만큼 더 가져온다.
+			.limit(itemConditions.getPageSize() + 1)    // 다음 요소가 있는지 확인하기 위해 +1개 만큼 더 가져온다.
 
 			.fetch();
-		return checkLastPage(pageSize, itemListVos);
+		return checkLastPage(itemConditions.getPageSize(), itemListVos);
 	}
 
 	private BooleanExpression lookForFavorite(Boolean isFavorite, Long userId) {

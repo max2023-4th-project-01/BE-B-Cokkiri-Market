@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import kr.codesquad.category.dto.response.FavoriteCategoryResponse;
+import kr.codesquad.favorite.service.FavoriteService;
 import kr.codesquad.item.dto.slice.UserItemListSlice;
 import kr.codesquad.item.service.ItemService;
 import kr.codesquad.location.dto.request.LocationCreateRequest;
@@ -32,6 +34,7 @@ public class UserController {
 	private final UserService userService;
 
 	private final ItemService itemService;
+	private final FavoriteService favoriteService;
 
 	@PostMapping()
 	public void signUp(@RequestBody UserSignUpRequest userSignUpRequest) {
@@ -64,19 +67,27 @@ public class UserController {
 	public ResponseEntity<UserItemListSlice> userItems(
 		@RequestParam(required = false) Long cursor,
 		@RequestParam(required = false) Boolean isSold,
-		@RequestParam(required = false, defaultValue = "10") int size, HttpServletRequest request) {
+		@RequestParam(required = false, defaultValue = "10") int size, @PathVariable String username,
+		HttpServletRequest request) {
 		String loginId = (String)request.getAttribute(Constants.LOGIN_ID);
 		return ResponseEntity.ok()
 			.body(itemService.getUserItems(cursor, isSold, size, loginId));
 	}
 
-	@GetMapping("/{username}/favorites")
-	public ResponseEntity<UserItemListSlice> userItems(
+	@GetMapping("/favorites")
+	public ResponseEntity<UserItemListSlice> favoriteItems(
 		@RequestParam(required = false) Long cursor,
 		@RequestParam(required = false) Long categoryId,
 		@RequestParam(required = false, defaultValue = "10") int size, HttpServletRequest request) {
 		String loginId = (String)request.getAttribute(Constants.LOGIN_ID);
 		return ResponseEntity.ok()
 			.body(itemService.getFavoriteItems(cursor, categoryId, size, loginId));
+	}
+
+	@GetMapping("/favorites/categories")
+	public ResponseEntity<List<FavoriteCategoryResponse>> favoriteCategories(HttpServletRequest request) {
+		String loginId = (String)request.getAttribute(Constants.LOGIN_ID);
+		return ResponseEntity.ok()
+			.body(favoriteService.getFavoriteCategories(loginId));
 	}
 }
