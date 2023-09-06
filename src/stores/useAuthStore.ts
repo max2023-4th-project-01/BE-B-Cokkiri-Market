@@ -1,32 +1,54 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
-type UserInfo = {
-  username: string;
+export type UserInfo = {
+  nickname: string;
   profileImageUrl: string;
 };
 
 type AuthState = {
   accessToken: string;
-  userName: string;
+  refreshToken: string;
+  nickname: string;
   profileImageUrl: string;
-  setStateAccessToken: (token: string) => void;
+  setStateAccessToken: (accessToken: string) => void;
+  setStateRefreshToken: (refreshToken: string) => void;
   setStateUserInfo: (userInfo: UserInfo) => void;
   clearUserState: () => void;
 };
 
-export const useAuthStore = create<AuthState>(set => ({
-  accessToken: '',
-  userName: '',
-  profileImageUrl: '',
-  setStateAccessToken: (token: string) => set(() => ({ accessToken: token })),
-  setStateUserInfo: (userInfo: UserInfo) => {
-    set(() => ({ userName: userInfo.username }));
-    set(() => ({ profileImageUrl: userInfo.profileImageUrl }));
-  },
-  clearUserState: () =>
-    set({
+export const useAuthStore = create(
+  persist<AuthState>(
+    set => ({
       accessToken: '',
-      userName: '',
+      refreshToken: '',
+      nickname: '',
       profileImageUrl: '',
+      setStateAccessToken: (accessToken: string) => {
+        set(() => ({ accessToken }));
+      },
+      setStateRefreshToken: (refreshToken: string) => {
+        set(() => ({ refreshToken }));
+      },
+      setStateUserInfo: (userInfo: UserInfo) => {
+        console.log(userInfo);
+        set(state => ({
+          ...state,
+          ...userInfo,
+        }));
+      },
+      clearUserState: () => {
+        set({
+          accessToken: '',
+          refreshToken: '',
+          nickname: '',
+          profileImageUrl: '',
+        });
+      },
     }),
-}));
+    {
+      name: 'auth-storage',
+      getStorage: () => localStorage,
+    }
+  )
+);

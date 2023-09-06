@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
 import { styled } from 'styled-components';
 import {
   useAddUserLocation,
-  useGetLocationData,
+  useGetLocationResult,
 } from '../../queries/useLocationQuery';
 import { Error } from '../Error';
-import { Loader } from '../Loader';
 
 type AddLocationProps = {
   rightPosition: number;
@@ -20,14 +20,25 @@ export function AddLocation({
   closeSearchPanel,
   hideSearchPanel,
 }: AddLocationProps) {
-  const { data, isLoading, isError } = useGetLocationData();
+  // TODO: SeachBar 인풋에 입력받은 단어를 searchParam으로 넘겨주기
+  const { fetchNextPage, hasNextPage, isFetchingNextPage, data, isError } =
+    useGetLocationResult('역삼');
+
   const addMutation = useAddUserLocation();
+  const { ref: lastItemRef, inView } = useInView();
+
+  useEffect(() => {
+    if (inView && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, fetchNextPage]);
 
   useEffect(() => {
     showSearchPanel();
   }, []);
 
   const onClickLocationItem = (locationName: string) => {
+    console.log(locationName);
     addMutation.mutate(locationName);
     hideSearchPanel();
   };
@@ -36,26 +47,31 @@ export function AddLocation({
     rightPosition !== 0 && closeSearchPanel();
   };
 
-  if (isError) return <Error />;
-
   return (
     <Container
       $rightPosition={rightPosition}
       onTransitionEnd={onTransitionEndHandler}
     >
       <SearchBar placeholder="동명(읍, 면)으로 검색 (ex. 서초동)" />
-      {isLoading ? (
-        <Loader />
+      {isError ? (
+        <Error />
       ) : (
         <Content>
-          {data.map(location => (
-            <LocationItem
-              key={location.id}
-              onClick={() => onClickLocationItem(location.item)}
-            >
-              {location.item}
-            </LocationItem>
-          ))}
+          {data?.pages.map(page => {
+            return page.locations.map((location, index) => {
+              const isLastItem = index === page.locations.length - 1;
+              return (
+                <LocationItem
+                  ref={isLastItem ? lastItemRef : null}
+                  key={location.id}
+                  onClick={() => onClickLocationItem(location.name)}
+                >
+                  {location.name}
+                </LocationItem>
+              );
+            });
+          })}
+          {isFetchingNextPage && <LoadingMessage>Loading...</LoadingMessage>}
         </Content>
       )}
     </Container>
@@ -68,6 +84,7 @@ const Container = styled.div<{ $rightPosition: number }>`
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 8px;
   padding: 0 24px 16px;
   position: absolute;
   top: 0;
@@ -84,6 +101,7 @@ const SearchBar = styled.input`
   border-radius: 8px;
   font: ${({ theme }) => theme.font.displayDefault16};
   background-color: ${({ theme }) => theme.color.neutralBackgroundBold};
+  outline-color: ${({ theme }) => theme.color.accentPrimary};
 `;
 
 const Content = styled.ul`
@@ -95,10 +113,13 @@ const Content = styled.ul`
   overflow-y: scroll;
 
   &::-webkit-scrollbar {
-    display: none;
+    width: 4px;
   }
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+
+  &::-webkit-scrollbar-thumb {
+    background: ${({ theme }) => theme.color.neutralBorderStrong};
+    border-radius: 10px;
+  }
 `;
 
 const LocationItem = styled.li`
@@ -114,4 +135,9 @@ const LocationItem = styled.li`
   &:hover {
     background-color: ${({ theme }) => theme.color.neutralBackgroundBold};
   }
+`;
+
+const LoadingMessage = styled.li`
+  padding: 16px 0px 15px;
+  margin: 0 auto;
 `;

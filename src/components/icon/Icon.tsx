@@ -1,15 +1,16 @@
-import { useEffect, useRef, MouseEvent } from 'react';
+import { MouseEvent, useEffect, useRef } from 'react';
 import { styled } from 'styled-components';
 import { ColorType, designSystem } from '../../styles/designSystem';
 import { IconsType, icons } from './icons';
 
 interface IconProps {
   name: IconsType;
+  size?: number;
   color: ColorType;
   onClick?: (event: MouseEvent) => void;
 }
 
-export function Icon({ name, color, onClick }: IconProps) {
+export function Icon({ name, size = 24, color, onClick }: IconProps) {
   const IconComponent = icons[name];
   const iconColor = designSystem.color[color];
   const iconRef = useRef<HTMLDivElement>(null);
@@ -33,7 +34,7 @@ export function Icon({ name, color, onClick }: IconProps) {
 
   return (
     <Div ref={iconRef} onClick={onClick} $isClickable={isClickable}>
-      <IconComponent />
+      <IconComponent width={size} height={size} />
     </Div>
   );
 }

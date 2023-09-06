@@ -2,8 +2,8 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import { getCategories } from '../../api/fetcher';
-import { Button } from '../../components/Button';
 import { Header } from '../../components/Header';
+import { Button } from '../../components/button/Button';
 import { Icon } from '../../components/icon/Icon';
 import { IconsType } from '../../components/icon/icons';
 import { useScreenConfigStore } from '../../stores/useScreenConfigStore';
@@ -52,11 +52,9 @@ export function CategoryFilterPanel({ closePanel }: CategoryFilterPanelProps) {
     <Div $right={rightPosition} onTransitionEnd={onTransitionEndHandler}>
       <Header
         leftButton={
-          <Button styledType="ghost" onClick={onClose}>
-            <ButtonDiv>
-              <Icon name="chevronLeft" color="neutralTextStrong" />
-              <span>뒤로</span>
-            </ButtonDiv>
+          <Button styledType="text" onClick={onClose}>
+            <Icon name="chevronLeft" color="neutralTextStrong" />
+            <span>뒤로</span>
           </Button>
         }
         title="카테고리"
@@ -96,16 +94,6 @@ const Div = styled.div<{ $right: number }>`
   background: ${({ theme }) => theme.color.accentText};
   transition: right 0.6s;
   z-index: 10;
-`;
-
-const ButtonDiv = styled.div`
-  width: 78px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  font: ${({ theme }) => theme.font.availableStrong16};
-  color: ${({ theme }) => theme.color.neutralTextStrong};
 `;
 
 const Body = styled.div`
