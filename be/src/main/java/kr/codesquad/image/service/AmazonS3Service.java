@@ -28,10 +28,10 @@ public class AmazonS3Service {
 	@Autowired
 	private AmazonS3 amazonS3;
 
-
 	@Transactional
 	public String upload(MultipartFile multipartFile, String dirName) {
-		File file = convertMultiPartFileToFile(multipartFile).orElseThrow(() -> new CustomException(FileErrorCode.FILE_UPLOAD_FAIL));
+		File file = convertMultiPartFileToFile(multipartFile).orElseThrow(
+			() -> new CustomException(FileErrorCode.FILE_UPLOAD_FAIL));
 		// random file name
 		String key = dirName + "/" + UUID.randomUUID() + file.getName();
 		// put S3
