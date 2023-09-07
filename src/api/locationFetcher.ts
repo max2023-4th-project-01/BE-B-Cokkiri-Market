@@ -20,9 +20,16 @@ export const getLocationData = async ({
   return res.data;
 };
 
-export const addUserLocation = async (locationId: number) => {
+export const addUserLocation = async ({
+  locationId,
+  locationName,
+}: {
+  locationId: number;
+  locationName: string;
+}) => {
   const res = await fetcher.post(API_ENDPOINT.USER_LOCATION, {
     locationId,
+    locationName,
   });
   return res.data;
 };

@@ -45,11 +45,13 @@ export function AddLocation({
   }, []);
 
   const onClickLocationItem = (locationId: number, locationName: string) => {
+    // SignUpPanel에서 사용하는 경우
     if (addLocation) {
       addLocation(locationId, locationName);
       return;
     }
-    addMutation.mutate(locationId);
+    // Home에서 사용하는 경우
+    addMutation.mutate({ locationId, locationName });
     hideSearchPanel && hideSearchPanel();
   };
 
