@@ -50,7 +50,12 @@ public class LocationService {
         end = sub.indexOf(",", start);
         int total = Integer.parseInt(sub.substring(start + 10, end - 1));
 
-        response.put("hasNext", page < total);
+        if (page < total) {
+            response.put("nextPage", page + 1);
+        } else {
+            response.put("nextPage", null);
+        }
+
         if (page > total) {
             response.put("locations", new ArrayList<>());
             return response;
