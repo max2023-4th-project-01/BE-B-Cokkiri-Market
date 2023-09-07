@@ -12,8 +12,16 @@ export const getUserLocations = async (): Promise<UserLocationData> => {
   return res.data;
 };
 
-export const getLocationData = async () => {
-  const res = await axios.get(API_ENDPOINT.LOCATION_DATA);
+export const getLocationData = async ({
+  pageParam,
+  searchParam,
+}: {
+  pageParam: number;
+  searchParam: string;
+}) => {
+  const res = await axios.get(
+    `${API_ENDPOINT.LOCATION_DATA}?cursor=${pageParam}&search=${searchParam}`
+  );
   return res.data;
 };
 

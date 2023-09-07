@@ -1,24 +1,51 @@
 import { rest } from 'msw';
 import { API_ENDPOINT } from '../api/endPoint';
 
+type PostUserLocationRequestBody = {
+  name: string;
+};
+
 export const locationHandlers = [
   rest.get(API_ENDPOINT.USER_LOCATION, (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(userLocations));
   }),
 
-  rest.get(API_ENDPOINT.LOCATION_DATA, (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json(locationData));
+  rest.get(API_ENDPOINT.LOCATION_DATA, (req, res, ctx) => {
+    const cursor = parseInt(req.url.searchParams.get('cursor')!);
+    const pageSize = 15;
+
+    const data = Array(pageSize)
+      .fill(0)
+      .map((_, i) => {
+        return {
+          id: i + cursor,
+          name: `${i + cursor}. ` + DummyLocation[(i + cursor) % 15].item,
+        };
+      });
+
+    // 지역 데이터는 최대 45개까지만 제공
+    const nextCursor = cursor < 30 ? data[data.length - 1].id + 1 : null;
+
+    return res(ctx.status(200), ctx.json({ locations: data, nextCursor }));
   }),
 
-  rest.post(API_ENDPOINT.USER_LOCATION, (req, res, ctx) => {
-    userLocations = {
-      locations: [
-        ...userLocations.locations,
-        { id: 3, name: req.body?.name.split(' ').at(-1), isSelected: false },
-      ],
-    };
-    return res(ctx.status(200), ctx.json({ message: '동네 추가 성공' }));
-  }),
+  rest.post<PostUserLocationRequestBody>(
+    API_ENDPOINT.USER_LOCATION,
+    (req, res, ctx) => {
+      const { name } = req.body;
+      userLocations = {
+        locations: [
+          ...userLocations.locations,
+          {
+            id: 3,
+            name: name.split(' ').at(-1) ?? '',
+            isSelected: false,
+          },
+        ],
+      };
+      return res(ctx.status(200), ctx.json({ message: '동네 추가 성공' }));
+    }
+  ),
 
   rest.patch(`${API_ENDPOINT.USER_LOCATION}/:id`, (req, res, ctx) => {
     const { id } = req.params;
@@ -59,7 +86,7 @@ let userLocations = {
   ],
 };
 
-const locationData = [
+const DummyLocation = [
   {
     id: 1,
     item: '서울특별시 송파구 가락동',
@@ -119,25 +146,5 @@ const locationData = [
   {
     id: 15,
     item: '서울특별시 은평구 가좌로',
-  },
-  {
-    id: 16,
-    item: '서울특별시 서대문구 가좌로',
-  },
-  {
-    id: 17,
-    item: '서울특별시 종로구 가회동',
-  },
-  {
-    id: 18,
-    item: '서울특별시 서대문구 간호대로',
-  },
-  {
-    id: 19,
-    item: '서울특별시 용산구 갈월동',
-  },
-  {
-    id: 20,
-    item: '서울특별시 은평구 갈현동',
   },
 ];

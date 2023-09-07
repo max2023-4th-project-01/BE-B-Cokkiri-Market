@@ -1,12 +1,12 @@
 import {
-  useRef,
-  useEffect,
-  DialogHTMLAttributes,
   BaseSyntheticEvent,
+  DialogHTMLAttributes,
+  useEffect,
+  useRef,
 } from 'react';
 import { createPortal } from 'react-dom';
-import { styled, keyframes } from 'styled-components';
-import { Button } from './Button';
+import { keyframes, styled } from 'styled-components';
+import { Button } from './button/Button';
 
 type AlertProps = DialogHTMLAttributes<HTMLDialogElement> & {
   isOpen: boolean;
@@ -41,12 +41,16 @@ export function Alert({ isOpen, onClose, onAction, children }: AlertProps) {
       <Container>
         <Content>{children}</Content>
         <Footer>
-          <Button styledType="ghost" onClick={onClose}>
-            <Cancel>취소</Cancel>
-          </Button>
-          <Button styledType="ghost" onClick={onAlertConfirm}>
-            <Delete>확인</Delete>
-          </Button>
+          <CancelButton styledType="text" onClick={onClose}>
+            취소
+          </CancelButton>
+          <DeleteButton
+            styledType="text"
+            fontColor="accentPrimary"
+            onClick={onAlertConfirm}
+          >
+            확인
+          </DeleteButton>
         </Footer>
       </Container>
     </Dialog>,
@@ -104,11 +108,15 @@ const Footer = styled.div`
   align-self: stretch;
 `;
 
-const Cancel = styled.div`
+const CancelButton = styled(Button)`
+  width: auto;
+  padding: 0;
   font: ${({ theme }) => theme.font.displayDefault16};
 `;
 
-const Delete = styled.div`
+const DeleteButton = styled(Button)`
+  width: auto;
+  padding: 0;
   font: ${({ theme }) => theme.font.displayStrong16};
   color: ${({ theme }) => theme.color.accentPrimary};
 `;
