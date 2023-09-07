@@ -4,6 +4,7 @@ import { singup } from '../../api/authFetcher';
 import { Header } from '../../components/Header';
 import { Button } from '../../components/button/Button';
 import { Icon } from '../../components/icon/Icon';
+import { SignUpLocationModal } from '../../components/locations/SignUpLocationModal';
 import { useScreenConfigStore } from '../../stores/useScreenConfigStore';
 import { AuthInput } from './AuthInput';
 import { ProfileButton } from './ProfileButton';
@@ -16,6 +17,7 @@ type SignUpPanelProps = {
 export function SignUpPanel({ closePanel }: SignUpPanelProps) {
   const { screenWidth } = useScreenConfigStore();
   const [rightPosition, setRightPosition] = useState(-screenWidth);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [id, setId] = useState('');
@@ -37,6 +39,11 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
     isValidNickname &&
     !isNullLocation
   );
+
+  const addSignUpLocation = (locationId: number) => {
+    setLocation(locationId);
+    setIsModalOpen(false);
+  };
 
   useEffect(() => {
     setRightPosition(0);
@@ -60,6 +67,14 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
 
   const onClose = () => {
     setRightPosition(-screenWidth);
+  };
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
   };
 
   const onChangeFile = (event: ChangeEvent<HTMLInputElement>) => {
@@ -151,7 +166,6 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
             onRemoveProfile={onRemoveProfile}
           />
         </ProfileWrapper>
-
         <AuthInput
           id={id}
           password={password}
@@ -164,12 +178,19 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
           styledType="outline"
           color="neutralBorder"
           fontColor="accentTextWeak"
-          onClick={() => setLocation(1)}
+          onClick={openModal}
         >
           <Icon name="plus" color="accentTextWeak" />
           위치 추가
         </Button>
       </Body>
+      {isModalOpen && (
+        <SignUpLocationModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          addLocation={addSignUpLocation}
+        />
+      )}
     </Div>
   );
 }

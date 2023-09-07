@@ -6,7 +6,7 @@ import { ProductItem } from '../../components/ProductItem';
 import { Dropdown } from '../../components/dropdown/Dropdown';
 import { MenuItem } from '../../components/dropdown/MenuItem';
 import { Icon } from '../../components/icon/Icon';
-import { LocationModal } from '../../components/locations/LocationModal';
+import { HomeLocationModal } from '../../components/locations/HomeLocationModal';
 import { useGetItemData } from '../../queries/useItemQuery';
 import { useGetUserLocation } from '../../queries/useLocationQuery';
 import { CategoryFilterPanel } from './CategoryFilterPanel';
@@ -102,7 +102,7 @@ export function Home() {
         )}
       </Body>
       {isModalOpen && (
-        <LocationModal isOpen={isModalOpen} onClose={closeModal} />
+        <HomeLocationModal isOpen={isModalOpen} onClose={closeModal} />
       )}
     </Div>
   );

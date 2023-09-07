@@ -8,10 +8,11 @@ import {
 import { Error } from '../Error';
 
 type AddLocationProps = {
-  rightPosition: number;
-  showSearchPanel: () => void;
-  closeSearchPanel: () => void;
-  hideSearchPanel: () => void;
+  rightPosition?: number;
+  showSearchPanel?: () => void;
+  closeSearchPanel?: () => void;
+  hideSearchPanel?: () => void;
+  addLocation?: (locationId: number) => void;
 };
 
 export function AddLocation({
@@ -19,6 +20,7 @@ export function AddLocation({
   showSearchPanel,
   closeSearchPanel,
   hideSearchPanel,
+  addLocation,
 }: AddLocationProps) {
   // TODO: SeachBar 인풋에 입력받은 단어를 searchParam으로 넘겨주기
   const {
@@ -39,16 +41,20 @@ export function AddLocation({
   }, [inView, hasNextPage, fetchNextPage]);
 
   useEffect(() => {
-    showSearchPanel();
+    showSearchPanel && showSearchPanel();
   }, []);
 
   const onClickLocationItem = (locationId: number) => {
+    if (addLocation) {
+      addLocation(locationId);
+      return;
+    }
     addMutation.mutate(locationId);
-    hideSearchPanel();
+    hideSearchPanel && hideSearchPanel();
   };
 
   const onTransitionEndHandler = () => {
-    rightPosition !== 0 && closeSearchPanel();
+    rightPosition !== 0 && closeSearchPanel && closeSearchPanel();
   };
 
   return (
@@ -82,7 +88,7 @@ export function AddLocation({
   );
 }
 
-const Container = styled.div<{ $rightPosition: number }>`
+const Container = styled.div<{ $rightPosition?: number }>`
   width: 100%;
   height: 100%;
   display: flex;
@@ -92,7 +98,8 @@ const Container = styled.div<{ $rightPosition: number }>`
   padding: 0 24px 16px;
   position: absolute;
   top: 0;
-  right: ${({ $rightPosition }) => `${$rightPosition}px`};
+  ${({ $rightPosition }) =>
+    $rightPosition !== undefined && `right: ${$rightPosition}px`};
   transition: right 0.6s;
   font: ${({ theme }) => theme.font.displayDefault16};
   background-color: ${({ theme }) => theme.color.neutralBackground};
