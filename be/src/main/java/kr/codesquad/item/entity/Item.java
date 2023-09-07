@@ -8,6 +8,7 @@ import javax.persistence.Id;
 
 import kr.codesquad.item.dto.request.ItemUpdateRequest;
 import kr.codesquad.item.dto.response.ItemCountDataResponse;
+import kr.codesquad.location.service.AddressService;
 import kr.codesquad.util.ItemStatus;
 import kr.codesquad.util.TimeStamped;
 import lombok.Builder;
@@ -29,6 +30,8 @@ public class Item extends TimeStamped {
 	private Long categoryId;
 	@Column(nullable = true)
 	private Integer price;
+	@Column(nullable = false)
+	private Long locationId;
 	@Column(nullable = false, length = 45)
 	private String locationName;
 	@Column(nullable = false, length = 200)
@@ -41,7 +44,7 @@ public class Item extends TimeStamped {
 	private int viewCount;
 
 	@Builder
-	public Item(Long id, String title, String content, Long categoryId, Integer price, String locationName,
+	public Item(Long id, String title, String content, Long categoryId, Integer price, Long locationId, String locationName,
 		String thumbnailUrl,
 		ItemStatus status, Long userId, int viewCount) {
 		this.id = id;
@@ -49,6 +52,7 @@ public class Item extends TimeStamped {
 		this.content = content;
 		this.categoryId = categoryId;
 		this.price = price;
+		this.locationId = locationId;
 		this.locationName = locationName;
 		this.thumbnailUrl = thumbnailUrl;
 		this.status = status;
@@ -56,12 +60,15 @@ public class Item extends TimeStamped {
 		this.viewCount = viewCount;
 	}
 
-	public void update(ItemUpdateRequest item, String thumbnailUrl) {
-		this.title = item.getTitle();
-		this.categoryId = item.getCategoryId();
-		this.price = item.getPrice();
-		this.content = item.getContent();
-		this.locationName = item.getLocationName();
+	public void update(ItemUpdateRequest request, String locationName, String thumbnailUrl) {
+		this.title = request.getTitle();
+		this.categoryId = request.getCategoryId();
+		this.price = request.getPrice();
+		this.content = request.getContent();
+		this.locationId = request.getMyLocationId();
+		if (locationName != null) {
+			this.locationName = locationName;
+		}
 		if (thumbnailUrl != null) {
 			this.thumbnailUrl = thumbnailUrl;
 		}

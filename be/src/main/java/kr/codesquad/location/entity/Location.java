@@ -21,15 +21,18 @@ public class Location {
 	private Long id;
 	@Column(nullable = false)
 	private Long userId;
+	@Column(nullable = false)
+	private Long locationId;
 	@Column(nullable = false, length = 45)
 	private String locationName;
 	@Column(nullable = false)
 	private Boolean isSelected;
 
 	@Builder
-	public Location(Long id, Long userId, String locationName, Boolean isSelected) {
+	public Location(Long id, Long userId, Long locationId, String locationName, Boolean isSelected) {
 		this.id = id;
 		this.userId = userId;
+		this.locationId = locationId;
 		this.locationName = locationName;
 		this.isSelected = isSelected;
 	}

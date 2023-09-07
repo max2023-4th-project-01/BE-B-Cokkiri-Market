@@ -3,6 +3,7 @@ package kr.codesquad.item.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import kr.codesquad.location.service.AddressService;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,6 +48,7 @@ public class ItemService {
 	private final ChatRepository chatRepository;
 	private final UserRepository userRepository;
 	private final ItemPaginationRepository itemPaginationRepository;
+	private final AddressService addressService;
 
 	@Transactional
 	public Long saveItem(List<MultipartFile> imageFiles, ItemSaveRequest itemRequest, String userLoginId) {
@@ -54,13 +56,15 @@ public class ItemService {
 		Long userId = userRepository.findIdByLoginId(userLoginId);
 
 		// 이미지 처리하고 썸네일 하나 받아옴
-		String thumbnailUrl = "썸네일 url 이지롱";
+		String thumbnailUrl = "https://cokkiri-s3.s3.ap-northeast-2.amazonaws.com/profileImage/%EC%BD%94%EB%81%BC%EB%A6%AC.png";
+		String locationName = locationRepository.findLocationNameById(itemRequest.getMyLocationId());
 
 		return itemRepository.save(Item.builder()
 			.title(itemRequest.getTitle())
 			.content(itemRequest.getContent())
 			.price(itemRequest.getPrice())
-			.locationName(itemRequest.getLocationName())
+			.locationId(itemRequest.getMyLocationId())
+			.locationName(locationName)
 			.categoryId(itemRequest.getCategoryId())
 			.thumbnailUrl(thumbnailUrl)
 			.userId(userId)
@@ -69,14 +73,10 @@ public class ItemService {
 	}
 
 	@Transactional(readOnly = true)
-	public ItemDetailResponse getItem(Long id) {
-		// 로그인한 유저 정보 -> 상세 보기는 무조건 있기 때문에 null 처리 안 함
-		User userPS = User.builder()
-			.id(1L)
-			.nickname("임시닉네임1")
-			.build();
-
+	public ItemDetailResponse getItem(Long id, String userLoginId) {
+		Long userId = userRepository.findIdByLoginId(userLoginId);
 		Item item = itemRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 아이템이 없습니다."));
+		User seller = userRepository.findById(item.getUserId()).orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다."));
 
 		List<ItemImageResponse> images = imageRepository.findByItemId(item.getId());
 		String categoryName = categoryRepository.findNameById(item.getCategoryId());
@@ -84,27 +84,24 @@ public class ItemService {
 		int favoriteCount = favoriteRepository.countByItemId(item.getId());
 
 		return ItemDetailResponse.builder()
-			.isSeller(userPS.getId().equals(item.getUserId()))
+			.isSeller(seller.getId().equals(userId))
 			.images(images)
-			.seller(userPS.getNickname())
+			.seller(seller.getNickname())
 			.status(ItemStatusResponse.of(item.getStatus()))
 			.title(item.getTitle())
 			.categoryName(categoryName)
 			.createdAt(item.getCreatedAt())
 			.content(item.getContent())
 			.countData(item.countData(chatCount, favoriteCount))
-			.isFavorite(favoriteRepository.existsByUserIdAndItemId(userPS.getId(), item.getId()))
+			.isFavorite(favoriteRepository.existsByUserIdAndItemId(userId, item.getId()))
 			.price(item.getPrice())
 			.build();
 	}
 
 	@Transactional
 	public void updateItem(Long id, List<MultipartFile> newImageFiles, List<Long> deleteImageIds,
-		ItemUpdateRequest item, String userLoginId) {
-		// 수정 권한 등 확인
-		if (!itemRepository.existsByIdAndUserLoginId(id, userLoginId)) {
-			throw new IllegalArgumentException("해당 아이템을 수정할 수 없습니다.");
-		}
+		ItemUpdateRequest request, String userLoginId) {
+		Long userId = userRepository.findIdByLoginId(userLoginId);
 		// 이미지 삭제
 		// 새로운 이미지 처리
 		String thumbnailUrl = null;
@@ -112,17 +109,29 @@ public class ItemService {
 		// if ~ thumbnailUrl = ~
 
 		Item targetItem = itemRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 아이템이 없습니다."));
-		targetItem.update(item, thumbnailUrl);
+		if (!targetItem.getUserId().equals(userId)) {
+			throw new IllegalArgumentException("해당 아이템을 수정할 수 없습니다.");
+		}
+
+
+		if (targetItem.getLocationId() != request.getMyLocationId()) {
+			String locationName = locationRepository.findLocationNameById(request.getMyLocationId());
+			targetItem.update(request, locationName, thumbnailUrl);
+		}
+		else {
+			targetItem.update(request, null, thumbnailUrl);
+		}
 	}
 
 	@Transactional
 	public void deleteItem(Long id, String userLoginId) {
-		if (!itemRepository.existsByIdAndUserLoginId(id, userLoginId)) {
-			throw new IllegalArgumentException("해당 아이템을 삭제할 수 없습니다.");
-		}
+//		if (!itemRepository.existsByIdAndUserLoginId(id, userLoginId)) {
+//			throw new IllegalArgumentException("해당 아이템을 삭제할 수 없습니다.");
+//		}
 		itemRepository.deleteById(id);
 	}
 
+	// 보류 기능
 	public ItemUpdateResponse getItemForUpdate(Long id) {
 		Item item = itemRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 아이템이 없습니다."));
 

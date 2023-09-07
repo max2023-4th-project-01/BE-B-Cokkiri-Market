@@ -36,7 +36,7 @@ public class CategoryDataInit {
                             new Category("가공식품", "icon_food"),
                             new Category("반려동물식품", "icon_pet"),
                             new Category("식물", "icon_plant"),
-                            new Category("기타 중고물품", "icon_etc")
+                            new Category("기타중고물품", "icon_etc")
                     );
                     categoryRepository.saveAll(categories);
                 }

@@ -1,61 +1,135 @@
 package kr.codesquad.location.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import kr.codesquad.location.dto.request.LocationCreateRequest;
 import kr.codesquad.location.dto.response.LocationListResponse;
+import kr.codesquad.location.entity.Location;
+import kr.codesquad.location.repository.LocationRepository;
+import kr.codesquad.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class LocationService {
 
-    public static List<LocationListResponse> getLocations(String query) {
-        // 시간 측정
-        long startTime = System.currentTimeMillis();
-        System.out.println("시간 측정 : " + startTime);
+    private final AddressService addressService;
+    private final LocationRepository locationRepository;
+    private final UserRepository userRepository;
 
-        final String API_URL = "https://api.vworld.kr/req/data";
-        String key = "E6435510-7BE8-3FB3-B456-9A65D1E5CA36";
-        String domain = "http://hyowon.site";
-        String data = "LT_C_ADEMD_INFO";
-        String request = "GetFeature";
-        String geometry = "false";
-        String attrFilter = "emd_kor_nm:like:" + query;
 
-        String url = API_URL + "?service=data&request=" + request + "&key=" + key + "&domain=" + domain + "&data=" + data
-                + "&attrFilter=" + attrFilter + "&geometry=" + geometry;
+    public LocationService(AddressService addressService, LocationRepository locationRepository, UserRepository userRepository) {
+        this.addressService = addressService;
+        this.locationRepository = locationRepository;
+        this.userRepository = userRepository;
+    }
 
-        RestTemplate restTemplate = new RestTemplate();
+    public Map<String, Object> getLocations(String query, Integer page, Integer size) {
 
-        Object result = restTemplate.getForObject(url, Object.class);
+        if (query == null) {
+            query = "가";
+        }
 
-        long searchTime = System.currentTimeMillis();
-        System.out.println("검색 완료 : " + (searchTime - startTime));
+        if (page == null) {
+            page = 1;
+        }
 
-        String resultString = result.toString();
+        if (size == null) {
+            size = 15;
+        }
 
-        long convertTime = System.currentTimeMillis();
-        System.out.println("String 변환 완료 : " + (convertTime - searchTime));
+        String result = addressService.getAddressList(query, page, size);
+
+        Map<String, Object> response = new HashMap<>();
 
         List<LocationListResponse> locations = new ArrayList<>();
-
         int start = 0;
         int end = 0;
 
+        String sub = result.substring(result.indexOf("page"));
+        start = sub.indexOf("total");
+        end = sub.indexOf(",", start);
+        int total = Integer.parseInt(sub.substring(start + 10, end - 1));
+
+        if (page < total) {
+            response.put("nextPage", page + 1);
+        } else {
+            response.put("nextPage", null);
+        }
+
+        if (page > total) {
+            response.put("locations", new ArrayList<>());
+            return response;
+        }
+
         while (true) {
-            start = resultString.indexOf("full_nm=", end);
+            start = result.indexOf("full_nm", end);
             if (start == -1) {
                 break;
             }
-            end = resultString.indexOf(",", start);
-            String temp = resultString.substring(start + 8, end);
-            locations.add(new LocationListResponse(null, temp, null));
+            end = result.indexOf(",", start);
+            String name = result.substring(start + 10, end - 1);
+            Long id = Long.parseLong(result.substring(end + 11, end + 19));
+            locations.add(new LocationListResponse(id, name, null));
         }
 
-        long endTime = System.currentTimeMillis();
-        System.out.println("최종 완료 : " + (endTime - convertTime));
+        response.put("locations", locations);
+        return response;
+    }
 
-        return locations;
+    @Transactional(readOnly = true)
+    public List<LocationListResponse> getMyLocations(String userLoginId) {
+        Long userId = userRepository.findIdByLoginId(userLoginId);
+        // QueryDSL 로 리팩토링 할 때, 조인 시켜서 한번에 가져오기
+        return LocationListResponse.toLocationList(locationRepository.findAllByUserId(userId));
+    }
+
+    @Transactional
+    public LocationListResponse saveLocation(LocationCreateRequest request, String userLoginId) {
+        Long userId = userRepository.findIdByLoginId(userLoginId);
+        // QueryDSL 로 리팩토링 할 때, 조인 시켜서 한번에 가져오기
+        if (locationRepository.countByUserId(userId) >= 2) {
+            throw new RuntimeException("동네는 최대 2개까지만 등록할 수 있습니다");
+        }
+
+        return LocationListResponse.of(locationRepository.save(Location.builder()
+                .userId(userId)
+                .locationId(request.getLocationId())
+                .locationName(addressService.getAddress(request.getLocationId()))
+                .isSelected(false)
+                .build()));
+    }
+
+    @Transactional
+    public void selectLocation(Long locationId, String userLoginId) {
+        Long userId = userRepository.findIdByLoginId(userLoginId);
+        // QueryDSL 로 리팩토링 할 때, 조인 시켜서 한번에 가져오기
+        List<Location> locations = locationRepository.findAllByUserIdOrderByIsSelectedDesc(userId);
+
+        if (locations.size() == 0) {
+            throw new RuntimeException("동네는 최소 1개 이상 등록되어야 합니다");
+        }
+
+        for (Location location : locations) {
+            if (location.getId().equals(locationId)) {
+                location.updateIsSelected(true);
+            } else {
+                location.updateIsSelected(false);
+            }
+        }
+    }
+
+    @Transactional
+    public void deleteLocation(Long locationId, String userLoginId) {
+        Long userId = userRepository.findIdByLoginId(userLoginId);
+        // QueryDSL 로 리팩토링 할 때, 조인 시켜서 한번에 가져오기
+        if (locationRepository.countByUserId(userId) <= 1) {
+            throw new RuntimeException("동네는 최소 1개 이상 등록되어야 합니다");
+        }
+
+        locationRepository.deleteById(locationId);
     }
 }
