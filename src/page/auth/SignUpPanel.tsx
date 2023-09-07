@@ -14,6 +14,11 @@ type SignUpPanelProps = {
   closePanel: () => void;
 };
 
+type LocationState = {
+  id: number;
+  name: string;
+};
+
 export function SignUpPanel({ closePanel }: SignUpPanelProps) {
   const { screenWidth } = useScreenConfigStore();
   const [rightPosition, setRightPosition] = useState(-screenWidth);
@@ -23,7 +28,7 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
   const [nickname, setNickname] = useState('');
-  const [location, setLocation] = useState(1);
+  const [location, setLocation] = useState<LocationState | null>(null);
   const [file, setFile] = useState<File>();
   const [backgroundImage, setBackgroundImage] = useState<string>();
 
@@ -40,8 +45,8 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
     !isNullLocation
   );
 
-  const addSignUpLocation = (locationId: number) => {
-    setLocation(locationId);
+  const addSignUpLocation = (locationId: number, locationName: string) => {
+    setLocation({ id: locationId, name: locationName });
     setIsModalOpen(false);
   };
 
@@ -174,15 +179,33 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
           onChangePassword={onChangePassword}
           onChangeNickname={onChangeNickname}
         />
-        <Button
-          styledType="outline"
-          color="neutralBorder"
-          fontColor="accentTextWeak"
-          onClick={openModal}
-        >
-          <Icon name="plus" color="accentTextWeak" />
-          위치 추가
-        </Button>
+        {location ? (
+          <Button
+            color="accentPrimary"
+            fontColor="accentText"
+            onClick={openModal}
+            align="space-between"
+          >
+            {location.name}
+            <Icon
+              name="pencil"
+              color="accentText"
+              onClick={() => {
+                console.log('삭제할까요?');
+              }}
+            />
+          </Button>
+        ) : (
+          <Button
+            styledType="outline"
+            color="neutralBorder"
+            fontColor="accentTextWeak"
+            onClick={openModal}
+          >
+            <Icon name="plus" color="accentTextWeak" />
+            위치 추가
+          </Button>
+        )}
       </Body>
       {isModalOpen && (
         <SignUpLocationModal

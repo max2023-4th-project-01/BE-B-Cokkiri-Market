@@ -7,7 +7,7 @@ import { AddLocation } from './AddLocation';
 type LocationModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  addLocation: (locationId: number) => void;
+  addLocation: (locationId: number, locationName: string) => void;
 };
 
 export function SignUpLocationModal({

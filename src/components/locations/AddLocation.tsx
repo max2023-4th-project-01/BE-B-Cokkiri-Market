@@ -12,7 +12,7 @@ type AddLocationProps = {
   showSearchPanel?: () => void;
   closeSearchPanel?: () => void;
   hideSearchPanel?: () => void;
-  addLocation?: (locationId: number) => void;
+  addLocation?: (locationId: number, locationName: string) => void;
 };
 
 export function AddLocation({
@@ -44,9 +44,9 @@ export function AddLocation({
     showSearchPanel && showSearchPanel();
   }, []);
 
-  const onClickLocationItem = (locationId: number) => {
+  const onClickLocationItem = (locationId: number, locationName: string) => {
     if (addLocation) {
-      addLocation(locationId);
+      addLocation(locationId, locationName);
       return;
     }
     addMutation.mutate(locationId);
@@ -74,7 +74,9 @@ export function AddLocation({
                 <LocationItem
                   ref={isLastItem ? lastItemRef : null}
                   key={location.id}
-                  onClick={() => onClickLocationItem(location.id)}
+                  onClick={() =>
+                    onClickLocationItem(location.id, location.name)
+                  }
                 >
                   {location.name}
                 </LocationItem>
