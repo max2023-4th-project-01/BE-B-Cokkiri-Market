@@ -75,7 +75,8 @@ public class LocationService {
 
         return LocationListResponse.of(locationRepository.save(Location.builder()
                 .userId(userId)
-                .locationName(request.getLocationName())
+                .locationId(request.getLocationId())
+                .locationName(addressService.getAddress(request.getLocationId()))
                 .isSelected(false)
                 .build()));
     }

@@ -35,6 +35,7 @@ public class UserService implements UserDetailsService {
 		User user = userRepository.save(UserMapper.INSTANCE.toUser(userSignUpRequest, encodedPassword, nickName));
 		locationRepository.save(Location.builder()
 			.userId(user.getId())
+			.locationId(userSignUpRequest.getLocationId())
 			.locationName(userSignUpRequest.getLocationName())
 			.isSelected(true)
 			.build());
