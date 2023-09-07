@@ -29,6 +29,10 @@ public class LocationService {
 
     public Map<String, Object> getLocations(String query, Integer page, Integer size) {
 
+        if (query == null) {
+            query = "가";
+        }
+
         if (page == null) {
             page = 1;
         }

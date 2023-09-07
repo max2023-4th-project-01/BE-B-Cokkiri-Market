@@ -29,9 +29,9 @@ public class LocationController {
     }
 
     @GetMapping("/users/locations")
-    public ResponseEntity<List<LocationListResponse>> getMyLocations(HttpServletRequest request) {
+    public ResponseEntity<Map<String, List<LocationListResponse>>> getMyLocations(HttpServletRequest request) {
         String userLoginId = (String) request.getAttribute(Constants.LOGIN_ID);
-        return ResponseEntity.ok(locationService.getMyLocations(userLoginId));
+        return ResponseEntity.ok(Map.of("locations", locationService.getMyLocations(userLoginId)));
     }
 
     @PostMapping("/users/locations")
