@@ -1,9 +1,20 @@
 import { styled } from 'styled-components';
+import { BASE_URL } from '../../api/axios';
 import { Header } from '../../components/Header';
 import { Loader } from '../../components/Loader';
 import { LoginPage } from './LoginPage';
 
 export function OAuthLoading() {
+  const pathAndQuery = window.location.pathname + window.location.search;
+
+  const login = async () => {
+    const url = `${BASE_URL}:8080${pathAndQuery}`;
+    const res = await fetch(url);
+
+    console.log(await res.json());
+  };
+
+  login();
   return (
     <>
       <Header title="내 계정" />
