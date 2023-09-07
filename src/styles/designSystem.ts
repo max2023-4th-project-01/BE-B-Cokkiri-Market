@@ -1,6 +1,7 @@
 import { decToHexOpacity } from '../utils/style';
 
 export type ColorType = keyof typeof designSystem.color;
+export type FontType = keyof typeof designSystem.font;
 
 export const colors = {
   white: '#FFFFFF',
