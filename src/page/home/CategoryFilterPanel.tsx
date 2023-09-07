@@ -2,7 +2,9 @@ import { useQuery } from '@tanstack/react-query';
 import { memo, useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import { getCategories } from '../../api/mainFetcher';
+import { Error } from '../../components/Error';
 import { Header } from '../../components/Header';
+import { Loader } from '../../components/Loader';
 import { Button } from '../../components/button/Button';
 import { Icon } from '../../components/icon/Icon';
 import { IconsType } from '../../components/icon/icons';
@@ -31,10 +33,11 @@ export const CategoryFilterPanel = memo(
       isOpenPanel ? 0 : -screenWidth
     );
 
-    const { data: categoryData } = useQuery<CategoryData, Error>(
-      ['category'],
-      getCategories
-    );
+    const {
+      data: categoryData,
+      isLoading,
+      isError,
+    } = useQuery<CategoryData, Error>(['category'], getCategories);
 
     // TODO : 홈과 함께 로딩, 에러 적용하기
 
@@ -59,8 +62,6 @@ export const CategoryFilterPanel = memo(
       selectCategory(id);
     };
 
-    console.log(categoryData?.categories);
-
     return (
       <Div $right={rightPosition} onTransitionEnd={onTransitionEndHandler}>
         <Header
@@ -73,22 +74,27 @@ export const CategoryFilterPanel = memo(
           title="카테고리"
         />
         <Body>
-          {categoryData?.categories?.map(category => {
-            return (
-              <Category
-                key={category.id}
-                onClick={() => onClickCategory(category.id)}
-              >
-                {/* <CategoryIcon>
+          {isLoading ? (
+            <Loader />
+          ) : (
+            categoryData?.categories?.map(category => {
+              return (
+                <Category
+                  key={category.id}
+                  onClick={() => onClickCategory(category.id)}
+                >
+                  {/* <CategoryIcon>
                       <Icon
                         name={category.iconName}
                         color="neutralTextStrong"
                       />
                     </CategoryIcon> */}
-                <span>{category.name}</span>
-              </Category>
-            );
-          })}
+                  <span>{category.name}</span>
+                </Category>
+              );
+            })
+          )}
+          {isError && <Error message="카테고리 목록을 불러오지 못했습니다." />}
         </Body>
       </Div>
     );
@@ -142,10 +148,10 @@ const Category = styled.div`
   }
 `;
 
-const CategoryIcon = styled.div`
-  width: 100%;
-  height: 44px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
+// const CategoryIcon = styled.div`
+//   width: 100%;
+//   height: 44px;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+// `;

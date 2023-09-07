@@ -6,6 +6,7 @@ import {
   useGetLocationResult,
 } from '../../queries/useLocationQuery';
 import { Error } from '../Error';
+import { Loader } from '../Loader';
 
 type AddLocationProps = {
   rightPosition?: number;
@@ -26,6 +27,7 @@ export function AddLocation({
   const {
     data: locationData,
     isError,
+    isLoading,
     hasNextPage,
     isFetchingNextPage,
     fetchNextPage,
@@ -69,22 +71,26 @@ export function AddLocation({
         <Error />
       ) : (
         <Content>
-          {locationData?.pages.map(page => {
-            return page.locations.map((location, index) => {
-              const isLastItem = index === page.locations.length - 1;
-              return (
-                <LocationItem
-                  ref={isLastItem ? lastItemRef : null}
-                  key={location.id}
-                  onClick={() =>
-                    onClickLocationItem(location.id, location.name)
-                  }
-                >
-                  {location.name}
-                </LocationItem>
-              );
-            });
-          })}
+          {isLoading ? (
+            <Loader />
+          ) : (
+            locationData?.pages.map(page => {
+              return page.locations.map((location, index) => {
+                const isLastItem = index === page.locations.length - 1;
+                return (
+                  <LocationItem
+                    ref={isLastItem ? lastItemRef : null}
+                    key={location.id}
+                    onClick={() =>
+                      onClickLocationItem(location.id, location.name)
+                    }
+                  >
+                    {location.name}
+                  </LocationItem>
+                );
+              });
+            })
+          )}
           {isFetchingNextPage && <LoadingMessage>Loading...</LoadingMessage>}
         </Content>
       )}
