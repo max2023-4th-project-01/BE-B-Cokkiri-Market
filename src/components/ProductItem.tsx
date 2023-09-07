@@ -2,6 +2,8 @@ import { styled } from 'styled-components';
 import { addCommasToNumber } from '../utils/addCommasToNumber';
 import { getElapsedSince } from '../utils/getElapsedSince';
 import { Badge } from './Badge';
+import { Dropdown } from './dropdown/Dropdown';
+import { MenuItem } from './dropdown/MenuItem';
 import { Icon } from './icon/Icon';
 
 type ItemProps = {
@@ -43,6 +45,22 @@ export function ProductItem({
     }
   };
 
+  // TODO: 각 드롭다운 메뉴 아이템들에 맞는 액션 추가하기
+  const dropdownActions = {
+    edit: () => {
+      console.log('게시글 수정');
+    },
+    reserved: () => {
+      console.log('예약중');
+    },
+    sold: () => {
+      console.log('판매완료');
+    },
+    delete: () => {
+      console.log('삭제');
+    },
+  };
+
   return (
     <Div
       onClick={() => {
@@ -53,7 +71,25 @@ export function ProductItem({
       <Information>
         <Title>
           <span>{title}</span>
-          {isSeller && <Icon name="dots" color="neutralTextStrong" />}
+          {isSeller && (
+            <Dropdown iconName="dots" align="right">
+              <MenuItem onAction={dropdownActions['edit']}>
+                게시글 수정
+              </MenuItem>
+              <MenuItem onAction={dropdownActions['reserved']}>
+                예약중 상태로 전환
+              </MenuItem>
+              <MenuItem onAction={dropdownActions['sold']}>
+                판매완료 상태로 전환
+              </MenuItem>
+              <MenuItem
+                color="systemWarning"
+                onAction={dropdownActions['delete']}
+              >
+                삭제
+              </MenuItem>
+            </Dropdown>
+          )}
         </Title>
         <LocationAndTimestamp>
           {locationName}・{getElapsedSince(createdAt)}
@@ -125,6 +161,7 @@ const Information = styled.div`
 const Title = styled.div`
   font: ${({ theme }) => theme.font.displayDefault16};
   color: ${({ theme }) => theme.color.neutralText};
+  position: relative;
 
   & span {
     flex: 1;

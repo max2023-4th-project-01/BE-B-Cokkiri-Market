@@ -21,7 +21,6 @@ const Wrapper = styled.div<{ $width: number; $height: number }>`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 10px;
   margin: 0 auto;
   border: 1px solid ${({ theme }) => theme.color.neutralBorder};
   font: ${({ theme }) => theme.font.displayStrong20};

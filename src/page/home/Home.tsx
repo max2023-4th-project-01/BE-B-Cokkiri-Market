@@ -5,8 +5,11 @@ import { getItem } from '../../api/fetcher';
 import { Error } from '../../components/Error';
 import { Header } from '../../components/Header';
 import { ProductItem } from '../../components/ProductItem';
+import { Dropdown } from '../../components/dropdown/Dropdown';
+import { MenuItem } from '../../components/dropdown/MenuItem';
 import { Icon } from '../../components/icon/Icon';
 import { LocationModal } from '../../components/locations/LocationModal';
+import { useGetUserLocation } from '../../queries/useLocationQuery';
 import { CategoryFilterPanel } from './CategoryFilterPanel';
 
 type ItemData = {
@@ -40,6 +43,8 @@ export function Home() {
     isError,
   } = useQuery<ItemData, Error>(['items'], getItem);
 
+  const { data: userLocationData } = useGetUserLocation();
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -47,6 +52,10 @@ export function Home() {
   if (isError) {
     return <div>Error occurred</div>;
   }
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
 
   const openPanel = () => {
     setIsOpenPanel(true);
@@ -62,8 +71,30 @@ export function Home() {
       <Header
         leftButton={
           <LeftAccessory>
-            {itemData.userLocation}
-            <Icon name="chevronDown" color="neutralTextStrong" />
+            <Dropdown
+              btnText={itemData.userLocation}
+              iconName="chevronDown"
+              align="left"
+            >
+              {userLocationData?.locations.map(location => {
+                return (
+                  <MenuItem
+                    key={location.id}
+                    font={
+                      location.isSelected
+                        ? 'enabledStrong16'
+                        : 'availableDefault16'
+                    }
+                    onAction={() => {
+                      console.log(`${location.name} 클릭됨`);
+                    }}
+                  >
+                    {location.name}
+                  </MenuItem>
+                );
+              })}
+              <MenuItem onAction={openModal}>내 동네 설정하기</MenuItem>
+            </Dropdown>
           </LeftAccessory>
         }
         rightButton={
@@ -76,7 +107,7 @@ export function Home() {
           </RightAccessory>
         }
       />
-      <Body ref={bodyRef}>
+      <Body ref={bodyRef} id="home--body__items">
         {itemData.items.map(item => {
           return <ProductItem key={item.id} {...item} />;
         })}
