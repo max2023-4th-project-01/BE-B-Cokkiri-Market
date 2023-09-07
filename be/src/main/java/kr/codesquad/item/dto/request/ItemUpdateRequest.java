@@ -14,5 +14,5 @@ public class ItemUpdateRequest {
 	@NotNull
 	private String content;
 	@NotNull
-	private String locationName;
+	private Long myLocationId;
 }
