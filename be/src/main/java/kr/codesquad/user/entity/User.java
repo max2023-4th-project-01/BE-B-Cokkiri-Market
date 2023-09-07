@@ -20,20 +20,20 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	@Column(length = 200)
-	private String profileImage;
+	private String profileImageUrl;
 	@Column(nullable = false, length = 45, unique = true)
 	private String loginId;
 	@Column(length = 100)
 	private String password;
 	@Column(nullable = false, length = 45, unique = true)
-	private String nickName;
+	private String nickname;
 
 	@Builder
-	public User(Long id, String profileImage, String loginId, String password, String nickName) {
+	public User(Long id, String profileImageUrl, String loginId, String password, String nickname) {
 		this.id = id;
-		this.profileImage = profileImage;
+		this.profileImageUrl = profileImageUrl;
 		this.loginId = loginId;
 		this.password = password;
-		this.nickName = nickName;
+		this.nickname = nickname;
 	}
 }

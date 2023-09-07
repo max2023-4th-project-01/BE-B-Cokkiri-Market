@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import kr.codesquad.category.dto.response.FavoriteCategoryResponse;
 import kr.codesquad.favorite.service.FavoriteService;
@@ -37,8 +39,10 @@ public class UserController {
 	private final FavoriteService favoriteService;
 
 	@PostMapping()
-	public void signUp(@RequestBody UserSignUpRequest userSignUpRequest) {
-		userService.signUp(userSignUpRequest);
+	public ResponseEntity<Void> signUp(@RequestPart(required = false) MultipartFile profileImageFile,
+		@RequestPart("signupData") UserSignUpRequest userSignUpRequest) {
+		userService.signUp(userSignUpRequest, profileImageFile);
+		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
 	@GetMapping("locations")
