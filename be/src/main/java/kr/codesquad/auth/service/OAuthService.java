@@ -50,7 +50,7 @@ public class OAuthService implements OAuth2UserService<OAuth2UserRequest, OAuth2
 				.build());
 		}
 
-		return new DefaultOAuth2User(Collections.singleton(new SimpleGrantedAuthority("no_role"))
+		return new DefaultOAuth2User(Collections.singleton(new SimpleGrantedAuthority(null))
 			, attributes, GITHUB_ID);
 	}
 

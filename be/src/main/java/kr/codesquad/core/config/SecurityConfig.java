@@ -8,7 +8,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
@@ -29,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 	private final UserService userService;
-	private final BCryptPasswordEncoder bCryptPasswordEncoder;
+	private final PasswordEncoder passwordEncoder;
 	private final OAuthService oAuthService;
 	private final JwtAuthenticationSuccessHandler jwtAuthenticationSuccessHandler;
 	private final JwtProvider jwtProvider;
@@ -39,7 +39,7 @@ public class SecurityConfig {
 		AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(
 			AuthenticationManagerBuilder.class);
 
-		authenticationManagerBuilder.userDetailsService(userService).passwordEncoder(bCryptPasswordEncoder);
+		authenticationManagerBuilder.userDetailsService(userService).passwordEncoder(passwordEncoder);
 		AuthenticationManager authenticationManager = authenticationManagerBuilder.build();
 
 		AuthenticationFilter authenticationFilter = new AuthenticationFilter(authenticationManager);

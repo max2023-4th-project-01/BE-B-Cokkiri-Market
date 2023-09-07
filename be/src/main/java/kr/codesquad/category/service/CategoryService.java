@@ -17,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import kr.codesquad.category.entity.Category;
 import kr.codesquad.category.repository.CategoryRepository;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -62,6 +61,7 @@ public class CategoryService {
 
 		String response = null;
 		try {
+			// 응답이 너무 느려서 비동기 처리 예정
 			response = restTemplate.postForObject(endpoint, request, String.class);
 		} catch (HttpClientErrorException.TooManyRequests e) {
 			logger.error("API 사용량을 초과했습니다.");
