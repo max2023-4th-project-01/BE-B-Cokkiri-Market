@@ -12,8 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import kr.codesquad.image.service.AmazonS3Service;
-import kr.codesquad.location.dto.request.LocationCreateRequest;
-import kr.codesquad.location.dto.response.LocationListResponse;
 import kr.codesquad.location.entity.Location;
 import kr.codesquad.location.repository.LocationRepository;
 import kr.codesquad.user.dto.UserMapper;
@@ -62,57 +60,5 @@ public class UserService implements UserDetailsService {
 		User user = userRepository.findByLoginId(username);
 		return new org.springframework.security.core.userdetails.User(username, user.getPassword(),
 			new ArrayList<>());
-	}
-
-	@Transactional(readOnly = true)
-	public List<LocationListResponse> getLocations() {
-		Long userId = 1L;
-		return LocationListResponse.toLocationList(locationRepository.findAllByUserId(userId));
-	}
-
-	@Transactional
-	public LocationListResponse saveLocation(LocationCreateRequest request) {
-		Long userId = 1L;
-
-		if (locationRepository.countByUserId(userId) >= 2) {
-			throw new RuntimeException("동네는 최대 2개까지만 등록할 수 있습니다");
-		}
-
-		return LocationListResponse.of(locationRepository.save(Location.builder()
-			.userId(userId)
-			.locationId(request.getLocationId())
-			.locationName(request.getLocationName())
-			.isSelected(false) // false??
-			.build()));
-	}
-
-	@Transactional
-	public void selectLocation(Long locationId) {
-		Long userId = 1L;
-
-		List<Location> locations = locationRepository.findAllByUserIdOrderByIsSelectedDesc(userId);
-
-		if (locations.size() == 0) {
-			throw new RuntimeException("동네는 최소 1개 이상 등록되어야 합니다");
-		}
-
-		for (Location location : locations) {
-			if (location.getId().equals(locationId)) {
-				location.updateIsSelected(true);
-			} else {
-				location.updateIsSelected(false);
-			}
-		}
-	}
-
-	@Transactional
-	public void deleteLocation(Long locationId) {
-		Long userId = 1L;
-
-		if (locationRepository.countByUserId(userId) <= 1) {
-			throw new RuntimeException("동네는 최소 1개 이상 등록되어야 합니다");
-		}
-
-		locationRepository.deleteById(locationId);
 	}
 }

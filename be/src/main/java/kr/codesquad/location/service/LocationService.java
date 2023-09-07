@@ -25,9 +25,17 @@ public class LocationService {
         this.userRepository = userRepository;
     }
 
-    public List<LocationListResponse> getLocations(String query) {
+    public List<LocationListResponse> getLocations(String query, Integer page, Integer size) {
 
-        String result = addressService.getAddressList(query);
+        if (page == null) {
+            page = 1;
+        }
+
+        if (size == null) {
+            size = 15;
+        }
+
+        String result = addressService.getAddressList(query, page, size);
 
         List<LocationListResponse> locations = new ArrayList<>();
         int start = 0;

@@ -17,13 +17,13 @@ public class AddressService {
         this.V_WORLD_DOMAIN = secretProperties.getVworld().getDomain();
     }
 
-    public String getAddressList(String query) {
+    public String getAddressList(String query, int page, int size) {
         final String endpoint = V_WORLD_ENDPOINT;
         String key = "&key=" + V_WORLD_KEY;
         String domain = "&domain=" + V_WORLD_DOMAIN;
         String search = "&attrFilter=emd_kor_nm:like:" + query;
 
-        String url = endpoint + key + domain + search;
+        String url = endpoint + key + domain + search + "&page=" + page + "&size=" + size;
         RestTemplate restTemplate = new RestTemplate();
         return restTemplate.getForObject(url, String.class);
     }

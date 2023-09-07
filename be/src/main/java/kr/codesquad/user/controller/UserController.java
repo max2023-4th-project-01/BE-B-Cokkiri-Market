@@ -45,28 +45,6 @@ public class UserController {
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
-	@GetMapping("locations")
-	public ResponseEntity<List<LocationListResponse>> getLocations() {
-		return ResponseEntity.ok(userService.getLocations());
-	}
-
-	@PostMapping("locations")
-	public ResponseEntity<LocationListResponse> createLocation(@RequestBody LocationCreateRequest request) {
-		return ResponseEntity.status(HttpStatus.CREATED).body(userService.saveLocation(request));
-	}
-
-	@PatchMapping("locations/{locationId}")
-	public ResponseEntity<Void> updateLocation(@PathVariable Long locationId) {
-		userService.selectLocation(locationId);
-		return ResponseEntity.ok().build();
-	}
-
-	@DeleteMapping("locations/{locationId}")
-	public ResponseEntity<Void> deleteLocation(@PathVariable Long locationId) {
-		userService.deleteLocation(locationId);
-		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-	}
-
 	@GetMapping("/{username}/items")
 	public ResponseEntity<UserItemListSlice> userItems(
 		@RequestParam(required = false) Long cursor,

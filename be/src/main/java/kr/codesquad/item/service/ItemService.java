@@ -56,7 +56,7 @@ public class ItemService {
 		Long userId = userRepository.findIdByLoginId(userLoginId);
 
 		// 이미지 처리하고 썸네일 하나 받아옴
-		String thumbnailUrl = "썸네일 url 이지롱";
+		String thumbnailUrl = "https://cokkiri-s3.s3.ap-northeast-2.amazonaws.com/profileImage/%EC%BD%94%EB%81%BC%EB%A6%AC.png";
 		String locationName = locationRepository.findLocationNameById(itemRequest.getMyLocationId());
 
 		return itemRepository.save(Item.builder()

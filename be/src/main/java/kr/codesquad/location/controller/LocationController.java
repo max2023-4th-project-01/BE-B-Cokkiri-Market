@@ -22,8 +22,10 @@ public class LocationController {
     private final LocationService locationService;
 
     @GetMapping("/locations")
-    public ResponseEntity<Map<String, List<LocationListResponse>>> getLocations(@RequestParam String query) {
-        return ResponseEntity.ok(Map.of("locations", locationService.getLocations(query)));
+    public ResponseEntity<Map<String, List<LocationListResponse>>> getLocations(@RequestParam String query,
+                                                                                @RequestParam(required = false) Integer page,
+                                                                                @RequestParam(required = false) Integer size) {
+        return ResponseEntity.ok(Map.of("locations", locationService.getLocations(query, page, size)));
     }
 
     @GetMapping("/users/locations")
