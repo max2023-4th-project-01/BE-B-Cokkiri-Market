@@ -51,7 +51,7 @@ public class AuthorizationFilter implements Filter {
 		if (!isContainToken(httpServletRequest)) {
 			response.setCharacterEncoding("UTF-8");
 			response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-			((HttpServletResponse)response).setStatus(HttpStatus.UNAUTHORIZED.value());
+			((HttpServletResponse)response).setStatus(HttpStatus.BAD_REQUEST.value());
 			throw new MalformedJwtException("");
 
 		}
