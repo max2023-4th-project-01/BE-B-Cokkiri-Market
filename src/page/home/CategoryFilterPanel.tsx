@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
-import { getCategories } from '../../api/fetcher';
+import { getCategories } from '../../api/mainFetcher';
 import { Header } from '../../components/Header';
 import { Button } from '../../components/button/Button';
 import { Icon } from '../../components/icon/Icon';

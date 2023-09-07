@@ -1,7 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
 import { useRef, useState } from 'react';
 import { styled } from 'styled-components';
-import { getItem } from '../../api/fetcher';
 import { Error } from '../../components/Error';
 import { Header } from '../../components/Header';
 import { ProductItem } from '../../components/ProductItem';
@@ -9,41 +7,20 @@ import { Dropdown } from '../../components/dropdown/Dropdown';
 import { MenuItem } from '../../components/dropdown/MenuItem';
 import { Icon } from '../../components/icon/Icon';
 import { LocationModal } from '../../components/locations/LocationModal';
+import { useGetItemData } from '../../queries/useItemQuery';
 import { useGetUserLocation } from '../../queries/useLocationQuery';
 import { CategoryFilterPanel } from './CategoryFilterPanel';
-
-type ItemData = {
-  userLocation: string;
-  items: ItemProps[];
-};
-
-type ItemProps = {
-  id: number;
-  title: string;
-  locationName: string;
-  createdAt: Date;
-  statusName: string;
-  price: number | null;
-  countData: {
-    chat: number;
-    favorite: number;
-  };
-  thumbnailUrl: string;
-  isSeller: boolean;
-};
 
 export function Home() {
   const bodyRef = useRef<HTMLDivElement>(null);
   const [isOpenPanel, setIsOpenPanel] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const {
-    data: itemData,
-    isLoading,
-    isError,
-  } = useQuery<ItemData, Error>(['items'], getItem);
-
+  // 선택된 categoryId 를 인자로 전달해서 카테고리 품목 필터링
+  const { data: itemData, isLoading, isError } = useGetItemData(1);
   const { data: userLocationData } = useGetUserLocation();
+
+  // useEffect에서 useInView 훅으로 무한스크롤 요청 구현 예정
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -72,7 +49,7 @@ export function Home() {
         leftButton={
           <LeftAccessory>
             <Dropdown
-              btnText={itemData.userLocation}
+              btnText={itemData?.pages[0].categoryName || '역삼1동'}
               iconName="chevronDown"
               align="left"
             >
@@ -108,10 +85,12 @@ export function Home() {
         }
       />
       <Body ref={bodyRef} id="home--body__items">
-        {itemData.items.map(item => {
-          return <ProductItem key={item.id} {...item} />;
+        {itemData?.pages.map(page => {
+          return page.items.map(item => {
+            return <ProductItem key={item.id} {...item} />;
+          });
         })}
-        {itemData.items.length === 0 && (
+        {itemData?.pages.length === 0 && (
           <Error message="판매 상품이 없습니다." />
         )}
       </Body>

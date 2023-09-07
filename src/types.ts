@@ -1,3 +1,25 @@
+export type ItemData = {
+  userLocation: string;
+  categoryName: string | null;
+  items: ItemProps[];
+  nextCursor: number | null;
+};
+
+type ItemProps = {
+  id: number;
+  title: string;
+  locationName: string;
+  createdAt: Date;
+  statusName: string;
+  price: number | null;
+  countData: {
+    chat: number;
+    favorite: number;
+  };
+  thumbnailUrl: string;
+  isSeller: boolean;
+};
+
 export type UserLocationData = {
   locations: {
     id: number;
