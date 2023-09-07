@@ -29,10 +29,6 @@ public class LocationService {
 
     public Map<String, Object> getLocations(String query, Integer page, Integer size) {
 
-        if (query == null) {
-            query = "가";
-        }
-
         if (page == null) {
             page = 1;
         }
@@ -41,7 +37,12 @@ public class LocationService {
             size = 15;
         }
 
-        String result = addressService.getAddressList(query, page, size);
+        String result;
+        if (query == null) {
+            result = addressService.getAddressListDefault(page, size);
+        } else {
+            result = addressService.getAddressList(query, page, size);
+        }
 
         Map<String, Object> response = new HashMap<>();
 
