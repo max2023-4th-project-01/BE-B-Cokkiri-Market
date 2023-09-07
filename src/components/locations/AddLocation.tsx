@@ -21,8 +21,13 @@ export function AddLocation({
   hideSearchPanel,
 }: AddLocationProps) {
   // TODO: SeachBar 인풋에 입력받은 단어를 searchParam으로 넘겨주기
-  const { fetchNextPage, hasNextPage, isFetchingNextPage, data, isError } =
-    useGetLocationResult('역삼');
+  const {
+    data: locationData,
+    isError,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+  } = useGetLocationResult('역삼');
 
   const addMutation = useAddUserLocation();
   const { ref: lastItemRef, inView } = useInView();
@@ -56,7 +61,7 @@ export function AddLocation({
         <Error />
       ) : (
         <Content>
-          {data?.pages.map(page => {
+          {locationData?.pages.map(page => {
             return page.locations.map((location, index) => {
               const isLastItem = index === page.locations.length - 1;
               return (

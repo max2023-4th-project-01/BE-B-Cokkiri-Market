@@ -17,7 +17,7 @@ export function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // 선택된 categoryId 를 인자로 전달해서 카테고리 품목 필터링
-  const { data: itemData, isLoading, isError } = useGetItemData(1);
+  const { data: itemData, isLoading, isError, refetch } = useGetItemData(1);
   const { data: userLocationData } = useGetUserLocation();
 
   // useEffect에서 useInView 훅으로 무한스크롤 요청 구현 예정
@@ -32,6 +32,13 @@ export function Home() {
 
   const openModal = () => {
     setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    // 모달이 닫힐때 아이템 목록의 첫번째 페이지 데이터를 다시 불러온다.
+    refetch({ refetchPage: (_, index) => index === 0 });
+
+    setIsModalOpen(false);
   };
 
   const openPanel = () => {
@@ -95,10 +102,7 @@ export function Home() {
         )}
       </Body>
       {isModalOpen && (
-        <LocationModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-        />
+        <LocationModal isOpen={isModalOpen} onClose={closeModal} />
       )}
     </Div>
   );
