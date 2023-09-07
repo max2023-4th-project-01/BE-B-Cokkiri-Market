@@ -6,7 +6,7 @@ export function Test() {
   const { showToast } = useToastStore();
 
   const handleError = () => {
-    showToast({ message: 'This is a error', type: 'error', duration: 5000 });
+    showToast({ message: 'This is a error', type: 'error', duration: 500000 });
   };
 
   const handleSuccess = () => {

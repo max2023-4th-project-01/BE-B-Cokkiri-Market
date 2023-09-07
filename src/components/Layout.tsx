@@ -6,11 +6,13 @@ import { ToastContainer } from './Toast';
 
 export function Layout() {
   const { screenWidth, screenHeight } = useScreenConfigStore();
+  const positionGap = Math.abs(screenHeight - window.innerHeight) / 2;
+
   return (
     <Wrapper $width={screenWidth} $height={screenHeight}>
       <Outlet />
       <Footer />
-      <ToastContainer />
+      <ToastContainer positionGap={positionGap} position="bottom" />
     </Wrapper>
   );
 }
