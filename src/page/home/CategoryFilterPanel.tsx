@@ -2,12 +2,12 @@ import { useQuery } from '@tanstack/react-query';
 import { memo, useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import { getCategories } from '../../api/mainFetcher';
+import { categoryIconMap } from '../../assets/image';
 import { Error } from '../../components/Error';
 import { Header } from '../../components/Header';
 import { Loader } from '../../components/Loader';
 import { Button } from '../../components/button/Button';
 import { Icon } from '../../components/icon/Icon';
-import { IconsType } from '../../components/icon/icons';
 import { useScreenConfigStore } from '../../stores/useScreenConfigStore';
 
 type CategoryData = {
@@ -17,7 +17,7 @@ type CategoryData = {
 type CategoryItem = {
   id: number;
   name: string;
-  iconName: IconsType;
+  iconName: string;
 };
 
 type CategoryFilterPanelProps = {
@@ -83,12 +83,12 @@ export const CategoryFilterPanel = memo(
                   key={category.id}
                   onClick={() => onClickCategory(category.id)}
                 >
-                  {/* <CategoryIcon>
-                      <Icon
-                        name={category.iconName}
-                        color="neutralTextStrong"
-                      />
-                    </CategoryIcon> */}
+                  <CategoryIcon>
+                    <CategoryImg
+                      src={categoryIconMap[category.iconName]}
+                      alt={category.iconName}
+                    />
+                  </CategoryIcon>
                   <span>{category.name}</span>
                 </Category>
               );
@@ -148,10 +148,13 @@ const Category = styled.div`
   }
 `;
 
-// const CategoryIcon = styled.div`
-//   width: 100%;
-//   height: 44px;
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-// `;
+const CategoryIcon = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const CategoryImg = styled.img`
+  width: 44px;
+  height: 44px;
+`;
