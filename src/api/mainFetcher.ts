@@ -6,7 +6,7 @@ export const getItems = async ({
   categoryId,
 }: {
   pageParam: number;
-  categoryId: number;
+  categoryId: number | null;
 }) => {
   const res = await fetcher.get(
     `${API_ENDPOINT.ITEMS}?categoryId=${categoryId}&cursor=${pageParam}`

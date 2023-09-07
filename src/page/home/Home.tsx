@@ -24,6 +24,7 @@ export function Home() {
 
   useEffect(() => {
     if (categoryId) {
+      refetch();
       setIsOpenPanel(false);
     }
   }, [categoryId]);
@@ -44,7 +45,6 @@ export function Home() {
   const closeModal = () => {
     // 모달이 닫힐때 아이템 목록의 첫번째 페이지 데이터를 다시 불러온다.
     refetch({ refetchPage: (_, index) => index === 0 });
-
     setIsModalOpen(false);
   };
 

@@ -66,7 +66,6 @@ export const CategoryFilterPanel = memo(
           }
           title="카테고리"
         />
-        (
         <Body>
           {categoryData && (
             <>
@@ -89,7 +88,6 @@ export const CategoryFilterPanel = memo(
             </>
           )}
         </Body>
-        )
       </Div>
     );
   }
