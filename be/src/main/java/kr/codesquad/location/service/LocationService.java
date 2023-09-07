@@ -1,7 +1,9 @@
 package kr.codesquad.location.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import kr.codesquad.location.dto.request.LocationCreateRequest;
 import kr.codesquad.location.dto.response.LocationListResponse;
@@ -25,7 +27,7 @@ public class LocationService {
         this.userRepository = userRepository;
     }
 
-    public List<LocationListResponse> getLocations(String query, Integer page, Integer size) {
+    public Map<String, Object> getLocations(String query, Integer page, Integer size) {
 
         if (page == null) {
             page = 1;
@@ -37,9 +39,23 @@ public class LocationService {
 
         String result = addressService.getAddressList(query, page, size);
 
+        Map<String, Object> response = new HashMap<>();
+
         List<LocationListResponse> locations = new ArrayList<>();
         int start = 0;
         int end = 0;
+
+        String sub = result.substring(result.indexOf("page"));
+        start = sub.indexOf("total");
+        end = sub.indexOf(",", start);
+        int total = Integer.parseInt(sub.substring(start + 10, end - 1));
+
+        response.put("hasNext", page < total);
+        if (page > total) {
+            response.put("locations", new ArrayList<>());
+            return response;
+        }
+
         while (true) {
             start = result.indexOf("full_nm", end);
             if (start == -1) {
@@ -50,7 +66,9 @@ public class LocationService {
             Long id = Long.parseLong(result.substring(end + 11, end + 19));
             locations.add(new LocationListResponse(id, name, null));
         }
-        return locations;
+
+        response.put("locations", locations);
+        return response;
     }
 
     @Transactional(readOnly = true)
