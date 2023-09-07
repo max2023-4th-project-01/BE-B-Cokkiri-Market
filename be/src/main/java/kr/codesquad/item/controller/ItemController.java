@@ -36,9 +36,9 @@ public class ItemController {
 
 	@PostMapping()
 	public ResponseEntity<Map<String, Long>> createItem(@RequestPart List<MultipartFile> imageFiles,
-														@RequestPart ItemSaveRequest items, HttpServletRequest request) {
+														@RequestPart ItemSaveRequest item, HttpServletRequest request) {
 		String userLoginId = (String)request.getAttribute(Constants.LOGIN_ID);
-		return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("itemId", itemService.saveItem(imageFiles, items, userLoginId)));
+		return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("itemId", itemService.saveItem(imageFiles, item, userLoginId)));
 	}
 
 	@GetMapping("/{id}")
