@@ -42,8 +42,9 @@ public class ItemController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<ItemDetailResponse> getItem(@PathVariable Long id) {
-		return ResponseEntity.ok(itemService.getItem(id));
+	public ResponseEntity<ItemDetailResponse> getItem(@PathVariable Long id, HttpServletRequest request) {
+		String userLoginId = (String)request.getAttribute(Constants.LOGIN_ID);
+		return ResponseEntity.ok(itemService.getItem(id, userLoginId));
 	}
 
 	@PutMapping("/{id}")
