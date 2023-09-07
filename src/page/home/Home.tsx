@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { styled } from 'styled-components';
 import { getItem } from '../../api/fetcher';
 import { Error } from '../../components/Error';
@@ -33,25 +33,31 @@ type ItemProps = {
 };
 
 export function Home() {
+  const { data: userLocationData } = useGetUserLocation();
   const bodyRef = useRef<HTMLDivElement>(null);
   const [isOpenPanel, setIsOpenPanel] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [categoryId, setCategoryId] = useState<number>();
 
-  const {
-    data: itemData,
-    isLoading,
-    isError,
-  } = useQuery<ItemData, Error>(['items'], getItem);
+  const { data: itemData } = useQuery<ItemData, Error>(
+    ['items', categoryId],
+    () => getItem({ categoryId })
+  );
 
-  const { data: userLocationData } = useGetUserLocation();
+  useEffect(() => {
+    if (categoryId) {
+      setIsOpenPanel(false);
+    }
+  }, [categoryId]);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  // TODO : 로딩, 에러 페이지 중간에 return이 아닌 jsx 내에서 처리하기
+  // if (isLoading) {
+  //   return <div>Loading...</div>;
+  // }
 
-  if (isError) {
-    return <div>Error occurred</div>;
-  }
+  // if (isError) {
+  //   return <div>Error occurred</div>;
+  // }
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -65,56 +71,68 @@ export function Home() {
     setIsOpenPanel(false);
   };
 
+  const selectCategory = (id: number) => {
+    setCategoryId(id);
+  };
+
   return (
     <Div>
-      {isOpenPanel && <CategoryFilterPanel closePanel={closePanel} />}
-      <Header
-        leftButton={
-          <LeftAccessory>
-            <Dropdown
-              btnText={itemData.userLocation}
-              iconName="chevronDown"
-              align="left"
-            >
-              {userLocationData?.locations.map(location => {
-                return (
-                  <MenuItem
-                    key={location.id}
-                    font={
-                      location.isSelected
-                        ? 'enabledStrong16'
-                        : 'availableDefault16'
-                    }
-                    onAction={() => {
-                      console.log(`${location.name} 클릭됨`);
-                    }}
-                  >
-                    {location.name}
-                  </MenuItem>
-                );
-              })}
-              <MenuItem onAction={openModal}>내 동네 설정하기</MenuItem>
-            </Dropdown>
-          </LeftAccessory>
-        }
-        rightButton={
-          <RightAccessory>
-            <Icon
-              name="layoutGrid"
-              color="neutralTextStrong"
-              onClick={openPanel}
-            />
-          </RightAccessory>
-        }
+      <CategoryFilterPanel
+        isOpenPanel={isOpenPanel}
+        closePanel={closePanel}
+        selectCategory={selectCategory}
       />
-      <Body ref={bodyRef} id="home--body__items">
-        {itemData.items.map(item => {
-          return <ProductItem key={item.id} {...item} />;
-        })}
-        {itemData.items.length === 0 && (
-          <Error message="판매 상품이 없습니다." />
-        )}
-      </Body>
+      {itemData && (
+        <>
+          <Header
+            leftButton={
+              <LeftAccessory>
+                <Dropdown
+                  btnText={itemData.userLocation}
+                  iconName="chevronDown"
+                  align="left"
+                >
+                  {userLocationData?.locations.map(location => {
+                    return (
+                      <MenuItem
+                        key={location.id}
+                        font={
+                          location.isSelected
+                            ? 'enabledStrong16'
+                            : 'availableDefault16'
+                        }
+                        onAction={() => {
+                          console.log(`${location.name} 클릭됨`);
+                        }}
+                      >
+                        {location.name}
+                      </MenuItem>
+                    );
+                  })}
+                  <MenuItem onAction={openModal}>내 동네 설정하기</MenuItem>
+                </Dropdown>
+              </LeftAccessory>
+            }
+            rightButton={
+              <RightAccessory>
+                <Icon
+                  name="layoutGrid"
+                  color="neutralTextStrong"
+                  onClick={openPanel}
+                />
+              </RightAccessory>
+            }
+          />
+          <Body ref={bodyRef} id="home--body__items">
+            {itemData.items.map(item => {
+              return <ProductItem key={item.id} {...item} />;
+            })}
+            {itemData.items.length === 0 && (
+              <Error message="판매 상품이 없습니다." />
+            )}
+          </Body>
+        </>
+      )}
       {isModalOpen && (
         <LocationModal
           isOpen={isModalOpen}

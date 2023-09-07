@@ -2,8 +2,18 @@ import { UserLocationData } from '../types';
 import axios, { axiosAuth } from './axios';
 import { API_ENDPOINT } from './endPoint';
 
-export const getItem = async () => {
-  const res = await axios.get(API_ENDPOINT.ITEMS);
+export const getItem = async ({
+  cursor,
+  categoryId,
+}: {
+  cursor?: number;
+  categoryId?: number;
+}) => {
+  const res = await axios.get(
+    `${API_ENDPOINT.ITEMS}${cursor ? `?cursor=${cursor}` : ''}${
+      categoryId ? `?categoryId=${categoryId}` : ''
+    }`
+  );
   return res.data;
 };
 

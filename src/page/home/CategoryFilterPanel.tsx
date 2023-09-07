@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import { getCategories } from '../../api/fetcher';
 import { Header } from '../../components/Header';
@@ -8,78 +8,92 @@ import { Icon } from '../../components/icon/Icon';
 import { IconsType } from '../../components/icon/icons';
 import { useScreenConfigStore } from '../../stores/useScreenConfigStore';
 
-type CategoryFilterPanelProps = {
-  closePanel: () => void;
-};
-
 type CategoryData = {
   id: number;
   name: string;
   iconName: IconsType;
 };
 
-export function CategoryFilterPanel({ closePanel }: CategoryFilterPanelProps) {
-  const { screenWidth } = useScreenConfigStore();
-  const [rightPosition, setRightPosition] = useState(-screenWidth);
-  const {
-    data: categoryData,
-    isLoading,
-    isError,
-  } = useQuery<CategoryData[], Error>(['category'], getCategories);
+type CategoryFilterPanelProps = {
+  closePanel: () => void;
+  selectCategory: (id: number) => void;
+  isOpenPanel: boolean;
+};
 
-  useEffect(() => {
-    setRightPosition(0);
-  }, []);
+export const CategoryFilterPanel = memo(
+  ({ closePanel, selectCategory, isOpenPanel }: CategoryFilterPanelProps) => {
+    const { screenWidth } = useScreenConfigStore();
+    const [rightPosition, setRightPosition] = useState(
+      isOpenPanel ? 0 : -screenWidth
+    );
 
-  const onTransitionEndHandler = () => {
-    rightPosition !== 0 && closePanel();
-  };
+    const { data: categoryData } = useQuery<CategoryData[], Error>(
+      ['category'],
+      getCategories
+    );
 
-  const onClose = () => {
-    setRightPosition(-screenWidth);
-  };
+    // TODO : 홈과 함께 로딩, 에러 적용하기
 
-  const onClickCategory = (id: number) => {
-    console.log(id);
-    onClose();
-  };
+    useEffect(() => {
+      if (isOpenPanel) {
+        setRightPosition(0);
+      } else {
+        setRightPosition(-screenWidth);
+      }
+    }, [isOpenPanel, screenWidth]);
 
-  if (isError) {
-    return <div>error</div>;
-  }
+    const onTransitionEndHandler = () => {
+      rightPosition !== 0 && closePanel();
+    };
 
-  return (
-    <Div $right={rightPosition} onTransitionEnd={onTransitionEndHandler}>
-      <Header
-        leftButton={
-          <Button styledType="text" onClick={onClose}>
-            <Icon name="chevronLeft" color="neutralTextStrong" />
-            <span>뒤로</span>
-          </Button>
-        }
-        title="카테고리"
-      />
-      {isLoading && <div>Loading...</div>}
-      {!isLoading && categoryData && (
+    const onClose = () => {
+      setRightPosition(-screenWidth);
+    };
+
+    const onClickCategory = (id: number) => {
+      onClose();
+      selectCategory(id);
+    };
+
+    return (
+      <Div $right={rightPosition} onTransitionEnd={onTransitionEndHandler}>
+        <Header
+          leftButton={
+            <Button styledType="text" onClick={onClose}>
+              <Icon name="chevronLeft" color="neutralTextStrong" />
+              <span>뒤로</span>
+            </Button>
+          }
+          title="카테고리"
+        />
+        (
         <Body>
-          {categoryData.map(category => {
-            return (
-              <Category
-                key={category.id}
-                onClick={() => onClickCategory(category.id)}
-              >
-                <CategoryIcon>
-                  <Icon name={category.iconName} color="neutralTextStrong" />
-                </CategoryIcon>
-                <span>{category.name}</span>
-              </Category>
-            );
-          })}
+          {categoryData && (
+            <>
+              {categoryData.map(category => {
+                return (
+                  <Category
+                    key={category.id}
+                    onClick={() => onClickCategory(category.id)}
+                  >
+                    <CategoryIcon>
+                      <Icon
+                        name={category.iconName}
+                        color="neutralTextStrong"
+                      />
+                    </CategoryIcon>
+                    <span>{category.name}</span>
+                  </Category>
+                );
+              })}
+            </>
+          )}
         </Body>
-      )}
-    </Div>
-  );
-}
+        )
+      </Div>
+    );
+  }
+);
 
 const Div = styled.div<{ $right: number }>`
   width: 100%;
