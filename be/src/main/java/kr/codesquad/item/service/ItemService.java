@@ -86,7 +86,7 @@ public class ItemService {
 		return ItemDetailResponse.builder()
 			.isSeller(seller.getId().equals(userId))
 			.images(images)
-			.seller(seller.getNickName())
+			.seller(seller.getNickname())
 			.status(ItemStatusResponse.of(item.getStatus()))
 			.title(item.getTitle())
 			.categoryName(categoryName)

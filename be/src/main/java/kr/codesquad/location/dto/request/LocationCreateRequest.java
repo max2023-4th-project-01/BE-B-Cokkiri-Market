@@ -8,4 +8,5 @@ import lombok.RequiredArgsConstructor;
 public class LocationCreateRequest {
 
     private Long locationId;
+    private String locationName;
 }
