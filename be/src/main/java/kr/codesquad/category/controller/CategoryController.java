@@ -1,6 +1,7 @@
 package kr.codesquad.category.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import kr.codesquad.category.dto.response.CategoryResponse;
 import org.springframework.http.ResponseEntity;
@@ -21,12 +22,12 @@ public class CategoryController {
 	private final CategoryService categoryService;
 
 	@GetMapping("/categories")
-	public ResponseEntity<List<CategoryResponse>> getCategories() {
-		return ResponseEntity.ok(categoryService.getCategories());
+	public ResponseEntity<Map<String, List<CategoryResponse>>> getCategories() {
+		return ResponseEntity.ok(Map.of("categories", categoryService.getCategories()));
 	}
 
 	@GetMapping("/categories/recommend")
-	public ResponseEntity<List<CategoryResponse>> createCategory(String title) {
-		return ResponseEntity.ok(categoryService.recommendCategory(title));
+	public ResponseEntity<Map<String, List<CategoryResponse>>> createCategory(String title) {
+		return ResponseEntity.ok(Map.of("categories", categoryService.recommendCategory(title)));
 	}
 }

@@ -1,6 +1,8 @@
 package kr.codesquad.item.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -33,10 +35,10 @@ public class ItemController {
 	private final ItemService itemService;
 
 	@PostMapping()
-	public ResponseEntity<Long> createItem(@RequestPart List<MultipartFile> imageFiles,
-		@RequestPart ItemSaveRequest items, HttpServletRequest request) {
+	public ResponseEntity<Map<String, Long>> createItem(@RequestPart List<MultipartFile> imageFiles,
+														@RequestPart ItemSaveRequest items, HttpServletRequest request) {
 		String userLoginId = (String)request.getAttribute(Constants.LOGIN_ID);
-		return ResponseEntity.status(HttpStatus.CREATED).body(itemService.saveItem(imageFiles, items, userLoginId));
+		return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("itemId", itemService.saveItem(imageFiles, items, userLoginId)));
 	}
 
 	@GetMapping("/{id}")
