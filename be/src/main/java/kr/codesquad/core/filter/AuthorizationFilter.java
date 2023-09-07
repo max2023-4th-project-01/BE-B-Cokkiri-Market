@@ -2,6 +2,8 @@ package kr.codesquad.core.filter;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -18,6 +20,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.PatternMatchUtils;
 import org.springframework.web.cors.CorsUtils;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.MalformedJwtException;
@@ -38,7 +42,6 @@ public class AuthorizationFilter implements Filter {
 		throws ServletException, IOException {
 
 		HttpServletRequest httpServletRequest = (HttpServletRequest)request;
-		StringBuffer requestURL = httpServletRequest.getRequestURL();
 		if (CorsUtils.isPreFlightRequest(httpServletRequest)) {
 			chain.doFilter(request, response);
 			return;
@@ -52,6 +55,23 @@ public class AuthorizationFilter implements Filter {
 			response.setCharacterEncoding("UTF-8");
 			response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 			((HttpServletResponse)response).setStatus(HttpStatus.BAD_REQUEST.value());
+
+			// Get the request URL
+			String requestURL = httpServletRequest.getRequestURL().toString();
+
+			// Create a JSON response object that includes the request URL
+			Map<String, Object> jsonResponse = new HashMap<>();
+			jsonResponse.put("error", "MalformedJwtException");
+			jsonResponse.put("message", "");
+			jsonResponse.put("requestUrl", requestURL);
+			jsonResponse.put("/login/oauth2/code/github**",
+				PatternMatchUtils.simpleMatch("/login/oauth2/code/github**", requestURL));
+
+			// Convert the JSON response to a string
+			String jsonResponseString = new ObjectMapper().writeValueAsString(jsonResponse);
+
+			// Write the JSON response to the output stream
+			response.getWriter().write(jsonResponseString);
 			throw new MalformedJwtException("");
 
 		}
