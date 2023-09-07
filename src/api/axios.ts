@@ -8,9 +8,12 @@ export const fetcher = axios.create({
 
 fetcher.interceptors.request.use(
   config => {
-    const accessToken = localStorage.getItem('accessToken');
+    const authStorage = localStorage.getItem('auth-storage');
+    if (!authStorage) return config;
+
+    const accessToken = JSON.parse(authStorage).state.accessToken;
     if (accessToken) {
-      config.headers['Authorization'] = `Bearer ${accessToken}`;
+      config.headers['Authorization'] = accessToken;
     }
     return config;
   },
