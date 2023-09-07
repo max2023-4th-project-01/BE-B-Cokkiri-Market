@@ -29,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 public class AuthorizationFilter implements Filter {
 	private static final String[] whiteListUris = {"/h2-console/**", "/api/users", "/api/login",
 		"/api/reissue-access-token", "/api/oauth/**", "/api/redirect/**", "/login/oauth2/code/github**",
-		"/api/locations**"};
+		"/api/locations**", "/favicon**"};
 
 	private final JwtProvider jwtProvider;
 
