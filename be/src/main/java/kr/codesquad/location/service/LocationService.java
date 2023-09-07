@@ -8,39 +8,26 @@ import kr.codesquad.location.dto.response.LocationListResponse;
 import kr.codesquad.location.entity.Location;
 import kr.codesquad.location.repository.LocationRepository;
 import kr.codesquad.user.repository.UserRepository;
-import kr.codesquad.util.SecretProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 @Service
 public class LocationService {
 
+    private final AddressService addressService;
     private final LocationRepository locationRepository;
     private final UserRepository userRepository;
-    private final String V_WORLD_ENDPOINT;
-    private final String V_WORLD_KEY;
-    private final String V_WORLD_DOMAIN;
 
-    public LocationService(LocationRepository locationRepository, UserRepository userRepository, SecretProperties secretProperties) {
+
+    public LocationService(AddressService addressService, LocationRepository locationRepository, UserRepository userRepository) {
+        this.addressService = addressService;
         this.locationRepository = locationRepository;
         this.userRepository = userRepository;
-        this.V_WORLD_ENDPOINT = secretProperties.getVworld().getEndpoint();
-        this.V_WORLD_KEY = secretProperties.getVworld().getKey();
-        this.V_WORLD_DOMAIN = secretProperties.getVworld().getDomain();
     }
 
     public List<LocationListResponse> getLocations(String query) {
 
-        final String endpoint = V_WORLD_ENDPOINT;
-        String key = "&key=" + V_WORLD_KEY;
-        String domain = "&domain=" + V_WORLD_DOMAIN;
-        String search = "&attrFilter=emd_kor_nm:like:" + query;
-
-        String url = endpoint + key + domain + search;
-
-        RestTemplate restTemplate = new RestTemplate();
-        String result = restTemplate.getForObject(url, String.class);
+        String result = addressService.getAddressList(query);
 
         List<LocationListResponse> locations = new ArrayList<>();
         int start = 0;
