@@ -9,6 +9,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
+import org.springframework.security.oauth2.client.web.HttpSessionOAuth2AuthorizationRequestRepository;
+import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
@@ -66,6 +69,10 @@ public class SecurityConfig {
 			.authenticated()  //다른 요청은 인증 필요함
 			.and()
 			.oauth2Login()
+			.authorizationEndpoint()
+			.baseUri("/api/oauth2/authorization")
+			.authorizationRequestRepository(authorizationRequestRepository())
+			.and()
 			.successHandler(jwtAuthenticationSuccessHandler)// OAuth2 로그인 설정 시작점
 			.userInfoEndpoint() // OAuth2 로그인 성공 이후 사용자 정보를 가져올 때 설정 담당
 			.userService(oAuthService); // OAuth2 로그인 성공 시, 후작업을 진행할 UserService 인터페이스 구현체 등
@@ -79,6 +86,13 @@ public class SecurityConfig {
 			.addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();
+	}
+
+	@Bean
+	public AuthorizationRequestRepository<OAuth2AuthorizationRequest>
+	authorizationRequestRepository() {
+
+		return new HttpSessionOAuth2AuthorizationRequestRepository();
 	}
 
 	public CorsConfigurationSource configurationSource() {
