@@ -48,7 +48,6 @@ public class ItemService {
 	private final ChatRepository chatRepository;
 	private final UserRepository userRepository;
 	private final ItemPaginationRepository itemPaginationRepository;
-	private final AddressService addressService;
 
 	@Transactional
 	public Long saveItem(List<MultipartFile> imageFiles, ItemSaveRequest itemRequest, String userLoginId) {
