@@ -9,11 +9,10 @@ public class ItemSaveRequest {
 	@NotNull
 	private String title;
 	@NotNull
-	//private List<CategoryRequest> categories;
 	private Long categoryId;
 	private Integer price;
 	@NotNull
 	private String content;
 	@NotNull
-	private String locationName;
+	private Long myLocationId;
 }
