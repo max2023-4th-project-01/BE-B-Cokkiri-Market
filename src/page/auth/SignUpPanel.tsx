@@ -115,7 +115,8 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
       username: id,
       nickName: nickname,
       password: password,
-      locationId: location,
+      locationId: location?.id,
+      locationName: location?.name,
     };
 
     formData.append(
