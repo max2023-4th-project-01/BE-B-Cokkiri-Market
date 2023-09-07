@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface LocationRepository extends JpaRepository<Location, Long> {
+	@Query("SELECT l FROM Location l WHERE l.userId = :userId AND l.isSelected = true")
 	Location findByUserId(Long userId);
 
 	List<Location> findAllByUserId(long userId);
