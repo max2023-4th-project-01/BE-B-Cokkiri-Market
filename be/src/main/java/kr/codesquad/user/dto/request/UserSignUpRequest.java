@@ -8,13 +8,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserSignUpRequest {
 	private String username;
+	private String nickname;
 	private String password;
 	private String locationName;
+	private Long locationId;
 
 	@Builder
-	public UserSignUpRequest(String username, String password, String locationName) {
+	public UserSignUpRequest(String username, String nickname, String password, String locationName, Long locationId) {
 		this.username = username;
+		this.nickname = nickname;
 		this.password = password;
 		this.locationName = locationName;
+		this.locationId = locationId;
 	}
 }

@@ -13,5 +13,5 @@ public interface UserMapper {
 
 	@Mapping(target = "password", source = "encodedPassword")
 	@Mapping(target = "loginId", source = "userSignUpRequest.username")
-	User toUser(UserSignUpRequest userSignUpRequest, String encodedPassword, String nickName);
+	User toUser(UserSignUpRequest userSignUpRequest, String encodedPassword, String profileImageUrl);
 }

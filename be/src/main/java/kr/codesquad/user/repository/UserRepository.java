@@ -10,7 +10,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 	boolean existsByLoginId(String loginId);
 
-	boolean existsByNickName(String nickName);
+	boolean existsByNickname(String nickname);
 
 	@Query("select u.id from User u where u.loginId = :loginId")
 	Long findIdByLoginId(String loginId);

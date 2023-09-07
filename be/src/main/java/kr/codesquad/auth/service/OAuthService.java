@@ -37,8 +37,8 @@ public class OAuthService implements OAuth2UserService<OAuth2UserRequest, OAuth2
 		Integer id = (Integer)attributes.get(GITHUB_ID);
 		User user = User.builder()
 			.loginId(id.toString())
-			.profileImage((String)attributes.get(GITHUB_PROFILE_URL))
-			.nickName(generateNickName((String)attributes.get(GITHUB_LOGIN_ID)))
+			.profileImageUrl((String)attributes.get(GITHUB_PROFILE_URL))
+			.nickname(attributes.get(GITHUB_LOGIN_ID) + UuidGenerator.generateUuid())
 			.build();
 
 		if (!userRepository.existsByLoginId(user.getLoginId())) {
@@ -46,19 +46,12 @@ public class OAuthService implements OAuth2UserService<OAuth2UserRequest, OAuth2
 			// TODO: 기본 동네 반환 메소드 구현 필요
 			locationRepository.save(Location.builder()
 				.userId(savedUser.getId())
-				.locationName("기본동네")
+				.locationName("서울특별시 강남구 역삼동")
+				.isSelected(true)
 				.build());
 		}
 
-		return new DefaultOAuth2User(Collections.singleton(new SimpleGrantedAuthority(null))
+		return new DefaultOAuth2User(Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"))
 			, attributes, GITHUB_ID);
-	}
-
-	private String generateNickName(String loginId) {
-		String nickName = loginId + UuidGenerator.generateUuid();
-		while (userRepository.existsByNickName(nickName)) {
-			nickName = loginId + UuidGenerator.generateUuid();
-		}
-		return nickName;
 	}
 }

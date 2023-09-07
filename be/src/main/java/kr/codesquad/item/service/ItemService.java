@@ -73,7 +73,7 @@ public class ItemService {
 		// 로그인한 유저 정보 -> 상세 보기는 무조건 있기 때문에 null 처리 안 함
 		User userPS = User.builder()
 			.id(1L)
-			.nickName("임시닉네임1")
+			.nickname("임시닉네임1")
 			.build();
 
 		Item item = itemRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 아이템이 없습니다."));
@@ -86,7 +86,7 @@ public class ItemService {
 		return ItemDetailResponse.builder()
 			.isSeller(userPS.getId().equals(item.getUserId()))
 			.images(images)
-			.seller(userPS.getNickName())
+			.seller(userPS.getNickname())
 			.status(ItemStatusResponse.of(item.getStatus()))
 			.title(item.getTitle())
 			.categoryName(categoryName)

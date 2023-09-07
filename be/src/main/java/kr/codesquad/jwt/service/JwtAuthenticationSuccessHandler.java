@@ -42,8 +42,8 @@ public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHan
 
 		User user = userRepository.findByLoginId(authentication.getName());
 		Map<String, Object> userData = new HashMap<>();
-		userData.put("nickname", user.getNickName());
-		userData.put("profileImageUrl", user.getProfileImage());
+		userData.put("nickname", user.getNickname());
+		userData.put("profileImageUrl", user.getProfileImageUrl());
 
 		response.setHeader(HttpHeaders.AUTHORIZATION, Constants.TOKEN_PREFIX + jwt.getAccessToken());
 		response.setHeader("Refresh-Token", Constants.TOKEN_PREFIX + jwt.getRefreshToken());
