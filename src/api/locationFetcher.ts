@@ -14,9 +14,10 @@ export const getLocationData = async ({
   pageParam: number;
   searchParam: string;
 }) => {
-  const res = await fetcher.get(
-    `${API_ENDPOINT.LOCATION_DATA}?query=${searchParam}&page=${pageParam}`
-  );
+  const API_URI = searchParam
+    ? `${API_ENDPOINT.LOCATION_DATA}?query=${searchParam}&page=${pageParam}`
+    : `${API_ENDPOINT.LOCATION_DATA}?page=${pageParam}`;
+  const res = await fetcher.get(API_URI);
   return res.data;
 };
 

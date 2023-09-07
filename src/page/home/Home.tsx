@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useInView } from 'react-intersection-observer';
 import { styled } from 'styled-components';
 import { Error } from '../../components/Error';
 import { Header } from '../../components/Header';
@@ -13,38 +14,38 @@ import { CategoryFilterPanel } from './CategoryFilterPanel';
 
 export function Home() {
   const bodyRef = useRef<HTMLDivElement>(null);
-  const [isOpenPanel, setIsOpenPanel] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [categoryId, setCategoryId] = useState<number>();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isOpenPanel, setIsOpenPanel] = useState(false);
+  const { ref: lastItemRef } = useInView();
 
   // useEffect에서 useInView 훅으로 무한스크롤 요청 구현 예정
   // 선택된 categoryId 를 인자로 전달해서 카테고리 품목 필터링
+
   const { data: itemData, refetch } = useGetItemData(categoryId ?? null);
-  const { data: userLocationData } = useGetUserLocation();
+  const { data: userLocationData, isLoading, isError } = useGetUserLocation();
 
   useEffect(() => {
     if (categoryId) {
-      refetch();
       setIsOpenPanel(false);
     }
   }, [categoryId]);
 
   // TODO : 로딩, 에러 페이지 중간에 return이 아닌 jsx 내에서 처리하기
-  // if (isLoading) {
-  //   return <div>Loading...</div>;
-  // }
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
-  // if (isError) {
-  //   return <div>Error occurred</div>;
-  // }
+  if (isError) {
+    return <div>Error occurred</div>;
+  }
 
   const openModal = () => {
     setIsModalOpen(true);
   };
 
   const closeModal = () => {
-    // 모달이 닫힐때 아이템 목록의 첫번째 페이지 데이터를 다시 불러온다.
-    refetch({ refetchPage: (_, index) => index === 0 });
+    refetch();
     setIsModalOpen(false);
   };
 
@@ -52,6 +53,7 @@ export function Home() {
     setIsOpenPanel(true);
   };
 
+  // CategroyPanel 수리중...
   const closePanel = () => {
     setIsOpenPanel(false);
   };
@@ -73,11 +75,11 @@ export function Home() {
             leftButton={
               <LeftAccessory>
                 <Dropdown
-                  btnText={itemData?.pages[0].categoryName || '역삼1동'}
+                  btnText={itemData?.pages[0]?.userLocation || '역삼1동'}
                   iconName="chevronDown"
                   align="left"
                 >
-                  {userLocationData?.locations.map(location => {
+                  {userLocationData?.locations?.map(location => {
                     return (
                       <MenuItem
                         key={location.id}
@@ -109,12 +111,19 @@ export function Home() {
             }
           />
           <Body ref={bodyRef} id="home--body__items">
-            {itemData?.pages.map(page => {
-              return page.items.map(item => {
-                return <ProductItem key={item.id} {...item} />;
+            {itemData?.pages?.map(page => {
+              return page?.items?.map((item, index) => {
+                const isLastItem = index === page.items.length - 1;
+                return (
+                  <ProductItem
+                    ref={isLastItem ? lastItemRef : null}
+                    key={item.id}
+                    {...item}
+                  />
+                );
               });
             })}
-            {itemData?.pages.length === 0 && (
+            {itemData?.pages[0]?.items?.length === 0 && (
               <Error message="판매 상품이 없습니다." />
             )}
           </Body>

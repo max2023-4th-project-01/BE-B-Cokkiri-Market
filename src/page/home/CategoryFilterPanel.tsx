@@ -9,6 +9,10 @@ import { IconsType } from '../../components/icon/icons';
 import { useScreenConfigStore } from '../../stores/useScreenConfigStore';
 
 type CategoryData = {
+  categories: CategoryItem[];
+};
+
+type CategoryItem = {
   id: number;
   name: string;
   iconName: IconsType;
@@ -27,7 +31,7 @@ export const CategoryFilterPanel = memo(
       isOpenPanel ? 0 : -screenWidth
     );
 
-    const { data: categoryData } = useQuery<CategoryData[], Error>(
+    const { data: categoryData } = useQuery<CategoryData, Error>(
       ['category'],
       getCategories
     );
@@ -55,6 +59,8 @@ export const CategoryFilterPanel = memo(
       selectCategory(id);
     };
 
+    console.log(categoryData?.categories);
+
     return (
       <Div $right={rightPosition} onTransitionEnd={onTransitionEndHandler}>
         <Header
@@ -67,26 +73,22 @@ export const CategoryFilterPanel = memo(
           title="카테고리"
         />
         <Body>
-          {categoryData && (
-            <>
-              {categoryData.map(category => {
-                return (
-                  <Category
-                    key={category.id}
-                    onClick={() => onClickCategory(category.id)}
-                  >
-                    <CategoryIcon>
+          {categoryData?.categories?.map(category => {
+            return (
+              <Category
+                key={category.id}
+                onClick={() => onClickCategory(category.id)}
+              >
+                {/* <CategoryIcon>
                       <Icon
                         name={category.iconName}
                         color="neutralTextStrong"
                       />
-                    </CategoryIcon>
-                    <span>{category.name}</span>
-                  </Category>
-                );
-              })}
-            </>
-          )}
+                    </CategoryIcon> */}
+                <span>{category.name}</span>
+              </Category>
+            );
+          })}
         </Body>
       </Div>
     );

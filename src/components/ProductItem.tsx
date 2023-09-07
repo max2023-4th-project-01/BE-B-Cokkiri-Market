@@ -1,3 +1,4 @@
+import { ForwardedRef, forwardRef } from 'react';
 import { styled } from 'styled-components';
 import { addCommasToNumber } from '../utils/addCommasToNumber';
 import { getElapsedSince } from '../utils/getElapsedSince';
@@ -21,17 +22,20 @@ type ItemProps = {
   isSeller: boolean;
 };
 
-export function ProductItem({
-  id,
-  title,
-  locationName,
-  createdAt,
-  statusName,
-  price,
-  countData,
-  thumbnailUrl,
-  isSeller,
-}: ItemProps) {
+export const ProductItem = forwardRef(function ProductItem(
+  {
+    id,
+    title,
+    locationName,
+    createdAt,
+    statusName,
+    price,
+    countData,
+    thumbnailUrl,
+    isSeller,
+  }: ItemProps,
+  ref: ForwardedRef<HTMLDivElement>
+) {
   const { chat, favorite } = countData;
 
   const setPrice = (price: number | null) => {
@@ -63,6 +67,7 @@ export function ProductItem({
 
   return (
     <Div
+      ref={ref}
       onClick={() => {
         console.log(id);
       }}
@@ -123,7 +128,111 @@ export function ProductItem({
       </Information>
     </Div>
   );
-}
+});
+
+// export function ProductItem({
+//   id,
+//   title,
+//   locationName,
+//   createdAt,
+//   statusName,
+//   price,
+//   countData,
+//   thumbnailUrl,
+//   isSeller,
+// }: ItemProps) {
+//   const { chat, favorite } = countData;
+
+//   const setPrice = (price: number | null) => {
+//     switch (price) {
+//       case null:
+//         return '가격 미정';
+//       case 0:
+//         return '나눔';
+//       default:
+//         return `${addCommasToNumber(price)}원`;
+//     }
+//   };
+
+//   // TODO: 각 드롭다운 메뉴 아이템들에 맞는 액션 추가하기
+//   const dropdownActions = {
+//     edit: () => {
+//       console.log('게시글 수정');
+//     },
+//     reserved: () => {
+//       console.log('예약중');
+//     },
+//     sold: () => {
+//       console.log('판매완료');
+//     },
+//     delete: () => {
+//       console.log('삭제');
+//     },
+//   };
+
+//   return (
+//     <Div
+//       onClick={() => {
+//         console.log(id);
+//       }}
+//     >
+//       <Thumbnail src={thumbnailUrl} />
+//       <Information>
+//         <Title>
+//           <span>{title}</span>
+//           {isSeller && (
+//             <Dropdown iconName="dots" align="right">
+//               <MenuItem onAction={dropdownActions['edit']}>
+//                 게시글 수정
+//               </MenuItem>
+//               <MenuItem onAction={dropdownActions['reserved']}>
+//                 예약중 상태로 전환
+//               </MenuItem>
+//               <MenuItem onAction={dropdownActions['sold']}>
+//                 판매완료 상태로 전환
+//               </MenuItem>
+//               <MenuItem
+//                 color="systemWarning"
+//                 onAction={dropdownActions['delete']}
+//               >
+//                 삭제
+//               </MenuItem>
+//             </Dropdown>
+//           )}
+//         </Title>
+//         <LocationAndTimestamp>
+//           {locationName}・{getElapsedSince(createdAt)}
+//         </LocationAndTimestamp>
+//         <StateAndPrice>
+//           {statusName !== '' && (
+//             <Badge
+//               type="container"
+//               size="S"
+//               text={statusName}
+//               fontColor="accentText"
+//               badgeColor="accentSecondary"
+//             />
+//           )}
+//           <Price>{setPrice(price)}</Price>
+//         </StateAndPrice>
+//         <History>
+//           {chat > 0 && (
+//             <CountWrapper>
+//               <Icon name="message" color="neutralTextWeak" />
+//               {chat}
+//             </CountWrapper>
+//           )}
+//           {favorite > 0 && (
+//             <CountWrapper>
+//               <Icon name="heart" color="neutralTextWeak" />
+//               {chat}
+//             </CountWrapper>
+//           )}
+//         </History>
+//       </Information>
+//     </Div>
+//   );
+// }
 
 const Div = styled.div`
   width: 100%;

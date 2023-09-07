@@ -29,7 +29,7 @@ export function AddLocation({
     hasNextPage,
     isFetchingNextPage,
     fetchNextPage,
-  } = useGetLocationResult('역삼');
+  } = useGetLocationResult('');
 
   const addMutation = useAddUserLocation();
   const { ref: lastItemRef, inView } = useInView();

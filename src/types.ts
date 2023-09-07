@@ -5,7 +5,7 @@ export type ItemData = {
   nextCursor: number | null;
 };
 
-type ItemProps = {
+export type ItemProps = {
   id: number;
   title: string;
   locationName: string;

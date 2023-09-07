@@ -30,5 +30,5 @@ const homeData: ItemData = {
     },
     ...fakeItems(),
   ],
-  nextCursor: 21,
+  nextCursor: 1,
 };

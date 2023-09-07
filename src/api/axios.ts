@@ -1,9 +1,14 @@
 import axios from 'axios';
-const BASE_URL = import.meta.env.DEV ? '' : import.meta.env.VITE_API_URL;
+const BASE_URL = import.meta.env.DEV
+  ? 'http://3.39.67.85'
+  : import.meta.env.VITE_API_URL;
 
 export const fetcher = axios.create({
   baseURL: BASE_URL,
-  headers: { 'Content-Type': 'application/json' },
+  headers: {
+    'Content-Type': 'application/json',
+    'Refresh-Token': 'your-refresh-token-value',
+  },
 });
 
 fetcher.interceptors.request.use(
