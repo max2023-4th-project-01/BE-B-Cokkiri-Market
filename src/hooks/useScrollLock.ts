@@ -24,7 +24,7 @@ export const useScrollLock = (targetElId: string) => {
     targetEl.addEventListener('wheel', preventScroll, { passive: false });
     targetEl.addEventListener('touchmove', preventScroll, { passive: false });
     targetEl.addEventListener('keydown', preventKeydownScroll);
-    console.log('lockScroll');
+
     scroll.current = true;
   };
 
@@ -35,7 +35,7 @@ export const useScrollLock = (targetElId: string) => {
     targetEl.removeEventListener('wheel', preventScroll);
     targetEl.removeEventListener('touchmove', preventScroll);
     targetEl.removeEventListener('keydown', preventKeydownScroll);
-    console.log('unlockScroll');
+
     scroll.current = false;
   };
 

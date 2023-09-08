@@ -22,28 +22,28 @@ export function SetLocation({ openSearchPanel }: SetLocationProps) {
 
   const { selectedLocationId } = useLocationStore();
 
-  const { data, isLoading, isError } = useGetUserLocation();
+  const { data: userLocationData, isLoading, isError } = useGetUserLocation();
   const selectMutation = useSelectUserLocation();
   const deleteMutation = useDeleteUserLocation();
 
   if (isLoading) return <Loader />;
   if (isError) return <Error />;
 
-  const isMaxLocations = data.locations?.length >= 2;
+  const isMaxLocations = userLocationData.locations?.length >= 2;
 
   const deleteLocation = (locationId: number) => {
-    const isLastLocation = data.locations.length === 1;
+    const isLastLocation = userLocationData.locations.length === 1;
     if (isLastLocation) {
       alert('최소 1개의 동네는 설정되어야 합니다.');
       return;
     }
-    const shouldSelectAnotherLocation = data.locations.find(
+    const shouldSelectAnotherLocation = userLocationData.locations.find(
       location => location.id === locationId
     )?.isSelected;
 
     deleteMutation.mutate(locationId);
     if (shouldSelectAnotherLocation) {
-      const anotherLocation = data.locations.find(
+      const anotherLocation = userLocationData.locations.find(
         location => location.id !== locationId
       );
       anotherLocation && selectMutation.mutate(anotherLocation.id);
@@ -61,7 +61,7 @@ export function SetLocation({ openSearchPanel }: SetLocationProps) {
             <br /> 최대 2개까지 설정 가능해요.
           </Notice>
           <Buttons>
-            {data.locations.map((location, index) => (
+            {userLocationData.locations.map((location, index) => (
               <LocationButton
                 key={index}
                 locationData={location}
