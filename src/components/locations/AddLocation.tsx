@@ -1,6 +1,7 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { styled } from 'styled-components';
+import { useDebounceValue } from '../../hooks/useDebounceValue';
 import {
   useAddUserLocation,
   useGetLocationResult,
@@ -23,7 +24,9 @@ export function AddLocation({
   hideSearchPanel,
   addLocation,
 }: AddLocationProps) {
-  // TODO: SeachBar 인풋에 입력받은 단어를 searchParam으로 넘겨주기
+  const [inputValue, setInputValue] = useState('');
+  const query = useDebounceValue(inputValue, 500);
+
   const {
     data: locationData,
     isError,
@@ -31,7 +34,7 @@ export function AddLocation({
     hasNextPage,
     isFetchingNextPage,
     fetchNextPage,
-  } = useGetLocationResult('');
+  } = useGetLocationResult(query);
 
   const addMutation = useAddUserLocation();
   const { ref: lastItemRef, inView } = useInView();
@@ -61,12 +64,19 @@ export function AddLocation({
     rightPosition !== 0 && closeSearchPanel && closeSearchPanel();
   };
 
+  const onChangeInputValue = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+  };
+
   return (
     <Container
       $rightPosition={rightPosition}
       onTransitionEnd={onTransitionEndHandler}
     >
-      <SearchBar placeholder="동명(읍, 면)으로 검색 (ex. 서초동)" />
+      <SearchBar
+        placeholder="동명(읍, 면)으로 검색 (ex. 서초동)"
+        onChange={onChangeInputValue}
+      />
       {isError ? (
         <Error />
       ) : (

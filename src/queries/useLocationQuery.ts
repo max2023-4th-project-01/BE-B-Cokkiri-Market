@@ -20,7 +20,7 @@ const LOCATION_QUERY_KEY = '/locations';
 // 홈: 동네설정 지역리스트 검색
 export const useGetLocationResult = (searchParam: string) => {
   return useInfiniteQuery<LocationResultData>(
-    [LOCATION_QUERY_KEY],
+    [LOCATION_QUERY_KEY, searchParam],
     ({ pageParam = 1 }) => getLocationData({ pageParam, searchParam }),
     {
       getNextPageParam: lastPage => lastPage.nextPage ?? undefined,
