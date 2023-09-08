@@ -11,7 +11,7 @@ type LocationModalProps = {
   onClose: () => void;
 };
 
-export function LocationModal({ isOpen, onClose }: LocationModalProps) {
+export function HomeLocationModal({ isOpen, onClose }: LocationModalProps) {
   const [isAddLocation, setIsAddLocation] = useState(false);
   const [rightPosition, setRightPosition] = useState(-320);
 
@@ -76,6 +76,7 @@ const Headline = styled.h2`
 `;
 
 const Body = styled.div`
+  width: 100%;
   height: 100%;
   position: relative;
 `;
