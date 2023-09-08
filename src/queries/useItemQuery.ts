@@ -6,7 +6,7 @@ const ITEMS_QUERY_KEY = '/items';
 
 export const useGetItemData = (categoryId: number | null) => {
   return useInfiniteQuery<ItemData>(
-    [ITEMS_QUERY_KEY],
+    [ITEMS_QUERY_KEY, categoryId],
     ({ pageParam }) => getItems({ pageParam, categoryId }),
     {
       getNextPageParam: lastPage => lastPage.nextCursor ?? undefined,

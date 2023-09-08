@@ -39,8 +39,6 @@ export const CategoryFilterPanel = memo(
       isError,
     } = useQuery<CategoryData, Error>(['category'], getCategories);
 
-    // TODO : 홈과 함께 로딩, 에러 적용하기
-
     useEffect(() => {
       if (isOpenPanel) {
         setRightPosition(0);

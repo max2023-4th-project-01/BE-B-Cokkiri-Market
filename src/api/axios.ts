@@ -1,7 +1,5 @@
 import axios from 'axios';
-const BASE_URL = import.meta.env.DEV
-  ? 'http://3.39.67.85'
-  : import.meta.env.VITE_API_URL;
+const BASE_URL = import.meta.env.DEV ? '' : import.meta.env.VITE_API_URL;
 
 export const fetcher = axios.create({
   baseURL: BASE_URL,

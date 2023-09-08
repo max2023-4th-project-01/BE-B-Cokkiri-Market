@@ -20,10 +20,9 @@ export function Home() {
   const [isOpenPanel, setIsOpenPanel] = useState(false);
   const { ref: lastItemRef } = useInView();
 
-  // useEffect에서 useInView 훅으로 무한스크롤 요청 구현 예정
-  // 선택된 categoryId 를 인자로 전달해서 카테고리 품목 필터링
-
-  const { data: itemData, refetch } = useGetItemData(categoryId ?? null);
+  const { data: itemData, refetch: refetchItems } = useGetItemData(
+    categoryId ?? null
+  );
   const { data: userLocationData, isLoading, isError } = useGetUserLocation();
 
   useEffect(() => {
@@ -32,21 +31,19 @@ export function Home() {
     }
   }, [categoryId]);
 
-  // TODO : 로딩, 에러 페이지 중간에 return이 아닌 jsx 내에서 처리하기
-  // if (isLoading) {
-  //   return <div>Loading...</div>;
-  // }
-
-  // if (isError) {
-  //   return <div>Error occurred</div>;
-  // }
+  // useEffect에서 useInView 훅으로 무한스크롤 요청 구현 예정
+  // useEffect(() => {
+  //   if (inView && hasNextPage) {
+  //     fetchNextPage();
+  //   }
+  // }, [inView, hasNextPage, fetchNextPage]);
 
   const openModal = () => {
     setIsModalOpen(true);
   };
 
   const closeModal = () => {
-    refetch();
+    refetchItems();
     setIsModalOpen(false);
   };
 
@@ -54,8 +51,8 @@ export function Home() {
     setIsOpenPanel(true);
   };
 
-  // CategroyPanel 수리중...
   const closePanel = () => {
+    refetchItems();
     setIsOpenPanel(false);
   };
 
