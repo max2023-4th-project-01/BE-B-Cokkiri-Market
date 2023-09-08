@@ -27,10 +27,18 @@ const Div = styled.div`
   align-items: center;
   border-bottom: ${({ theme }) => `0.8px solid ${theme.color.neutralBorder}`};
   font: ${({ theme }) => theme.font.displayStrong16};
-  backdrop-filter: ${({ theme }) => theme.backdropFilter.blur};
-
   color: ${({ theme }) => theme.color.neutralTextStrong};
+  background-color: ${({ theme }) => theme.color.neutralBackgroundBlur};
   z-index: 1;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    backdrop-filter: ${({ theme }) => theme.backdropFilter.blur};
+  }
 `;
 
 const Side = styled.div`

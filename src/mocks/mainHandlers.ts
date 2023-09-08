@@ -1,5 +1,6 @@
 import { rest } from 'msw';
 import { API_ENDPOINT } from '../api/endPoint';
+import { ItemData } from '../types';
 import { fakeItems } from './faker';
 
 export const mainHandlers = [
@@ -8,8 +9,9 @@ export const mainHandlers = [
   }),
 ];
 
-const homeData = {
+const homeData: ItemData = {
   userLocation: '역삼 1동',
+  categoryName: null,
   items: [
     {
       id: 1,
@@ -28,4 +30,5 @@ const homeData = {
     },
     ...fakeItems(),
   ],
+  nextCursor: 1,
 };
