@@ -38,7 +38,7 @@ public class LocationService {
         }
 
         String result;
-        if (query == null) {
+        if (query == null || query.equals("")) {
             result = addressService.getAddressListDefault(page, size);
         } else {
             result = addressService.getAddressList(query, page, size);
