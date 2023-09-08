@@ -22,13 +22,11 @@ export function ToastContainer({
   const { screenWidth } = useScreenConfigStore();
   const [isExiting, setIsExiting] = useState(false);
   const [timerId, setTimerId] = useState<NodeJS.Timeout>();
-  const toastRef = useRef<HTMLDialogElement>(null);
+  const toastRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!toast) return;
 
-    const currentToast = toastRef.current;
-    currentToast?.show();
     const handleAnimationEnd = (event: AnimationEvent) => {
       if (
         event.animationName ===
@@ -36,10 +34,10 @@ export function ToastContainer({
       ) {
         hideToast();
         setIsExiting(false);
-        currentToast?.close();
       }
     };
 
+    const currentToast = toastRef.current;
     currentToast?.addEventListener('animationend', handleAnimationEnd);
 
     if (!isExiting) {
@@ -140,7 +138,7 @@ const reduceWidth = keyframes`
   to { width: 0; }
 `;
 
-const ToastWrapper = styled.dialog<{
+const ToastWrapper = styled.div<{
   $width: number;
   $type: ToastType;
   $isExiting: boolean;
