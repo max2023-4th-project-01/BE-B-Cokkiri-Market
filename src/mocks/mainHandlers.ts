@@ -14,7 +14,7 @@ export const mainHandlers = [
 ];
 
 const homeData: ItemData = {
-  userLocation: '역삼 1동',
+  userLocation: '서울특별시 강남구 역삼1동',
   categoryName: null,
   items: [
     {

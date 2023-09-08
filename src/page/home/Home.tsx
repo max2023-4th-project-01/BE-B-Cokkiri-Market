@@ -60,6 +60,12 @@ export function Home() {
     setCategoryId(id);
   };
 
+  const extractKeyName = (locationName: string) => {
+    if (!locationName) return;
+    const keyName = locationName.split(' ').at(-1);
+    return keyName;
+  };
+
   return (
     <Div>
       <CategoryFilterPanel
@@ -71,7 +77,9 @@ export function Home() {
         leftButton={
           <LeftAccessory>
             <Dropdown
-              btnText={itemData?.pages[0]?.userLocation || '역삼1동'}
+              btnText={
+                extractKeyName(itemData?.pages[0]?.userLocation) || '역삼1동'
+              }
               iconName="chevronDown"
               align="left"
             >
