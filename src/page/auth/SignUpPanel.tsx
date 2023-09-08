@@ -113,7 +113,7 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
     const formData = new FormData();
     const signupData = {
       username: id,
-      nickName: nickname,
+      nickname: nickname,
       password: password,
       locationId: location?.id,
       locationName: location?.name,
