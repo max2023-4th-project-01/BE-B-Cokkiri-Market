@@ -2,7 +2,7 @@ name: BE CI/CD
 
 on:
   push:
-    branches: [ infra/cicd ]
+    branches: [ infra/cicd, be ]
   pull_request:
     branches: [ be ]
 
