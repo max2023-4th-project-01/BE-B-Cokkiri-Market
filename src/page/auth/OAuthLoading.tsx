@@ -20,8 +20,7 @@ export function OAuthLoading() {
       <Header title="내 계정" />
       <LoginPage />
       <Body>
-        <Loader />
-        <div>Github로 로그인 중</div>
+        <Loader text="Github로 로그인 중" />
       </Body>
     </>
   );

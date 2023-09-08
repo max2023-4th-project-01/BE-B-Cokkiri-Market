@@ -45,7 +45,7 @@ export function LoginPage() {
   };
 
   const OAuthLogin = async () => {
-    window.location.assign(`${BASE_URL}/api/oauth2/authorization/github`);
+    window.location.assign(`${BASE_URL}/oauth2/authorization/github`);
   };
 
   return (
