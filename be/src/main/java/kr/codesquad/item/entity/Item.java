@@ -81,4 +81,8 @@ public class Item extends TimeStamped {
 			.view(this.viewCount)
 			.build();
 	}
+
+	public void setThumbnailUrl(String thumbnailUrl) {
+		this.thumbnailUrl = thumbnailUrl;
+	}
 }
