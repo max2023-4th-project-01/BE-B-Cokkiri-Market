@@ -42,4 +42,15 @@ public class AddressService {
         int end = result.indexOf(",", start);
         return result.substring(start + 10, end - 1);
     }
+
+    public String getAddressListDefault(Integer page, Integer size) {
+        final String endpoint = V_WORLD_ENDPOINT;
+        String key = "&key=" + V_WORLD_KEY;
+        String domain = "&domain=" + V_WORLD_DOMAIN;
+        String search = "&attrFilter=emd_cd:>:0";
+
+        String url = endpoint + key + domain + search + "&page=" + page + "&size=" + size;
+        RestTemplate restTemplate = new RestTemplate();
+        return restTemplate.getForObject(url, String.class);
+    }
 }

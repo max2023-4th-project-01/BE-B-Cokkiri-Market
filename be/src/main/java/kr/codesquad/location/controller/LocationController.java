@@ -22,9 +22,9 @@ public class LocationController {
     private final LocationService locationService;
 
     @GetMapping("/locations")
-    public ResponseEntity<Map<String, Object>> getLocations(@RequestParam String query,
-                                                                                @RequestParam(required = false) Integer page,
-                                                                                @RequestParam(required = false) Integer size) {
+    public ResponseEntity<Map<String, Object>> getLocations(@RequestParam(required = false) String query,
+                                                            @RequestParam(required = false) Integer page,
+                                                            @RequestParam(required = false) Integer size) {
         return ResponseEntity.ok(locationService.getLocations(query, page, size));
     }
 
