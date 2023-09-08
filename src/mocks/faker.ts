@@ -1,5 +1,4 @@
 import { faker } from '@faker-js/faker';
-import { icons } from '../components/icon/icons';
 
 const thumbnailList = [
   'https://www.ikea.com/kr/ko/images/products/alex-storage-unit-white__1209817_pe909458_s5.jpg?f=xl',
@@ -30,19 +29,4 @@ export const fakeItems = () => {
   }
 
   return items;
-};
-
-export const fakeCategories = () => {
-  const categories = [];
-  for (let i = 0; i < 18; i++) {
-    const category = {
-      id: i,
-      name: faker.helpers.arrayElement(Object.keys(icons)),
-      iconName: faker.helpers.arrayElement(Object.keys(icons)),
-    };
-
-    categories.push(category);
-  }
-
-  return categories;
 };
