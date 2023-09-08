@@ -9,6 +9,12 @@ export const getItems = async ({
   pageParam: number;
   categoryId: number | null;
 }) => {
+  // URLsearchParams랑 append 써보기
+  // 아니면 남세 스타일
+  //   '?' + [
+  //     ...(cursorParam ? [`cursor=${cursorParam}`] : []),
+  //     ...(categoryId ? [`categoryId=${categoryId}`] : []),
+  // ].join('&');
   const queryString =
     cursorParam && categoryId
       ? `?cursor=${cursorParam}&categoryId=${categoryId}`
