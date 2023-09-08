@@ -1,17 +1,20 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { styled } from 'styled-components';
+import { useDebounceValue } from '../../hooks/useDebounceValue';
 import {
   useAddUserLocation,
   useGetLocationResult,
 } from '../../queries/useLocationQuery';
 import { Error } from '../Error';
+import { Loader } from '../Loader';
 
 type AddLocationProps = {
-  rightPosition: number;
-  showSearchPanel: () => void;
-  closeSearchPanel: () => void;
-  hideSearchPanel: () => void;
+  rightPosition?: number;
+  showSearchPanel?: () => void;
+  closeSearchPanel?: () => void;
+  hideSearchPanel?: () => void;
+  addLocation?: (locationId: number, locationName: string) => void;
 };
 
 export function AddLocation({
@@ -19,10 +22,19 @@ export function AddLocation({
   showSearchPanel,
   closeSearchPanel,
   hideSearchPanel,
+  addLocation,
 }: AddLocationProps) {
-  // TODO: SeachBar 인풋에 입력받은 단어를 searchParam으로 넘겨주기
-  const { fetchNextPage, hasNextPage, isFetchingNextPage, data, isError } =
-    useGetLocationResult('역삼');
+  const [inputValue, setInputValue] = useState('');
+  const query = useDebounceValue(inputValue, 500);
+
+  const {
+    data: locationData,
+    isError,
+    isLoading,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+  } = useGetLocationResult(query);
 
   const addMutation = useAddUserLocation();
   const { ref: lastItemRef, inView } = useInView();
@@ -34,17 +46,26 @@ export function AddLocation({
   }, [inView, hasNextPage, fetchNextPage]);
 
   useEffect(() => {
-    showSearchPanel();
+    showSearchPanel && showSearchPanel();
   }, []);
 
-  const onClickLocationItem = (locationName: string) => {
-    console.log(locationName);
-    addMutation.mutate(locationName);
-    hideSearchPanel();
+  const onClickLocationItem = (locationId: number, locationName: string) => {
+    // SignUpPanel에서 사용하는 경우
+    if (addLocation) {
+      addLocation(locationId, locationName);
+      return;
+    }
+    // Home에서 사용하는 경우
+    addMutation.mutate({ locationId, locationName });
+    hideSearchPanel && hideSearchPanel();
   };
 
   const onTransitionEndHandler = () => {
-    rightPosition !== 0 && closeSearchPanel();
+    rightPosition !== 0 && closeSearchPanel && closeSearchPanel();
+  };
+
+  const onChangeInputValue = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
   };
 
   return (
@@ -52,25 +73,34 @@ export function AddLocation({
       $rightPosition={rightPosition}
       onTransitionEnd={onTransitionEndHandler}
     >
-      <SearchBar placeholder="동명(읍, 면)으로 검색 (ex. 서초동)" />
+      <SearchBar
+        placeholder="동명(읍, 면)으로 검색 (ex. 서초동)"
+        onChange={onChangeInputValue}
+      />
       {isError ? (
         <Error />
       ) : (
         <Content>
-          {data?.pages.map(page => {
-            return page.locations.map((location, index) => {
-              const isLastItem = index === page.locations.length - 1;
-              return (
-                <LocationItem
-                  ref={isLastItem ? lastItemRef : null}
-                  key={location.id}
-                  onClick={() => onClickLocationItem(location.name)}
-                >
-                  {location.name}
-                </LocationItem>
-              );
-            });
-          })}
+          {isLoading ? (
+            <Loader />
+          ) : (
+            locationData?.pages.map(page => {
+              return page.locations.map((location, index) => {
+                const isLastItem = index === page.locations.length - 1;
+                return (
+                  <LocationItem
+                    ref={isLastItem ? lastItemRef : null}
+                    key={location.id}
+                    onClick={() =>
+                      onClickLocationItem(location.id, location.name)
+                    }
+                  >
+                    {location.name}
+                  </LocationItem>
+                );
+              });
+            })
+          )}
           {isFetchingNextPage && <LoadingMessage>Loading...</LoadingMessage>}
         </Content>
       )}
@@ -78,7 +108,7 @@ export function AddLocation({
   );
 }
 
-const Container = styled.div<{ $rightPosition: number }>`
+const Container = styled.div<{ $rightPosition?: number }>`
   width: 100%;
   height: 100%;
   display: flex;
@@ -88,7 +118,8 @@ const Container = styled.div<{ $rightPosition: number }>`
   padding: 0 24px 16px;
   position: absolute;
   top: 0;
-  right: ${({ $rightPosition }) => `${$rightPosition}px`};
+  ${({ $rightPosition }) =>
+    $rightPosition !== undefined && `right: ${$rightPosition}px`};
   transition: right 0.6s;
   font: ${({ theme }) => theme.font.displayDefault16};
   background-color: ${({ theme }) => theme.color.neutralBackground};

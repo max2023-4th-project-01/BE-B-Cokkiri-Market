@@ -4,6 +4,7 @@ import { singup } from '../../api/authFetcher';
 import { Header } from '../../components/Header';
 import { Button } from '../../components/button/Button';
 import { Icon } from '../../components/icon/Icon';
+import { SignUpLocationModal } from '../../components/locations/SignUpLocationModal';
 import { useScreenConfigStore } from '../../stores/useScreenConfigStore';
 import { AuthInput } from './AuthInput';
 import { ProfileButton } from './ProfileButton';
@@ -13,15 +14,21 @@ type SignUpPanelProps = {
   closePanel: () => void;
 };
 
+type LocationState = {
+  id: number;
+  name: string;
+};
+
 export function SignUpPanel({ closePanel }: SignUpPanelProps) {
   const { screenWidth } = useScreenConfigStore();
   const [rightPosition, setRightPosition] = useState(-screenWidth);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
   const [nickname, setNickname] = useState('');
-  const [location, setLocation] = useState(1);
+  const [location, setLocation] = useState<LocationState | null>(null);
   const [file, setFile] = useState<File>();
   const [backgroundImage, setBackgroundImage] = useState<string>();
 
@@ -37,6 +44,11 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
     isValidNickname &&
     !isNullLocation
   );
+
+  const addSignUpLocation = (locationId: number, locationName: string) => {
+    setLocation({ id: locationId, name: locationName });
+    setIsModalOpen(false);
+  };
 
   useEffect(() => {
     setRightPosition(0);
@@ -60,6 +72,14 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
 
   const onClose = () => {
     setRightPosition(-screenWidth);
+  };
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
   };
 
   const onChangeFile = (event: ChangeEvent<HTMLInputElement>) => {
@@ -93,9 +113,10 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
     const formData = new FormData();
     const signupData = {
       username: id,
-      nickName: nickname,
+      nickname: nickname,
       password: password,
-      locationId: location,
+      locationId: location?.id,
+      locationName: location?.name,
     };
 
     formData.append(
@@ -151,7 +172,6 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
             onRemoveProfile={onRemoveProfile}
           />
         </ProfileWrapper>
-
         <AuthInput
           id={id}
           password={password}
@@ -160,16 +180,41 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
           onChangePassword={onChangePassword}
           onChangeNickname={onChangeNickname}
         />
-        <Button
-          styledType="outline"
-          color="neutralBorder"
-          fontColor="accentTextWeak"
-          onClick={() => setLocation(1)}
-        >
-          <Icon name="plus" color="accentTextWeak" />
-          위치 추가
-        </Button>
+        {location ? (
+          <Button
+            color="accentPrimary"
+            fontColor="accentText"
+            onClick={openModal}
+            align="space-between"
+          >
+            {location.name}
+            <Icon
+              name="pencil"
+              color="accentText"
+              onClick={() => {
+                console.log('삭제할까요?');
+              }}
+            />
+          </Button>
+        ) : (
+          <Button
+            styledType="outline"
+            color="neutralBorder"
+            fontColor="accentTextWeak"
+            onClick={openModal}
+          >
+            <Icon name="plus" color="accentTextWeak" />
+            위치 추가
+          </Button>
+        )}
       </Body>
+      {isModalOpen && (
+        <SignUpLocationModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          addLocation={addSignUpLocation}
+        />
+      )}
     </Div>
   );
 }

@@ -1,69 +1,107 @@
-import { useQuery } from '@tanstack/react-query';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useInView } from 'react-intersection-observer';
 import { styled } from 'styled-components';
-import { getItem } from '../../api/fetcher';
 import { Error } from '../../components/Error';
 import { Header } from '../../components/Header';
+import { Loader } from '../../components/Loader';
 import { ProductItem } from '../../components/ProductItem';
+import { Dropdown } from '../../components/dropdown/Dropdown';
+import { MenuItem } from '../../components/dropdown/MenuItem';
 import { Icon } from '../../components/icon/Icon';
-import { LocationModal } from '../../components/locations/LocationModal';
+import { HomeLocationModal } from '../../components/locations/HomeLocationModal';
+import { useGetItemData } from '../../queries/useItemQuery';
+import { useGetUserLocation } from '../../queries/useLocationQuery';
 import { CategoryFilterPanel } from './CategoryFilterPanel';
-
-type ItemData = {
-  userLocation: string;
-  items: ItemProps[];
-};
-
-type ItemProps = {
-  id: number;
-  title: string;
-  locationName: string;
-  createdAt: Date;
-  statusName: string;
-  price: number | null;
-  countData: {
-    chat: number;
-    favorite: number;
-  };
-  thumbnailUrl: string;
-  isSeller: boolean;
-};
 
 export function Home() {
   const bodyRef = useRef<HTMLDivElement>(null);
-  const [isOpenPanel, setIsOpenPanel] = useState(false);
+  const [categoryId, setCategoryId] = useState<number>();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isOpenPanel, setIsOpenPanel] = useState(false);
+  const { ref: lastItemRef } = useInView();
 
-  const {
-    data: itemData,
-    isLoading,
-    isError,
-  } = useQuery<ItemData, Error>(['items'], getItem);
+  const { data: itemData, refetch: refetchItems } = useGetItemData(
+    categoryId ?? null
+  );
+  const { data: userLocationData, isLoading, isError } = useGetUserLocation();
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  useEffect(() => {
+    if (categoryId) {
+      setIsOpenPanel(false);
+    }
+  }, [categoryId]);
 
-  if (isError) {
-    return <div>Error occurred</div>;
-  }
+  // useEffect에서 useInView 훅으로 무한스크롤 요청 구현 예정
+  // useEffect(() => {
+  //   if (inView && hasNextPage) {
+  //     fetchNextPage();
+  //   }
+  // }, [inView, hasNextPage, fetchNextPage]);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    refetchItems();
+    setIsModalOpen(false);
+  };
 
   const openPanel = () => {
     setIsOpenPanel(true);
   };
 
   const closePanel = () => {
+    refetchItems();
     setIsOpenPanel(false);
+  };
+
+  const selectCategory = (id: number) => {
+    setCategoryId(id);
+  };
+
+  const extractKeyName = (locationName: string) => {
+    if (!locationName) return;
+    const keyName = locationName.split(' ').at(-1);
+    return keyName;
   };
 
   return (
     <Div>
-      {isOpenPanel && <CategoryFilterPanel closePanel={closePanel} />}
+      <CategoryFilterPanel
+        isOpenPanel={isOpenPanel}
+        closePanel={closePanel}
+        selectCategory={selectCategory}
+      />
       <Header
         leftButton={
           <LeftAccessory>
-            {itemData.userLocation}
-            <Icon name="chevronDown" color="neutralTextStrong" />
+            <Dropdown
+              btnText={
+                extractKeyName(itemData?.pages[0]?.userLocation) || '역삼1동'
+              }
+              iconName="chevronDown"
+              align="left"
+            >
+              {userLocationData?.locations?.map(location => {
+                return (
+                  <MenuItem
+                    key={location.id}
+                    font={
+                      location.isSelected
+                        ? 'enabledStrong16'
+                        : 'availableDefault16'
+                    }
+                    onAction={() => {
+                      console.log(`${location.name} 클릭됨`);
+                    }}
+                  >
+                    {location.name}
+                  </MenuItem>
+                );
+              })}
+              <MenuItem onAction={openModal}>내 동네 설정하기</MenuItem>
+            </Dropdown>
           </LeftAccessory>
         }
         rightButton={
@@ -76,19 +114,30 @@ export function Home() {
           </RightAccessory>
         }
       />
-      <Body ref={bodyRef}>
-        {itemData.items.map(item => {
-          return <ProductItem key={item.id} {...item} />;
-        })}
-        {itemData.items.length === 0 && (
+      <Body ref={bodyRef} id="home--body__items">
+        {isLoading ? (
+          <Loader />
+        ) : (
+          itemData?.pages?.map(page => {
+            return page?.items?.map((item, index) => {
+              const isLastItem = index === page.items.length - 1;
+              return (
+                <ProductItem
+                  ref={isLastItem ? lastItemRef : null}
+                  key={item.id}
+                  {...item}
+                />
+              );
+            });
+          })
+        )}
+        {itemData?.pages[0]?.items?.length === 0 && (
           <Error message="판매 상품이 없습니다." />
         )}
+        {isError && <Error message="판매 상품 목록을 불러오지 못했습니다." />}
       </Body>
       {isModalOpen && (
-        <LocationModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-        />
+        <HomeLocationModal isOpen={isModalOpen} onClose={closeModal} />
       )}
     </Div>
   );

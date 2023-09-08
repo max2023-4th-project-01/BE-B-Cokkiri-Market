@@ -31,7 +31,6 @@ export const useAuthStore = create(
         set(() => ({ refreshToken }));
       },
       setStateUserInfo: (userInfo: UserInfo) => {
-        console.log(userInfo);
         set(state => ({
           ...state,
           ...userInfo,

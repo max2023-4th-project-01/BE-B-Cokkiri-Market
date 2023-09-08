@@ -1,5 +1,4 @@
 import { faker } from '@faker-js/faker';
-import { icons } from '../components/icon/icons';
 
 const thumbnailList = [
   'https://www.ikea.com/kr/ko/images/products/alex-storage-unit-white__1209817_pe909458_s5.jpg?f=xl',
@@ -8,9 +7,10 @@ const thumbnailList = [
   'https://www.ikea.com/kr/ko/images/products/idanaes-high-cabinet-w-gls-drs-and-1-drawer-dark-brown-stained__1008948_pe827389_s5.jpg?f=xl',
 ];
 
+// 무한 스크롤 목 데이터 구현 필요
 export const fakeItems = () => {
   const items = [];
-  for (let i = 2; i <= 10; i++) {
+  for (let i = 2; i <= 20; i++) {
     const item = {
       id: i,
       title: faker.lorem.words(3),
@@ -29,19 +29,4 @@ export const fakeItems = () => {
   }
 
   return items;
-};
-
-export const fakeCategories = () => {
-  const categories = [];
-  for (let i = 0; i < 18; i++) {
-    const category = {
-      id: i,
-      name: faker.helpers.arrayElement(Object.keys(icons)),
-      iconName: faker.helpers.arrayElement(Object.keys(icons)),
-    };
-
-    categories.push(category);
-  }
-
-  return categories;
 };
