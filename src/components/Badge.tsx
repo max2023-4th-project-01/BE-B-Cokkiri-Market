@@ -3,23 +3,35 @@ import { ColorType } from '../styles/designSystem';
 
 type Size = 'S' | 'M';
 
-type BadgeType = 'container' | 'outline';
+export type BadgeType = 'container' | 'outline';
 
-type BadgeProps = {
+export type BadgeProps = {
   fontColor: ColorType;
   badgeColor: ColorType;
   text: string;
   size: Size;
   type: BadgeType;
+  onClick?: () => void;
 };
 
-export function Badge({ fontColor, badgeColor, text, size, type }: BadgeProps) {
+export function Badge({
+  fontColor,
+  badgeColor,
+  text,
+  size,
+  type,
+  onClick,
+}: BadgeProps) {
+  const isClickable = !!onClick;
+
   return (
     <Div
       $fontColor={fontColor}
       $BadgeColor={badgeColor}
       $size={size}
       $type={type}
+      $isClickable={isClickable}
+      onClick={onClick}
     >
       {text}
     </Div>
@@ -31,6 +43,7 @@ const Div = styled.div<{
   $BadgeColor: ColorType;
   $size: Size;
   $type: BadgeType;
+  $isClickable: boolean;
 }>`
   display: flex;
   align-items: center;
@@ -40,6 +53,7 @@ const Div = styled.div<{
   font: ${({ theme }) => theme.font.displayDefault12};
   ${({ $type, $BadgeColor }) => typeToCss($type, $BadgeColor)};
   color: ${({ theme, $fontColor: $color }) => theme.color[$color]};
+  ${({ $isClickable }) => $isClickable && 'cursor: pointer;'}
 `;
 
 const sizeToCss = ($size: Size) => {
