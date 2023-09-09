@@ -12,8 +12,25 @@ export const itemsHandlers = [
     return res(ctx.status(200), ctx.json(categoryData));
   }),
 
-  rest.get(API_ENDPOINT.SELL_HISTORY('testUser'), (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json(sellHistoryData));
+  rest.get(API_ENDPOINT.SELL_HISTORY('testUser'), (req, res, ctx) => {
+    const isSoldParams = req.url.searchParams.get('isSold');
+    // const cursorParams = req.url.searchParams.get('cursor');
+
+    if (!isSoldParams) {
+      return res(ctx.status(200), ctx.json(sellHistoryData));
+    }
+
+    const isSold = isSoldParams === 'true';
+    const newItems = sellHistoryData.items.filter(item => {
+      return isSold
+        ? item.statusName === '판매중'
+        : item.statusName === '판매완료';
+    });
+
+    return res(
+      ctx.status(200),
+      ctx.json({ ...sellHistoryData, items: newItems })
+    );
   }),
 ];
 
@@ -61,7 +78,6 @@ const sellHistoryData = {
     ...fakeSellItems(),
   ],
   nextCursor: 1,
-  hasNext: false,
 };
 
 const categoryData = {

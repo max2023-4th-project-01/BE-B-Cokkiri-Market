@@ -11,7 +11,6 @@ import { ItemProps } from '../types';
 type HistoryData = {
   items: ItemProps[];
   nextCursor: number;
-  hasNext: boolean;
 };
 
 export function SellHistory() {
@@ -22,26 +21,18 @@ export function SellHistory() {
     () => getSellHistory({ nickname, isSold })
   );
 
+  // 무한 스크롤 구현
   const setBadgeOption = (text: string, status: boolean | undefined) => {
     const isSelected = isSold === status;
 
-    const options: BadgeProps = isSelected
-      ? {
-          text,
-          badgeColor: 'accentPrimary',
-          fontColor: 'accentText',
-          size: 'M',
-          type: 'container',
-          onClick: () => setIsSold(status),
-        }
-      : {
-          text,
-          badgeColor: 'neutralBorder',
-          fontColor: 'accentTextWeak',
-          size: 'M',
-          type: 'outline',
-          onClick: () => setIsSold(status),
-        };
+    const options: BadgeProps = {
+      text,
+      badgeColor: isSelected ? 'accentPrimary' : 'neutralBorder',
+      fontColor: isSelected ? 'accentText' : 'accentTextWeak',
+      size: 'M',
+      type: isSelected ? 'container' : 'outline',
+      onClick: () => setIsSold(status),
+    };
 
     return options;
   };
