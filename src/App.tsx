@@ -4,6 +4,7 @@ import { styled } from 'styled-components';
 import { Layout } from './components/Layout';
 import { Test } from './page/Test';
 import { MyAccount } from './page/auth/MyAccount';
+import { OAuthLoading } from './page/auth/OAuthLoading';
 import { Home } from './page/home/Home';
 import { useScreenConfigStore } from './stores/useScreenConfigStore';
 import elephantImg from '/elephant-bg.png';
@@ -26,6 +27,11 @@ export function App() {
           <Route path="/" element={<Home />} />
           <Route path="/test" element={<Test />} />
           <Route path="/myAccount" element={<MyAccount />} />
+          <Route
+            path="/oauth2/authorization/github"
+            element={<OAuthLoading />}
+          />
+          <Route path="/login/oauth2/code/github" element={<OAuthLoading />} />
         </Route>
       </Routes>
     </AppContainer>

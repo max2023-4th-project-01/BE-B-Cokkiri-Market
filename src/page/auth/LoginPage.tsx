@@ -1,6 +1,7 @@
 import { ChangeEvent, useState } from 'react';
 import { styled } from 'styled-components';
 import { useLogin } from '../../api/authFetcher';
+import { BASE_URL } from '../../api/axios';
 import { Button } from '../../components/button/Button';
 import { Icon } from '../../components/icon/Icon';
 import { AuthInput } from './AuthInput';
@@ -43,15 +44,20 @@ export function LoginPage() {
     console.log(res);
   };
 
+  const OAuthLogin = async () => {
+    window.location.assign(`${BASE_URL}/oauth2/authorization/github`);
+  };
+
   return (
     <>
       {isOpenPanel && <SignUpPanel closePanel={closePanel} />}
       <Div>
         <Body>
           <Button
+            style={{ height: 42 }}
             styledType="outline"
             color="neutralTextStrong"
-            onClick={submit}
+            onClick={OAuthLogin}
           >
             <Icon name="octocat" color="accentText" />
             GitHub 로그인
