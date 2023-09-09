@@ -1,6 +1,10 @@
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { getItems } from '../api/mainFetcher';
-import { ItemData } from '../types';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import {
+  getFavoritesCategories,
+  getFavoritesItemData,
+  getItems,
+} from '../api/mainFetcher';
+import { ItemData, categoryDataType } from '../types';
 
 const ITEMS_QUERY_KEY = '/items';
 
@@ -11,6 +15,19 @@ export const useGetItemData = (categoryId: number | null) => {
     {
       getNextPageParam: lastPage => lastPage.nextCursor ?? undefined,
     }
+  );
+};
+
+export const useGetFavoritesCategoryData = () => {
+  return useQuery<categoryDataType, Error>(
+    ['favoritesCategory'],
+    getFavoritesCategories
+  );
+};
+
+export const useGetFavoritesItemData = (categoryId?: number) => {
+  return useQuery<ItemData, Error>(['favoritesItems', categoryId], () =>
+    getFavoritesItemData(categoryId)
   );
 };
 

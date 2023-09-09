@@ -38,3 +38,13 @@ export const getCategories = async () => {
   const res = await fetcher.get(API_ENDPOINT.CATEGORIES);
   return res.data;
 };
+
+export const getFavoritesCategories = async () => {
+  const res = await fetcher.get(API_ENDPOINT.FAVORITES_CATEGORY);
+  return res.data;
+};
+
+export const getFavoritesItemData = async (categoryId?: number) => {
+  const res = await fetcher.get(API_ENDPOINT.FAVORITES_HISTORY(categoryId));
+  return res.data;
+};
