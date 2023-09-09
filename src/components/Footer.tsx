@@ -13,7 +13,7 @@ export function Footer() {
         <Icon name="news" color="accentSecondary" />
         <Label>판매내역</Label>
       </Tab>
-      <Tab to="/">
+      <Tab to="/favoritesHistory">
         <Icon name="heart" color="systemWarning" />
         <Label>관심상품</Label>
       </Tab>
