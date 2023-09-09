@@ -1,15 +1,19 @@
 import { rest } from 'msw';
 import { API_ENDPOINT } from '../api/endPoint';
 import { ItemData } from '../types';
-import { fakeItems } from './faker';
+import { fakeItems, fakeSellItems } from './faker';
 
-export const mainHandlers = [
+export const itemsHandlers = [
   rest.get(API_ENDPOINT.ITEMS, (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(homeData));
   }),
 
   rest.get(API_ENDPOINT.CATEGORIES, (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(categoryData));
+  }),
+
+  rest.get(API_ENDPOINT.SELL_HISTORY('testUser'), (_, res, ctx) => {
+    return res(ctx.status(200), ctx.json(sellHistoryData));
   }),
 ];
 
@@ -35,6 +39,29 @@ const homeData: ItemData = {
     ...fakeItems(),
   ],
   nextCursor: 1,
+};
+
+const sellHistoryData = {
+  items: [
+    {
+      id: 1,
+      title: '글제목',
+      locationName: '역삼 1동',
+      createdAt: new Date('2023-08-28T23:04:33'),
+      statusName: '예약중',
+      price: 10000,
+      countData: {
+        chat: 10,
+        favorite: 10,
+      },
+      thumbnailUrl:
+        'https://www.ikea.com/kr/ko/images/products/alex-storage-unit-white__1209817_pe909458_s5.jpg?f=xl',
+      isSeller: true,
+    },
+    ...fakeSellItems(),
+  ],
+  nextCursor: 1,
+  hasNext: false,
 };
 
 const categoryData = {
