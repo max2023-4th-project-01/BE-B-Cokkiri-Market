@@ -73,7 +73,6 @@ const sellHistoryData = {
       },
       thumbnailUrl:
         'https://www.ikea.com/kr/ko/images/products/alex-storage-unit-white__1209817_pe909458_s5.jpg?f=xl',
-      isSeller: true,
     },
     ...fakeSellItems(),
   ],

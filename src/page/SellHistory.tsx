@@ -6,10 +6,10 @@ import { Badge, BadgeProps } from '../components/Badge';
 import { Header } from '../components/Header';
 import { ProductItem } from '../components/ProductItem';
 import { useAuthStore } from '../stores/useAuthStore';
-import { ItemProps } from '../types';
+import { ItemBaseType } from '../types';
 
 type HistoryData = {
-  items: ItemProps[];
+  items: ItemBaseType[];
   nextCursor: number;
 };
 
@@ -51,8 +51,8 @@ export function SellHistory() {
       <Body>
         {historyData ? (
           <>
-            {historyData.items.map((item: ItemProps) => {
-              return <ProductItem key={item.id} {...item} />;
+            {historyData.items.map((item: ItemBaseType) => {
+              return <ProductItem key={item.id} {...item} isSeller={true} />;
             })}
           </>
         ) : (

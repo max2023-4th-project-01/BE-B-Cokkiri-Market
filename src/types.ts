@@ -5,7 +5,7 @@ export type ItemData = {
   nextCursor: number | null;
 };
 
-export type ItemProps = {
+export type ItemBaseType = {
   id: number;
   title: string;
   locationName: string;
@@ -17,6 +17,9 @@ export type ItemProps = {
     favorite: number;
   };
   thumbnailUrl: string;
+};
+
+export type ItemProps = ItemBaseType & {
   isSeller: boolean;
 };
 
