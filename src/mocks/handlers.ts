@@ -1,5 +1,9 @@
 import { authHandlers } from './authHandlers';
+import { itemsHandlers } from './itemsHandlers';
 import { locationHandlers } from './locationHandlers';
-import { mainHandlers } from './mainHandlers';
 
-export const handlers = [...authHandlers, ...locationHandlers, ...mainHandlers];
+export const handlers = [
+  ...authHandlers,
+  ...locationHandlers,
+  ...itemsHandlers,
+];

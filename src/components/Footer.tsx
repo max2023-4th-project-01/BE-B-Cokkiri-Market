@@ -9,7 +9,7 @@ export function Footer() {
         <Icon name="home" color="accentPrimary" />
         <Label>홈화면</Label>
       </Tab>
-      <Tab to="/">
+      <Tab to="/sellHistory">
         <Icon name="news" color="accentSecondary" />
         <Label>판매내역</Label>
       </Tab>
