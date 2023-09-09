@@ -3,7 +3,9 @@ import { useState } from 'react';
 import { styled } from 'styled-components';
 import { getSellHistory } from '../api/SellHistoryFetcher';
 import { Badge, BadgeProps } from '../components/Badge';
+import { Error } from '../components/Error';
 import { Header } from '../components/Header';
+import { Loader } from '../components/Loader';
 import { ProductItem } from '../components/ProductItem';
 import { useAuthStore } from '../stores/useAuthStore';
 import { ItemBaseType } from '../types';
@@ -16,9 +18,12 @@ type HistoryData = {
 export function SellHistory() {
   const { nickname } = useAuthStore();
   const [isSold, setIsSold] = useState<boolean>();
-  const { data: historyData } = useQuery<HistoryData, Error>(
-    ['history', isSold],
-    () => getSellHistory({ nickname, isSold })
+  const {
+    data: historyData,
+    isLoading,
+    isError,
+  } = useQuery<HistoryData, Error>(['history', isSold], () =>
+    getSellHistory({ nickname, isSold })
   );
 
   // 무한 스크롤 구현
@@ -49,15 +54,19 @@ export function SellHistory() {
       </TopBar>
 
       <Body>
-        {historyData ? (
+        {isLoading ? (
+          <Loader />
+        ) : (
           <>
-            {historyData.items.map((item: ItemBaseType) => {
+            {historyData?.items.map((item: ItemBaseType) => {
               return <ProductItem key={item.id} {...item} isSeller={true} />;
             })}
           </>
-        ) : (
-          <div></div>
         )}
+        {historyData?.items.length === 0 && (
+          <Error message="판매 내역이 없습니다." />
+        )}
+        {isError && <Error message="판매 내역을 불러오지 못했습니다." />}
       </Body>
     </Div>
   );
