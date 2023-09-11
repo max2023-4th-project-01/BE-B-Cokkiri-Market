@@ -5,6 +5,7 @@ import { Header } from '../../components/Header';
 import { Button } from '../../components/button/Button';
 import { Icon } from '../../components/icon/Icon';
 import { SignUpLocationModal } from '../../components/locations/SignUpLocationModal';
+import { useResetLocationResult } from '../../queries/useLocationQuery';
 import { useScreenConfigStore } from '../../stores/useScreenConfigStore';
 import { AuthInput } from './AuthInput';
 import { ProfileButton } from './ProfileButton';
@@ -31,6 +32,8 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
   const [location, setLocation] = useState<LocationState | null>(null);
   const [file, setFile] = useState<File>();
   const [backgroundImage, setBackgroundImage] = useState<string>();
+
+  const resetLocationResult = useResetLocationResult();
 
   const isValidId = isValid(id, 'common');
   const isValidPassword = isValid(password, 'common');
@@ -79,6 +82,7 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
   };
 
   const closeModal = () => {
+    resetLocationResult();
     setIsModalOpen(false);
   };
 
