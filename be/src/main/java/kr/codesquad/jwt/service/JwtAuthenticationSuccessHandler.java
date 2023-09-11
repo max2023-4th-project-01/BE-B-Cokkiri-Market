@@ -46,7 +46,7 @@ public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHan
 		userData.put("profileImageUrl", user.getProfileImageUrl());
 
 		response.setHeader(HttpHeaders.AUTHORIZATION, Constants.TOKEN_PREFIX + jwt.getAccessToken());
-		response.setHeader("Refresh-Token", Constants.TOKEN_PREFIX + jwt.getRefreshToken());
+		response.setHeader(Constants.REFRESH_TOKEN, Constants.TOKEN_PREFIX + jwt.getRefreshToken());
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 		response.getWriter().write(new ObjectMapper().writeValueAsString(userData));
 	}

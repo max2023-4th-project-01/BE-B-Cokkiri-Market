@@ -19,7 +19,7 @@ public class Image {
 	private Long id;
 	@Column(nullable = false)
 	private Long itemId;
-	@Column(nullable = false, length = 200)
+	@Column(nullable = false, length = 1000)
 	private String url;
 
 	@Builder

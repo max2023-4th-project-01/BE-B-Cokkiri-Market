@@ -3,7 +3,8 @@ package kr.codesquad.item.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import kr.codesquad.location.service.AddressService;
+import kr.codesquad.image.entity.Image;
+import kr.codesquad.image.service.AmazonS3Service;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,28 +49,42 @@ public class ItemService {
 	private final ChatRepository chatRepository;
 	private final UserRepository userRepository;
 	private final ItemPaginationRepository itemPaginationRepository;
-	private final AddressService addressService;
+	private final AmazonS3Service amazonS3Service;
 
 	@Transactional
 	public Long saveItem(List<MultipartFile> imageFiles, ItemSaveRequest itemRequest, String userLoginId) {
 		// 로그인한 유저 아이디
 		Long userId = userRepository.findIdByLoginId(userLoginId);
 
-		// 이미지 처리하고 썸네일 하나 받아옴
-		String thumbnailUrl = "https://cokkiri-s3.s3.ap-northeast-2.amazonaws.com/profileImage/%EC%BD%94%EB%81%BC%EB%A6%AC.png";
 		String locationName = locationRepository.findLocationNameById(itemRequest.getMyLocationId());
-
-		return itemRepository.save(Item.builder()
-			.title(itemRequest.getTitle())
-			.content(itemRequest.getContent())
-			.price(itemRequest.getPrice())
-			.locationId(itemRequest.getMyLocationId())
-			.locationName(locationName)
-			.categoryId(itemRequest.getCategoryId())
-			.thumbnailUrl(thumbnailUrl)
-			.userId(userId)
-			.status(ItemStatus.판매중)
-			.build()).getId();
+		String thumbnailUrl = "https://cokkiri-s3.s3.ap-northeast-2.amazonaws.com/profileImage/%EC%BD%94%EB%81%BC%EB%A6%AC.png";
+		Item item = itemRepository.save(Item.builder()
+				.title(itemRequest.getTitle())
+				.content(itemRequest.getContent())
+				.price(itemRequest.getPrice())
+				.locationId(itemRequest.getMyLocationId())
+				.locationName(locationName)
+				.categoryId(itemRequest.getCategoryId())
+				.thumbnailUrl(thumbnailUrl)
+				.userId(userId)
+				.status(ItemStatus.판매중)
+				.build());
+		if (imageFiles.size() != 0) {
+			String url = amazonS3Service.upload(imageFiles.get(0), "itemImage");
+			imageRepository.save(Image.builder()
+					.url(url)
+					.itemId(item.getId())
+					.build());
+			thumbnailUrl = url;
+			for (int i = 1; i < imageFiles.size(); i++) {
+				imageRepository.save(Image.builder()
+						.url(amazonS3Service.upload(imageFiles.get(i), "itemImage"))
+						.itemId(item.getId())
+						.build());
+			}
+			item.setThumbnailUrl(thumbnailUrl);
+		}
+		return item.getId();
 	}
 
 	@Transactional(readOnly = true)
