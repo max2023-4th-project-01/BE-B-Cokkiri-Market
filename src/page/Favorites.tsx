@@ -26,15 +26,14 @@ export function Favorites() {
     isError,
     isLoading,
     hasNextPage,
-    isFetching,
     fetchNextPage,
   } = useGetFavorites(selectedCategory);
 
   useEffect(() => {
-    if (!isFetching && inView && hasNextPage) {
+    if (inView && hasNextPage) {
       fetchNextPage();
     }
-  }, [inView, hasNextPage, fetchNextPage, isFetching]);
+  }, [inView, hasNextPage, fetchNextPage]);
 
   useEffect(() => {
     categoryData &&

@@ -28,7 +28,6 @@ export function Home() {
     refetch: refetchItems,
     fetchNextPage,
     hasNextPage,
-    isFetching,
   } = useGetItemData(categoryId);
   const { data: userLocationData, isLoading, isError } = useGetUserLocation();
   const resetLocationResult = useResetLocationResult();
@@ -40,10 +39,10 @@ export function Home() {
   }, [categoryId]);
 
   useEffect(() => {
-    if (!isFetching && inView && hasNextPage) {
+    if (inView && hasNextPage) {
       fetchNextPage();
     }
-  }, [inView, hasNextPage, fetchNextPage, isFetching]);
+  }, [inView, hasNextPage, fetchNextPage]);
 
   const openModal = () => {
     setIsModalOpen(true);

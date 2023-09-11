@@ -24,7 +24,6 @@ export function SalesList() {
     data: salesListData,
     isError,
     isLoading,
-    isFetching,
     hasNextPage,
     fetchNextPage,
   } = useGetSalesList({
@@ -33,10 +32,10 @@ export function SalesList() {
   });
 
   useEffect(() => {
-    if (!isFetching && inView && hasNextPage) {
+    if (inView && hasNextPage) {
       fetchNextPage();
     }
-  });
+  }, [inView, hasNextPage, fetchNextPage]);
 
   const setBadgeOption = (text: string, status: boolean | undefined) => {
     const isSelected = isSold === status;
