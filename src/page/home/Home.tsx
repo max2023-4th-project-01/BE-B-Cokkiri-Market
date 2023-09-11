@@ -29,7 +29,7 @@ export function Home() {
     fetchNextPage,
     hasNextPage,
     isFetching,
-  } = useGetItemData(categoryId ?? null);
+  } = useGetItemData(categoryId);
   const { data: userLocationData, isLoading, isError } = useGetUserLocation();
   const resetLocationResult = useResetLocationResult();
 

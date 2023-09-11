@@ -2,17 +2,17 @@ import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { SalesListData } from '../../page/SalesList';
 import { ItemData, categoryDataType } from '../../types';
 import {
+  getFavorites,
   getFavoritesCategories,
-  getFavoritesItemData,
   getItems,
   getSalesList,
 } from '../itemFetcher';
 
 const ITEMS_QUERY_KEY = 'items';
 const SALES_LIST_QUERY_KEY = 'salesList';
-// const FAVORITES_QUERY_KEY = 'favorites';
+const FAVORITES_QUERY_KEY = 'favorites';
 
-export const useGetItemData = (categoryId: number | null) => {
+export const useGetItemData = (categoryId?: number) => {
   return useInfiniteQuery<ItemData>(
     [ITEMS_QUERY_KEY, categoryId],
     ({ pageParam }) => getItems({ pageParam, categoryId }),
@@ -38,15 +38,19 @@ export const useGetSalesList = ({
   );
 };
 
+export const useGetFavorites = (categoryId?: number) => {
+  return useInfiniteQuery<ItemData>(
+    [FAVORITES_QUERY_KEY, categoryId],
+    ({ pageParam }) => getFavorites({ pageParam, categoryId }),
+    {
+      getNextPageParam: lastPage => lastPage.nextCursor ?? undefined,
+    }
+  );
+};
+
 export const useGetFavoritesCategoryData = () => {
   return useQuery<categoryDataType>(
     ['favoritesCategory'],
     getFavoritesCategories
-  );
-};
-
-export const useGetFavoritesItemData = (categoryId?: number) => {
-  return useQuery<ItemData>(['favoritesItems', categoryId], () =>
-    getFavoritesItemData(categoryId)
   );
 };
