@@ -1,6 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { styled } from 'styled-components';
+import { useGetItemData } from '../../api/queries/useItemQuery';
+import {
+  useGetUserLocation,
+  useResetLocationResult,
+} from '../../api/queries/useLocationQuery';
 import { Error } from '../../components/Error';
 import { Header } from '../../components/Header';
 import { Loader } from '../../components/Loader';
@@ -9,11 +14,6 @@ import { Dropdown } from '../../components/dropdown/Dropdown';
 import { MenuItem } from '../../components/dropdown/MenuItem';
 import { Icon } from '../../components/icon/Icon';
 import { HomeLocationModal } from '../../components/locations/HomeLocationModal';
-import { useGetItemData } from '../../queries/useItemQuery';
-import {
-  useGetUserLocation,
-  useResetLocationResult,
-} from '../../queries/useLocationQuery';
 import { CategoryFilterPanel } from './CategoryFilterPanel';
 
 export function Home() {

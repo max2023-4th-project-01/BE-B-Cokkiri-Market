@@ -1,11 +1,11 @@
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { styled } from 'styled-components';
 import { singup } from '../../api/authFetcher';
+import { useResetLocationResult } from '../../api/queries/useLocationQuery';
 import { Header } from '../../components/Header';
 import { Button } from '../../components/button/Button';
 import { Icon } from '../../components/icon/Icon';
 import { SignUpLocationModal } from '../../components/locations/SignUpLocationModal';
-import { useResetLocationResult } from '../../queries/useLocationQuery';
 import { useScreenConfigStore } from '../../stores/useScreenConfigStore';
 import { AuthInput } from './AuthInput';
 import { ProfileButton } from './ProfileButton';

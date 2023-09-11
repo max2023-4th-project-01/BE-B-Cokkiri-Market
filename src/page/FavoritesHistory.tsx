@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { styled } from 'styled-components';
+import {
+  useGetFavoritesCategoryData,
+  useGetFavoritesItemData,
+} from '../api/queries/useItemQuery';
 import { Badge, BadgeProps } from '../components/Badge';
 import { Error } from '../components/Error';
 import { Header } from '../components/Header';
 import { Loader } from '../components/Loader';
 import { ProductItem } from '../components/ProductItem';
-import {
-  useGetFavoritesCategoryData,
-  useGetFavoritesItemData,
-} from '../queries/useItemQuery';
 import { categoryTabsType } from '../types';
 
 export function FavoritesHistory() {

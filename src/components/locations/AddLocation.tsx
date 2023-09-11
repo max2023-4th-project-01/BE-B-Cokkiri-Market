@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { styled } from 'styled-components';
-import { useDebounceValue } from '../../hooks/useDebounceValue';
 import {
   useAddUserLocation,
   useGetLocationResult,
-} from '../../queries/useLocationQuery';
+} from '../../api/queries/useLocationQuery';
+import { useDebounceValue } from '../../hooks/useDebounceValue';
 import { Error } from '../Error';
 import { Loader } from '../Loader';
 

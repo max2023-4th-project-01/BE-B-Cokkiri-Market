@@ -1,10 +1,10 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { ItemData, categoryDataType } from '../../types';
 import {
   getFavoritesCategories,
   getFavoritesItemData,
   getItems,
-} from '../api/mainFetcher';
-import { ItemData, categoryDataType } from '../types';
+} from '../mainFetcher';
 
 const ITEMS_QUERY_KEY = '/items';
 

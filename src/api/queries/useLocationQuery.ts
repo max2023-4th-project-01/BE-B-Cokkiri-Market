@@ -1,18 +1,18 @@
 import {
+  useInfiniteQuery,
+  useMutation,
   useQuery,
   useQueryClient,
-  useMutation,
-  useInfiniteQuery,
 } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
+import { LocationResultData, UserLocationData } from '../../types';
 import {
-  getUserLocations,
-  getLocationData,
   addUserLocation,
   deleteUserLocation,
+  getLocationData,
+  getUserLocations,
   selectUserLocation,
-} from '../api/locationFetcher';
-import { UserLocationData, LocationResultData } from '../types';
+} from '../locationFetcher';
 
 const USER_LOCATION_QUERY_KEY = '/users/locations';
 const LOCATION_QUERY_KEY = '/locations';
