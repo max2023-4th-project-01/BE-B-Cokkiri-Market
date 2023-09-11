@@ -1,21 +1,21 @@
 import {
+  useInfiniteQuery,
+  useMutation,
   useQuery,
   useQueryClient,
-  useMutation,
-  useInfiniteQuery,
 } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
+import { LocationResultData, UserLocationData } from '../../types';
 import {
-  getUserLocations,
-  getLocationData,
   addUserLocation,
   deleteUserLocation,
+  getLocationData,
+  getUserLocations,
   selectUserLocation,
-} from '../api/locationFetcher';
-import { UserLocationData, LocationResultData } from '../types';
+} from '../locationFetcher';
 
-const USER_LOCATION_QUERY_KEY = '/users/locations';
-const LOCATION_QUERY_KEY = '/locations';
+const USER_LOCATION_QUERY_KEY = 'userLocations';
+const LOCATION_QUERY_KEY = 'locations';
 
 // 홈: 동네설정 지역리스트 검색
 export const useGetLocationResult = (searchParam: string) => {
@@ -26,6 +26,15 @@ export const useGetLocationResult = (searchParam: string) => {
       getNextPageParam: lastPage => lastPage.nextPage ?? undefined,
     }
   );
+};
+
+export const useResetLocationResult = () => {
+  const queryClient = useQueryClient();
+  return () =>
+    queryClient.resetQueries({
+      queryKey: [LOCATION_QUERY_KEY],
+      exact: false,
+    });
 };
 
 // 홈: 동네설정 내 동네 목록 불러오기

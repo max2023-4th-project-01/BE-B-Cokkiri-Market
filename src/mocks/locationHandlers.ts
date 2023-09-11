@@ -20,7 +20,7 @@ export const locationHandlers = [
       .map((_, i) => {
         return {
           id: i + cursor,
-          name: DummyLocation[(i + cursor) % 20].item,
+          name: DummyLocation[i % 20].item,
         };
       });
 
