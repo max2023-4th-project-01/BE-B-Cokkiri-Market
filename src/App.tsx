@@ -3,10 +3,10 @@ import { Route, Routes } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { Layout } from './components/Layout';
 import { SellHistory } from './page/SellHistory';
-import { Test } from './page/Test';
 import { MyAccount } from './page/auth/MyAccount';
 import { OAuthLoading } from './page/auth/OAuthLoading';
 import { Home } from './page/home/Home';
+import { ItemDetails } from './page/home/ItemDetails';
 import { useScreenConfigStore } from './stores/useScreenConfigStore';
 import elephantImg from '/elephant-bg.png';
 
@@ -26,7 +26,7 @@ export function App() {
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
-          <Route path="/test" element={<Test />} />
+          <Route path="/test" element={<ItemDetails />} />
           <Route path="/myAccount" element={<MyAccount />} />
           <Route path="/sellHistory" element={<SellHistory />} />
           <Route
