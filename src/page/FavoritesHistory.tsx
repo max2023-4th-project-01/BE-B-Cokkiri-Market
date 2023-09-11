@@ -75,11 +75,9 @@ export function FavoritesHistory() {
         {isLoading ? (
           <Loader />
         ) : (
-          <>
-            {favoritesData?.items.map(item => {
-              return <ProductItem key={item.id} {...item} isSeller={true} />;
-            })}
-          </>
+          favoritesData?.items.map(item => {
+            return <ProductItem key={item.id} {...item} isSeller={true} />;
+          })
         )}
         {favoritesData?.items.length === 0 && (
           <Error message="판매 내역이 없습니다." />
