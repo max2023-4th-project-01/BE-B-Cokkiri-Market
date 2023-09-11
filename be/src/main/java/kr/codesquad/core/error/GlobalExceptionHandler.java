@@ -2,6 +2,7 @@ package kr.codesquad.core.error;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.NestedExceptionUtils;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -40,7 +41,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 			.body(ErrorResponse.builder()
 				.statusCode(errorCode.getHttpStatus())
 				.message(errorCode.getMessage())
-				.detail(ex.getMessage()).build());
+				.detail(ex.getMessage() + ", " + NestedExceptionUtils.getMostSpecificCause(ex)).build());
 	}
 
 	// 500 에러
@@ -54,7 +55,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 			.body(ErrorResponse.builder()
 				.statusCode(errorCode.getHttpStatus())
 				.message(errorCode.getMessage())
-				.detail(ex.toString()).build());
+				.detail(ex.getMessage() + ", " + ex.getMostSpecificCause()).build());
 	}
 
 	// 서버 오류
@@ -67,7 +68,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 			.body(ErrorResponse.builder()
 				.statusCode(errorCode.getHttpStatus())
 				.message(errorCode.getMessage())
-				.detail(ex.toString()).build());
+				.detail(ex.getMessage() + ", " + NestedExceptionUtils.getMostSpecificCause(ex)).build());
 	}
 
 	// @Valid 예외 처리
@@ -80,6 +81,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 			.body(ErrorResponse.builder()
 				.statusCode(errorCode.getHttpStatus())
 				.message(errorCode.getMessage())
-				.detail(ex.getMessage()).build());
+				.detail(ex.getMessage() + ", " + NestedExceptionUtils.getMostSpecificCause(ex)).build());
 	}
 }
