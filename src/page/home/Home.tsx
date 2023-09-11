@@ -21,11 +21,14 @@ export function Home() {
   const [categoryId, setCategoryId] = useState<number>();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isOpenPanel, setIsOpenPanel] = useState(false);
-  const { ref: lastItemRef } = useInView();
+  const { ref: observingTargetRef, inView } = useInView();
 
-  const { data: itemData, refetch: refetchItems } = useGetItemData(
-    categoryId ?? null
-  );
+  const {
+    data: itemData,
+    refetch: refetchItems,
+    fetchNextPage,
+    hasNextPage,
+  } = useGetItemData(categoryId ?? null);
   const { data: userLocationData, isLoading, isError } = useGetUserLocation();
   const resetLocationResult = useResetLocationResult();
 
@@ -35,12 +38,11 @@ export function Home() {
     }
   }, [categoryId]);
 
-  // useEffect에서 useInView 훅으로 무한스크롤 요청 구현 예정
-  // useEffect(() => {
-  //   if (inView && hasNextPage) {
-  //     fetchNextPage();
-  //   }
-  // }, [inView, hasNextPage, fetchNextPage]);
+  useEffect(() => {
+    if (inView && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, fetchNextPage]);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -124,18 +126,12 @@ export function Home() {
           <Loader />
         ) : (
           itemData?.pages?.map(page => {
-            return page?.items?.map((item, index) => {
-              const isLastItem = index === page.items.length - 1;
-              return (
-                <ProductItem
-                  ref={isLastItem ? lastItemRef : null}
-                  key={item.id}
-                  {...item}
-                />
-              );
+            return page?.items?.map(item => {
+              return <ProductItem key={item.id} {...item} />;
             });
           })
         )}
+        <ObservingTarget ref={observingTargetRef} />
         {itemData?.pages[0]?.items?.length === 0 && (
           <Error message="판매 상품이 없습니다." />
         )}
@@ -189,4 +185,10 @@ const Body = styled.div`
   flex: 1;
   padding: 0 16px;
   margin-top: 56px;
+`;
+
+const ObservingTarget = styled.div`
+  height: 152px;
+  position: relative;
+  bottom: 10%;
 `;

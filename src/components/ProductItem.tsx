@@ -1,4 +1,3 @@
-import { ForwardedRef, forwardRef } from 'react';
 import { styled } from 'styled-components';
 import { addCommasToNumber } from '../utils/addCommasToNumber';
 import { getElapsedSince } from '../utils/getElapsedSince';
@@ -22,20 +21,17 @@ type ItemProps = {
   isSeller: boolean;
 };
 
-export const ProductItem = forwardRef(function ProductItem(
-  {
-    id,
-    title,
-    locationName,
-    createdAt,
-    statusName,
-    price,
-    countData,
-    thumbnailUrl,
-    isSeller,
-  }: ItemProps,
-  ref: ForwardedRef<HTMLDivElement>
-) {
+export function ProductItem({
+  id,
+  title,
+  locationName,
+  createdAt,
+  statusName,
+  price,
+  countData,
+  thumbnailUrl,
+  isSeller,
+}: ItemProps) {
   const { chat, favorite } = countData;
 
   const setPrice = (price: number | null) => {
@@ -67,7 +63,6 @@ export const ProductItem = forwardRef(function ProductItem(
 
   return (
     <Div
-      ref={ref}
       onClick={() => {
         console.log(id);
       }}
@@ -128,7 +123,7 @@ export const ProductItem = forwardRef(function ProductItem(
       </Information>
     </Div>
   );
-});
+}
 
 const Div = styled.div`
   width: 100%;
