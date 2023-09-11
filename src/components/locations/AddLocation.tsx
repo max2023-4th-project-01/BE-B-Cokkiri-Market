@@ -47,7 +47,7 @@ export function AddLocation({
 
   useEffect(() => {
     showSearchPanel && showSearchPanel();
-  }, []);
+  }, [showSearchPanel]);
 
   const onClickLocationItem = (locationId: number, locationName: string) => {
     // SignUpPanel에서 사용하는 경우
