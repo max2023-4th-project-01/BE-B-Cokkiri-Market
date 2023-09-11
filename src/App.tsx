@@ -2,8 +2,8 @@ import { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { Layout } from './components/Layout';
-import { FavoritesHistory } from './page/FavoritesHistory';
-import { SellHistory } from './page/SellHistory';
+import { Favorites } from './page/Favorites';
+import { SalesList } from './page/SalesList';
 import { Test } from './page/Test';
 import { MyAccount } from './page/auth/MyAccount';
 import { OAuthLoading } from './page/auth/OAuthLoading';
@@ -29,8 +29,8 @@ export function App() {
           <Route path="/" element={<Home />} />
           <Route path="/test" element={<Test />} />
           <Route path="/myAccount" element={<MyAccount />} />
-          <Route path="/sellHistory" element={<SellHistory />} />
-          <Route path="/favoritesHistory" element={<FavoritesHistory />} />
+          <Route path="/sellHistory" element={<SalesList />} />
+          <Route path="/favoritesHistory" element={<Favorites />} />
           <Route
             path="/oauth2/authorization/github"
             element={<OAuthLoading />}

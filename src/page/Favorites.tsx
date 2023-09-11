@@ -1,29 +1,39 @@
 import { useEffect, useRef, useState } from 'react';
+import { useInView } from 'react-intersection-observer';
 import { styled } from 'styled-components';
+import {
+  useGetFavorites,
+  useGetFavoritesCategoryData,
+} from '../api/queries/useItemQuery';
 import { Badge, BadgeProps } from '../components/Badge';
 import { Error } from '../components/Error';
 import { Header } from '../components/Header';
 import { Loader } from '../components/Loader';
 import { ProductItem } from '../components/ProductItem';
-import {
-  useGetFavoritesCategoryData,
-  useGetFavoritesItemData,
-} from '../queries/useItemQuery';
 import { categoryTabsType } from '../types';
 
-export function FavoritesHistory() {
+export function Favorites() {
   const [categoryTabs, setCategoryTabs] = useState<categoryTabsType[]>([
     { name: '전체' },
   ]);
   const [selectedCategory, setSelectedCategory] = useState<number>();
   const tabsRef = useRef<HTMLDivElement>(null);
+  const { ref: observingTargetRef, inView } = useInView();
 
   const { data: categoryData } = useGetFavoritesCategoryData();
   const {
     data: favoritesData,
     isError,
     isLoading,
-  } = useGetFavoritesItemData(selectedCategory);
+    hasNextPage,
+    fetchNextPage,
+  } = useGetFavorites(selectedCategory);
+
+  useEffect(() => {
+    if (inView && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, fetchNextPage]);
 
   useEffect(() => {
     categoryData &&
@@ -64,7 +74,7 @@ export function FavoritesHistory() {
   return (
     <Div>
       <TopBar>
-        <Header title="판매 내역" />
+        <Header title="관심 목록" />
         <Tabs ref={tabsRef}>
           {categoryTabs.map((categoryTab: categoryTabsType, index) => {
             return <Badge key={index} {...setBadgeOption(categoryTab)} />;
@@ -75,11 +85,16 @@ export function FavoritesHistory() {
         {isLoading ? (
           <Loader />
         ) : (
-          favoritesData?.items.map(item => {
-            return <ProductItem key={item.id} {...item} isSeller={true} />;
-          })
+          <>
+            {favoritesData?.pages.map(page =>
+              page.items.map(item => {
+                return <ProductItem key={item.id} {...item} />;
+              })
+            )}
+            <ObservingTarget ref={observingTargetRef} />
+          </>
         )}
-        {favoritesData?.items.length === 0 && (
+        {favoritesData?.pages[0].items.length === 0 && (
           <Error message="판매 내역이 없습니다." />
         )}
         {isError && <Error message="판매 내역을 불러오지 못했습니다." />}
@@ -141,4 +156,10 @@ const Tabs = styled.div`
     background: ${({ theme }) => theme.color.neutralBorderStrong};
     border-radius: 10px;
   }
+`;
+
+const ObservingTarget = styled.div`
+  height: 152px;
+  position: relative;
+  bottom: 152px;
 `;

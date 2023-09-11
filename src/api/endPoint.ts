@@ -5,13 +5,9 @@ export const API_ENDPOINT = {
   USER_LOCATION: '/api/users/locations',
   LOCATION_DATA: '/api/locations',
   CATEGORIES: '/api/categories',
-  SELL_HISTORY: (nickname: string) => {
+  SALES_LIST: (nickname: string) => {
     return `/api/users/${nickname}/items`;
   },
-  FAVORITES_HISTORY: (categoryId?: number) => {
-    const param = categoryId ? `?categoryId=${categoryId}` : '';
-
-    return `/api/users/favorites${param}`;
-  },
+  FAVORITES: '/api/users/favorites',
   FAVORITES_CATEGORY: '/api/users/favorites/categories',
 };
