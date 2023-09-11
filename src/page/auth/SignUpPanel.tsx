@@ -21,6 +21,7 @@ type LocationState = {
 
 export function SignUpPanel({ closePanel }: SignUpPanelProps) {
   const { screenWidth } = useScreenConfigStore();
+
   const [rightPosition, setRightPosition] = useState(-screenWidth);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -132,7 +133,7 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
     const res = await singup(formData);
 
     // TODO : 에러 예외 처리
-    if (res.statusText === 'OK') {
+    if (res.status === 201) {
       console.log('Response:', res.data);
       closePanel();
     }
