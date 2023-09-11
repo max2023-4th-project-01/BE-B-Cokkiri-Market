@@ -10,19 +10,19 @@ import { ProductItem } from '../components/ProductItem';
 import { useAuthStore } from '../stores/useAuthStore';
 import { ItemBaseType } from '../types';
 
-type HistoryData = {
+type SalesListData = {
   items: ItemBaseType[];
   nextCursor: number;
 };
 
-export function SellHistory() {
+export function SalesList() {
   const { nickname } = useAuthStore();
   const [isSold, setIsSold] = useState<boolean>();
   const {
-    data: historyData,
+    data: salesListData,
     isLoading,
     isError,
-  } = useQuery<HistoryData, Error>(['history', isSold], () =>
+  } = useQuery<SalesListData, Error>(['history', isSold], () =>
     getSellHistory({ nickname, isSold })
   );
 
@@ -58,12 +58,12 @@ export function SellHistory() {
           <Loader />
         ) : (
           <>
-            {historyData?.items.map((item: ItemBaseType) => {
+            {salesListData?.items.map((item: ItemBaseType) => {
               return <ProductItem key={item.id} {...item} isSeller={true} />;
             })}
           </>
         )}
-        {historyData?.items.length === 0 && (
+        {salesListData?.items.length === 0 && (
           <Error message="판매 내역이 없습니다." />
         )}
         {isError && <Error message="판매 내역을 불러오지 못했습니다." />}

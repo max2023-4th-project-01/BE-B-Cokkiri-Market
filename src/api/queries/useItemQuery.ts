@@ -6,7 +6,9 @@ import {
   getItems,
 } from '../mainFetcher';
 
-const ITEMS_QUERY_KEY = '/items';
+const ITEMS_QUERY_KEY = 'items';
+const SALES_LIST_QUERY_KEY = 'salesList';
+const FAVORITES_QUERY_KEY = 'favorites';
 
 export const useGetItemData = (categoryId: number | null) => {
   return useInfiniteQuery<ItemData>(
@@ -30,9 +32,3 @@ export const useGetFavoritesItemData = (categoryId?: number) => {
     getFavoritesItemData(categoryId)
   );
 };
-
-// export const useGetItemData = (categoryId: number | null) => {
-//   return useQuery<ItemData>([ITEMS_QUERY_KEY, categoryId], () =>
-//     getItems({ categoryId })
-//   );
-// };

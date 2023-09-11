@@ -14,8 +14,8 @@ import {
   selectUserLocation,
 } from '../locationFetcher';
 
-const USER_LOCATION_QUERY_KEY = '/users/locations';
-const LOCATION_QUERY_KEY = '/locations';
+const USER_LOCATION_QUERY_KEY = 'userLocations';
+const LOCATION_QUERY_KEY = 'locations';
 
 // 홈: 동네설정 지역리스트 검색
 export const useGetLocationResult = (searchParam: string) => {
