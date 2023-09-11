@@ -8,4 +8,10 @@ export const API_ENDPOINT = {
   SELL_HISTORY: (nickname: string) => {
     return `/api/users/${nickname}/items`;
   },
+  FAVORITES_HISTORY: (categoryId?: number) => {
+    const param = categoryId ? `?categoryId=${categoryId}` : '';
+
+    return `/api/users/favorites${param}`;
+  },
+  FAVORITES_CATEGORY: '/api/users/favorites/categories',
 };

@@ -32,6 +32,12 @@ export const itemsHandlers = [
       ctx.json({ ...sellHistoryData, items: newItems })
     );
   }),
+  rest.get(API_ENDPOINT.FAVORITES_CATEGORY, (_, res, ctx) => {
+    return res(ctx.status(200), ctx.json(categoryData));
+  }),
+  rest.get(API_ENDPOINT.FAVORITES_HISTORY(), (_, res, ctx) => {
+    return res(ctx.status(200), ctx.json(sellHistoryData));
+  }),
 ];
 
 const homeData: ItemData = {
