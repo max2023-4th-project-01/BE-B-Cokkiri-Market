@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { styled } from 'styled-components';
 import { useGetItemData } from '../../api/queries/useItemQuery';
@@ -28,6 +28,7 @@ export function Home() {
     refetch: refetchItems,
     fetchNextPage,
     hasNextPage,
+    isFetching,
   } = useGetItemData(categoryId ?? null);
   const { data: userLocationData, isLoading, isError } = useGetUserLocation();
   const resetLocationResult = useResetLocationResult();
@@ -39,10 +40,10 @@ export function Home() {
   }, [categoryId]);
 
   useEffect(() => {
-    if (inView && hasNextPage) {
+    if (!isFetching && inView && hasNextPage) {
       fetchNextPage();
     }
-  }, [inView, hasNextPage, fetchNextPage]);
+  }, [inView, hasNextPage, fetchNextPage, isFetching]);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -58,14 +59,14 @@ export function Home() {
     setIsOpenPanel(true);
   };
 
-  const closePanel = () => {
+  const closePanel = useCallback(() => {
     refetchItems();
     setIsOpenPanel(false);
-  };
+  }, [refetchItems]);
 
-  const selectCategory = (id: number) => {
+  const selectCategory = useCallback((id: number) => {
     setCategoryId(id);
-  };
+  }, []);
 
   const extractKeyName = (locationName: string | undefined) => {
     if (!locationName) return;
@@ -125,13 +126,15 @@ export function Home() {
         {isLoading ? (
           <Loader />
         ) : (
-          itemData?.pages?.map(page => {
-            return page?.items?.map(item => {
-              return <ProductItem key={item.id} {...item} />;
-            });
-          })
+          <>
+            {itemData?.pages?.map(page => {
+              return page?.items?.map(item => {
+                return <ProductItem key={item.id} {...item} />;
+              });
+            })}
+            <ObservingTarget ref={observingTargetRef} />
+          </>
         )}
-        <ObservingTarget ref={observingTargetRef} />
         {itemData?.pages[0]?.items?.length === 0 && (
           <Error message="판매 상품이 없습니다." />
         )}
@@ -190,5 +193,5 @@ const Body = styled.div`
 const ObservingTarget = styled.div`
   height: 152px;
   position: relative;
-  bottom: 10%;
+  bottom: 152px;
 `;
