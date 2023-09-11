@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { Layout } from './components/Layout';
-import { FavoritesHistory } from './page/FavoritesHistory';
+import { Favorites } from './page/Favorites';
 import { SalesList } from './page/SalesList';
 import { Test } from './page/Test';
 import { MyAccount } from './page/auth/MyAccount';
@@ -30,7 +30,7 @@ export function App() {
           <Route path="/test" element={<Test />} />
           <Route path="/myAccount" element={<MyAccount />} />
           <Route path="/sellHistory" element={<SalesList />} />
-          <Route path="/favoritesHistory" element={<FavoritesHistory />} />
+          <Route path="/favoritesHistory" element={<Favorites />} />
           <Route
             path="/oauth2/authorization/github"
             element={<OAuthLoading />}

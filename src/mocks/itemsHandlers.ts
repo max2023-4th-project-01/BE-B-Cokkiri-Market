@@ -12,7 +12,7 @@ export const itemsHandlers = [
     return res(ctx.status(200), ctx.json(categoryData));
   }),
 
-  rest.get(API_ENDPOINT.SELL_HISTORY('testUser'), (req, res, ctx) => {
+  rest.get(API_ENDPOINT.SALES_LIST('testUser'), (req, res, ctx) => {
     const isSoldParams = req.url.searchParams.get('isSold');
     // const cursorParams = req.url.searchParams.get('cursor');
 
@@ -35,7 +35,7 @@ export const itemsHandlers = [
   rest.get(API_ENDPOINT.FAVORITES_CATEGORY, (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(categoryData));
   }),
-  rest.get(API_ENDPOINT.FAVORITES_HISTORY(), (_, res, ctx) => {
+  rest.get(API_ENDPOINT.FAVORITES, (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(sellHistoryData));
   }),
 ];
