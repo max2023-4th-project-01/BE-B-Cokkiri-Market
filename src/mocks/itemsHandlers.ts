@@ -23,8 +23,8 @@ export const itemsHandlers = [
     const isSold = isSoldParams === 'true';
     const newItems = sellHistoryData.items.filter(item => {
       return isSold
-        ? item.statusName === '판매중'
-        : item.statusName === '판매완료';
+        ? item.statusName === '판매완료'
+        : item.statusName === '판매중';
     });
 
     return res(

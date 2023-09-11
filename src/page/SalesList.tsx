@@ -1,7 +1,7 @@
-import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useInView } from 'react-intersection-observer';
 import { styled } from 'styled-components';
-import { getSellHistory } from '../api/SellHistoryFetcher';
+import { useGetSalesList } from '../api/queries/useItemQuery';
 import { Badge, BadgeProps } from '../components/Badge';
 import { Error } from '../components/Error';
 import { Header } from '../components/Header';
@@ -10,7 +10,7 @@ import { ProductItem } from '../components/ProductItem';
 import { useAuthStore } from '../stores/useAuthStore';
 import { ItemBaseType } from '../types';
 
-type SalesListData = {
+export type SalesListData = {
   items: ItemBaseType[];
   nextCursor: number;
 };
@@ -18,15 +18,26 @@ type SalesListData = {
 export function SalesList() {
   const { nickname } = useAuthStore();
   const [isSold, setIsSold] = useState<boolean>();
+  const { ref: observingTargetRef, inView } = useInView();
+
   const {
     data: salesListData,
-    isLoading,
     isError,
-  } = useQuery<SalesListData, Error>(['history', isSold], () =>
-    getSellHistory({ nickname, isSold })
-  );
+    isLoading,
+    isFetching,
+    hasNextPage,
+    fetchNextPage,
+  } = useGetSalesList({
+    nickname,
+    isSold,
+  });
 
-  // 무한 스크롤 구현
+  useEffect(() => {
+    if (!isFetching && inView && hasNextPage) {
+      fetchNextPage();
+    }
+  });
+
   const setBadgeOption = (text: string, status: boolean | undefined) => {
     const isSelected = isSold === status;
 
@@ -48,8 +59,8 @@ export function SalesList() {
         <Header title="판매 내역" />
         <Tabs>
           <Badge {...setBadgeOption('전체', undefined)} />
-          <Badge {...setBadgeOption('판매 중', true)} />
-          <Badge {...setBadgeOption('판매 완료', false)} />
+          <Badge {...setBadgeOption('판매 중', false)} />
+          <Badge {...setBadgeOption('판매 완료', true)} />
         </Tabs>
       </TopBar>
 
@@ -58,12 +69,15 @@ export function SalesList() {
           <Loader />
         ) : (
           <>
-            {salesListData?.items.map((item: ItemBaseType) => {
-              return <ProductItem key={item.id} {...item} isSeller={true} />;
-            })}
+            {salesListData?.pages.map(page =>
+              page.items.map(item => {
+                return <ProductItem key={item.id} {...item} isSeller={true} />;
+              })
+            )}
+            <ObservingTarget ref={observingTargetRef} />
           </>
         )}
-        {salesListData?.items.length === 0 && (
+        {salesListData?.pages[0].items.length === 0 && (
           <Error message="판매 내역이 없습니다." />
         )}
         {isError && <Error message="판매 내역을 불러오지 못했습니다." />}
@@ -113,4 +127,10 @@ const Tabs = styled.div`
   border-bottom: ${({ theme }) => `0.8px solid ${theme.color.neutralBorder}`};
   background-color: ${({ theme }) => theme.color.accentText};
   backdrop-filter: ${({ theme }) => theme.backdropFilter.blur};
+`;
+
+const ObservingTarget = styled.div`
+  height: 152px;
+  position: relative;
+  bottom: 152px;
 `;

@@ -127,15 +127,15 @@ export function Home() {
           <Loader />
         ) : (
           <>
-            {itemData?.pages?.map(page => {
-              return page?.items?.map(item => {
+            {itemData?.pages.map(page =>
+              page.items.map(item => {
                 return <ProductItem key={item.id} {...item} />;
-              });
-            })}
+              })
+            )}
             <ObservingTarget ref={observingTargetRef} />
           </>
         )}
-        {itemData?.pages[0]?.items?.length === 0 && (
+        {itemData?.pages[0].items.length === 0 && (
           <Error message="판매 상품이 없습니다." />
         )}
         {isError && <Error message="판매 상품 목록을 불러오지 못했습니다." />}
