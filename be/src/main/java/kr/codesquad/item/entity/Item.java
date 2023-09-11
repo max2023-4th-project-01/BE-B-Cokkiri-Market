@@ -34,7 +34,7 @@ public class Item extends TimeStamped {
 	private Long locationId;
 	@Column(nullable = false, length = 45)
 	private String locationName;
-	@Column(nullable = false, length = 200)
+	@Column(nullable = false, length = 1000)
 	private String thumbnailUrl;
 	@Column(nullable = false, length = 45)
 	private ItemStatus status;
