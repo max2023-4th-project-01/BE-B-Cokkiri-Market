@@ -1,9 +1,8 @@
 import { BASE_URL, fetcher } from './axios';
 import { API_ENDPOINT } from './endPoint';
 
-// useInfiniteQuery 제대로 동작 안하는 오류 해결 필요
 export const getItems = async ({
-  pageParam: cursorParam,
+  pageParam: cursor,
   categoryId,
 }: {
   pageParam: number;
@@ -11,8 +10,7 @@ export const getItems = async ({
 }) => {
   const url = new URL(BASE_URL + API_ENDPOINT.ITEMS);
 
-  cursorParam !== undefined &&
-    url.searchParams.append('cursor', String(cursorParam));
+  cursor !== undefined && url.searchParams.append('cursor', String(cursor));
   categoryId !== undefined &&
     url.searchParams.append('categoryId', String(categoryId));
 
@@ -21,18 +19,24 @@ export const getItems = async ({
   return res.data;
 };
 
-// export const getItems = async ({
-//   cursor,
-//   categoryId,
-// }: {
-//   cursor?: number;
-//   categoryId?: number | null;
-// }) => {
-//   const res = await fetcher.get(
-//     `${API_ENDPOINT.ITEMS}${categoryId ? `?categoryId=${categoryId}` : ''}`
-//   );
-//   return res.data;
-// };
+export const getSalesList = async ({
+  pageParam: cursor,
+  isSold,
+  nickname,
+}: {
+  pageParam?: number;
+  isSold?: boolean;
+  nickname: string;
+}) => {
+  const url = new URL(BASE_URL + API_ENDPOINT.SELL_HISTORY(nickname));
+
+  cursor !== undefined && url.searchParams.append('cursor', String(cursor));
+  isSold !== undefined && url.searchParams.append('isSold', String(isSold));
+
+  const res = await fetcher.get(url.toString());
+
+  return res.data;
+};
 
 export const getCategories = async () => {
   const res = await fetcher.get(API_ENDPOINT.CATEGORIES);
