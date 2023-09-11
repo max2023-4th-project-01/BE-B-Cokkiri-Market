@@ -10,7 +10,10 @@ import { MenuItem } from '../../components/dropdown/MenuItem';
 import { Icon } from '../../components/icon/Icon';
 import { HomeLocationModal } from '../../components/locations/HomeLocationModal';
 import { useGetItemData } from '../../queries/useItemQuery';
-import { useGetUserLocation } from '../../queries/useLocationQuery';
+import {
+  useGetUserLocation,
+  useResetLocationResult,
+} from '../../queries/useLocationQuery';
 import { CategoryFilterPanel } from './CategoryFilterPanel';
 
 export function Home() {
@@ -24,6 +27,7 @@ export function Home() {
     categoryId ?? null
   );
   const { data: userLocationData, isLoading, isError } = useGetUserLocation();
+  const resetLocationResult = useResetLocationResult();
 
   useEffect(() => {
     if (categoryId) {
@@ -44,6 +48,7 @@ export function Home() {
 
   const closeModal = () => {
     refetchItems();
+    resetLocationResult();
     setIsModalOpen(false);
   };
 

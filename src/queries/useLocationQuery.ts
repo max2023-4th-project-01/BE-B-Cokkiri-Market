@@ -28,6 +28,15 @@ export const useGetLocationResult = (searchParam: string) => {
   );
 };
 
+export const useResetLocationResult = () => {
+  const queryClient = useQueryClient();
+  return () =>
+    queryClient.resetQueries({
+      queryKey: [LOCATION_QUERY_KEY],
+      exact: false,
+    });
+};
+
 // 홈: 동네설정 내 동네 목록 불러오기
 export const useGetUserLocation = () => {
   return useQuery<UserLocationData>(
