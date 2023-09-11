@@ -29,7 +29,7 @@ import kr.codesquad.user.service.UserService;
 import kr.codesquad.util.Constants;
 import lombok.RequiredArgsConstructor;
 
-@EnableWebSecurity // spring security 설정을 활성화시켜주는 어노테이션
+@EnableWebSecurity
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
