@@ -1,10 +1,11 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { SalesListData } from '../../page/SalesList';
-import { ItemData, categoryDataType } from '../../types';
+import { CategoryData, ItemData, categoryDataType } from '../../types';
 import {
   getFavorites,
   getFavoritesCategories,
   getItems,
+  getRecommendCategories,
   getSalesList,
 } from '../itemFetcher';
 
@@ -53,4 +54,10 @@ export const useGetFavoritesCategoryData = () => {
     ['favoritesCategory'],
     getFavoritesCategories
   );
+};
+
+export const useGetRecommendCategoryData = () => {
+  return useQuery<CategoryData>(['recommendCategory'], getRecommendCategories, {
+    enabled: false,
+  });
 };

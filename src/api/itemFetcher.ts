@@ -62,6 +62,12 @@ export const getFavoritesCategories = async () => {
   return res.data;
 };
 
+export const getRecommendCategories = async () => {
+  const res = await fetcher.get(API_ENDPOINT.RECOMMENDED_CATEGORIES);
+
+  return res.data;
+};
+
 export const getCategories = async () => {
   const res = await fetcher.get(API_ENDPOINT.CATEGORIES);
 

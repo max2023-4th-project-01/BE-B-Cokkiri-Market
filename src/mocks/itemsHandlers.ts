@@ -38,6 +38,18 @@ export const itemsHandlers = [
   rest.get(API_ENDPOINT.FAVORITES, (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(sellHistoryData));
   }),
+  rest.get(API_ENDPOINT.RECOMMENDED_CATEGORIES, (_, res, ctx) => {
+    const clonedArr = [...categoryData.categories];
+    const result = [];
+
+    for (let i = 0; i < 3; i++) {
+      const randomIndex = Math.floor(Math.random() * clonedArr.length);
+      const [item] = clonedArr.splice(randomIndex, 1);
+      result.push(item);
+    }
+
+    return res(ctx.status(200), ctx.json({ categories: result }));
+  }),
 ];
 
 const homeData: ItemData = {
