@@ -43,3 +43,12 @@ export type LocationResultData = {
   }[];
   nextPage: number | null;
 };
+
+export type categoryTabsType = {
+  id?: number;
+  name: string;
+};
+
+export type categoryDataType = {
+  categories: categoryTabsType[];
+};

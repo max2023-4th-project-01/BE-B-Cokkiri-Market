@@ -4,7 +4,7 @@ import {
   useDeleteUserLocation,
   useGetUserLocation,
   useSelectUserLocation,
-} from '../../queries/useLocationQuery';
+} from '../../api/queries/useLocationQuery';
 import { useLocationStore } from '../../stores/useLocationStore';
 import { Alert } from '../Alert';
 import { Error } from '../Error';
