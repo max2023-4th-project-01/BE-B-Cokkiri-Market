@@ -1,12 +1,13 @@
 spring:
+  config:
+    activate:
+      on-profile: test
+
   datasource:
     url: jdbc:h2:mem:test;MODE=MySQL
     driver-class-name: org.h2.Driver
     username: sa
     password:
-  h2:
-    console:
-      enabled: true
 
   jpa:
     hibernate:
@@ -15,8 +16,15 @@ spring:
     properties:
       hibernate:
         format_sql: true
-
+  h2:
+    console:
+      enabled: true
 logging:
   level:
     kr.codesquad:
       DEBUG
+---
+spring:
+  sql:
+    init:
+      mode: never
