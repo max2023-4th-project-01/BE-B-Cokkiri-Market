@@ -1,12 +1,15 @@
 import { ChangeEvent, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { useLogin } from '../../api/authFetcher';
+import { BASE_URL } from '../../api/axios';
 import { Button } from '../../components/button/Button';
 import { Icon } from '../../components/icon/Icon';
 import { AuthInput } from './AuthInput';
 import { SignUpPanel } from './SignUpPanel';
 
 export function LoginPage() {
+  const navigate = useNavigate();
   const { login } = useLogin();
 
   const [isOpenPanel, setIsOpenPanel] = useState(false);
@@ -40,7 +43,13 @@ export function LoginPage() {
       password,
     });
 
-    console.log(res);
+    if (res.status === 200) {
+      navigate('/');
+    }
+  };
+
+  const OAuthLogin = async () => {
+    window.location.assign(`${BASE_URL}/oauth2/authorization/github`);
   };
 
   return (
@@ -49,9 +58,10 @@ export function LoginPage() {
       <Div>
         <Body>
           <Button
+            style={{ height: 42 }}
             styledType="outline"
             color="neutralTextStrong"
-            onClick={submit}
+            onClick={OAuthLogin}
           >
             <Icon name="octocat" color="accentText" />
             GitHub 로그인

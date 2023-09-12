@@ -1,15 +1,42 @@
 import { rest } from 'msw';
 import { API_ENDPOINT } from '../api/endPoint';
 import { ItemData } from '../types';
-import { fakeItems } from './faker';
+import { fakeItems, fakeSellItems } from './faker';
 
-export const mainHandlers = [
+export const itemsHandlers = [
   rest.get(API_ENDPOINT.ITEMS, (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(homeData));
   }),
 
   rest.get(API_ENDPOINT.CATEGORIES, (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(categoryData));
+  }),
+
+  rest.get(API_ENDPOINT.SALES_LIST('testUser'), (req, res, ctx) => {
+    const isSoldParams = req.url.searchParams.get('isSold');
+    // const cursorParams = req.url.searchParams.get('cursor');
+
+    if (!isSoldParams) {
+      return res(ctx.status(200), ctx.json(sellHistoryData));
+    }
+
+    const isSold = isSoldParams === 'true';
+    const newItems = sellHistoryData.items.filter(item => {
+      return isSold
+        ? item.statusName === '판매완료'
+        : item.statusName === '판매중';
+    });
+
+    return res(
+      ctx.status(200),
+      ctx.json({ ...sellHistoryData, items: newItems })
+    );
+  }),
+  rest.get(API_ENDPOINT.FAVORITES_CATEGORY, (_, res, ctx) => {
+    return res(ctx.status(200), ctx.json(categoryData));
+  }),
+  rest.get(API_ENDPOINT.FAVORITES, (_, res, ctx) => {
+    return res(ctx.status(200), ctx.json(sellHistoryData));
   }),
 ];
 
@@ -33,6 +60,27 @@ const homeData: ItemData = {
       isSeller: true,
     },
     ...fakeItems(),
+  ],
+  nextCursor: 1,
+};
+
+const sellHistoryData = {
+  items: [
+    {
+      id: 1,
+      title: '글제목',
+      locationName: '역삼 1동',
+      createdAt: new Date('2023-08-28T23:04:33'),
+      statusName: '예약중',
+      price: 10000,
+      countData: {
+        chat: 10,
+        favorite: 10,
+      },
+      thumbnailUrl:
+        'https://www.ikea.com/kr/ko/images/products/alex-storage-unit-white__1209817_pe909458_s5.jpg?f=xl',
+    },
+    ...fakeSellItems(),
   ],
   nextCursor: 1,
 };

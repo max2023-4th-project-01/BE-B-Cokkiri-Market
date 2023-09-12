@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { styled } from 'styled-components';
 import { Modal } from '../Modal';
 import { Button } from '../button/Button';
@@ -23,9 +23,9 @@ export function HomeLocationModal({ isOpen, onClose }: LocationModalProps) {
     setIsAddLocation(false);
   };
 
-  const showSearchPanel = () => {
+  const showSearchPanel = useCallback(() => {
     setRightPosition(0);
-  };
+  }, []);
 
   const hideSearchPanel = () => {
     setRightPosition(-320);

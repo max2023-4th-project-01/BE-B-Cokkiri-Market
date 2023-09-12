@@ -1,6 +1,7 @@
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { styled } from 'styled-components';
 import { singup } from '../../api/authFetcher';
+import { useResetLocationResult } from '../../api/queries/useLocationQuery';
 import { Header } from '../../components/Header';
 import { Button } from '../../components/button/Button';
 import { Icon } from '../../components/icon/Icon';
@@ -21,6 +22,7 @@ type LocationState = {
 
 export function SignUpPanel({ closePanel }: SignUpPanelProps) {
   const { screenWidth } = useScreenConfigStore();
+
   const [rightPosition, setRightPosition] = useState(-screenWidth);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -31,6 +33,8 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
   const [location, setLocation] = useState<LocationState | null>(null);
   const [file, setFile] = useState<File>();
   const [backgroundImage, setBackgroundImage] = useState<string>();
+
+  const resetLocationResult = useResetLocationResult();
 
   const isValidId = isValid(id, 'common');
   const isValidPassword = isValid(password, 'common');
@@ -79,6 +83,7 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
   };
 
   const closeModal = () => {
+    resetLocationResult();
     setIsModalOpen(false);
   };
 
@@ -132,7 +137,7 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
     const res = await singup(formData);
 
     // TODO : 에러 예외 처리
-    if (res.statusText === 'OK') {
+    if (res.status === 201) {
       console.log('Response:', res.data);
       closePanel();
     }
