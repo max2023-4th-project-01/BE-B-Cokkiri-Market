@@ -3,11 +3,11 @@ import { Route, Routes } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { Layout } from './components/Layout';
 import { Favorites } from './page/Favorites';
+import { ItemDetails } from './page/ItemDetails';
 import { SalesList } from './page/SalesList';
 import { MyAccount } from './page/auth/MyAccount';
 import { OAuthLoading } from './page/auth/OAuthLoading';
 import { Home } from './page/home/Home';
-import { ItemDetails } from './page/home/ItemDetails';
 import { useScreenConfigStore } from './stores/useScreenConfigStore';
 import elephantImg from '/elephant-bg.png';
 
