@@ -2,9 +2,14 @@ import { styled } from 'styled-components';
 import backpackImg from '../assets/image/backpack.jpeg';
 import { Header } from '../components/Header';
 import { Button } from '../components/button/Button';
+import { Dropdown } from '../components/dropdown/Dropdown';
+import { MenuItem } from '../components/dropdown/MenuItem';
 import { Icon } from '../components/icon/Icon';
 
 export function ItemDetails() {
+  const fakeAction = () => {
+    console.log('dropdown menu clicked');
+  };
   return (
     <Container>
       <Header
@@ -15,24 +20,50 @@ export function ItemDetails() {
           </Button>
         }
       />
-      <Body>
+
+      <Main>
         <ImageSlider>
           <img src={backpackImg} alt="상품 이미지" />
         </ImageSlider>
-        <div>
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ad
-          praesentium error distinctio veniam beatae voluptatem corrupti aperiam
-          nulla? Quidem obcaecati non est iste, voluptate ipsa officia esse
-          deserunt animi quod. Lorem ipsum dolor, sit amet consectetur
-          adipisicing elit. Aperiam saepe, suscipit odio, deleniti quod
-          architecto tempore facere expedita eos veniam veritatis quisquam
-          distinctio vel adipisci perferendis, sequi dolores repudiandae
-          molestias. Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-          Aperiam saepe, suscipit odio, deleniti quod architecto tempore facere
-          expedita eos veniam veritatis quisquam distinctio vel adipisci
-          perferendis, sequi dolores repudiandae molestias.
-        </div>
-      </Body>
+        <Body>
+          <SellorInfo>
+            <Button color="neutralBackgroundWeak" align="space-between">
+              <span>판매자 정보</span>
+              <Name>퓨즈아님</Name>
+            </Button>
+          </SellorInfo>
+          <Status>
+            <Dropdown btnText="판매중" iconName="chevronDown">
+              <MenuItem onAction={fakeAction}>판매중</MenuItem>
+              <MenuItem onAction={fakeAction}>예약중</MenuItem>
+              <MenuItem onAction={fakeAction}>판매완료</MenuItem>
+            </Dropdown>
+          </Status>
+          <Content>
+            <ContentHeader>
+              <Title>새학기 가방 팝니다</Title>
+              <SubInfo>
+                <CategoryInfo>남성패션/잡화</CategoryInfo>
+                <TimeStamp>1분 전</TimeStamp>
+              </SubInfo>
+            </ContentHeader>
+            <ContentBody>
+              저번달에 새로 산 가방인데, 사용할 일이 많지 않아서 판매합니다.
+              저번달에 새로 산 가방인데, 사용할 일이 많지 않아서 판매합니다.
+              저번달에 새로 산 가방인데, 사용할 일이 많지 않아서 판매합니다.
+              저번달에 새로 산 가방인데, 사용할 일이 많지 않아서 판매합니다.
+              저번달에 새로 산 가방인데, 사용할 일이 많지 않아서 판매합니다.
+              저번달에 새로 산 가방인데, 사용할 일이 많지 않아서 판매합니다.
+            </ContentBody>
+            <ContentFooter>
+              <ChatCount>채팅 0</ChatCount>
+              <FavoritesCount>관심 2</FavoritesCount>
+              <ViewCount>조회 5</ViewCount>
+            </ContentFooter>
+          </Content>
+        </Body>
+      </Main>
+
       <Footer>
         <FooterLeft>
           <IconButton styledType="text">
@@ -55,24 +86,11 @@ const Container = styled.div`
   height: 100%;
   position: absolute;
   background-color: ${({ theme }) => theme.color.neutralBackground};
+  overflow: hidden;
 `;
 
-// const StyledHeader = styled(Header)`
-//   border-bottom: none;
-//   background-color: transparent;
-
-//   &::before {
-//     content: '';
-//     position: absolute;
-//     width: 100%;
-//     height: 100%;
-//     z-index: -1;
-//     backdrop-filter: none;
-//   }
-// `;
-
-const Body = styled.div`
-  height: 100%;
+const Main = styled.div`
+  height: 786px;
   overflow-y: auto;
 
   &::-webkit-scrollbar {
@@ -92,6 +110,98 @@ const ImageSlider = styled.div`
     object-fit: cover;
   }
 `;
+
+const Body = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+`;
+
+const SellorInfo = styled.div`
+  width: 361px;
+
+  span:first-child {
+    font: ${({ theme }) => theme.font.displayDefault16};
+  }
+`;
+
+const Name = styled.span``;
+
+const Status = styled.div`
+  width: 108px;
+  border: 1px solid ${({ theme }) => theme.color.neutralBorder};
+  border-radius: 8px;
+
+  button {
+    width: 100%;
+    height: 32px;
+    padding: 0px 16px;
+  }
+
+  button > span {
+    font: ${({ theme }) => theme.font.availableDefault12};
+  }
+`;
+
+const Content = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+`;
+
+const ContentHeader = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  align-self: stretch;
+`;
+
+const Title = styled.span`
+  font: ${({ theme }) => theme.font.displayStrong20};
+  color: ${({ theme }) => theme.color.neutralTextStrong};
+`;
+
+const SubInfo = styled.div`
+  display: flex;
+  align-items: flex-start;
+  align-self: stretch;
+  font: ${({ theme }) => theme.font.displayDefault12};
+  color: ${({ theme }) => theme.color.neutralTextWeak};
+`;
+
+const CategoryInfo = styled.span`
+  &::after {
+    content: '•';
+    padding: 0 4px;
+    font: ${({ theme }) => theme.font.displayDefault12};
+    color: ${({ theme }) => theme.color.neutralTextWeak};
+  }
+`;
+
+const TimeStamp = styled.span``;
+
+const ContentBody = styled.div`
+  font: ${({ theme }) => theme.font.displayDefault16};
+  color: ${({ theme }) => theme.color.neutralText};
+`;
+
+const ContentFooter = styled.div`
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  align-self: stretch;
+  font: ${({ theme }) => theme.font.displayDefault12};
+  color: ${({ theme }) => theme.color.neutralTextWeak};
+`;
+
+const ChatCount = styled.span``;
+
+const FavoritesCount = styled.span``;
+
+const ViewCount = styled.span``;
 
 const Footer = styled.div`
   width: 100%;
