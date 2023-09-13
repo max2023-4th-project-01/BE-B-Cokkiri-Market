@@ -2,6 +2,8 @@ package kr.codesquad.repository;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,63 +23,97 @@ public class FavoriteRepositoryTest extends IntegrationTestSupport {
 	@DisplayName("사용자의 관심 목록에 추가되었는지 확인한다.")
 	void saveTest() {
 		// given
-		Favorite favorite = Favorite.builder()
-			.id(1L)
-			.userId(2L)
-			.itemId(3L).build();
+		Long userId = 2L;
+		Long itemId = 3L;
+		Favorite favorite = createFavorite(userId, itemId);
 
 		// when
 		Favorite saved = favoriteRepository.save(favorite);
 
 		// then
+		assertThat(saved.getId()).isNotNull();
 		assertThat(saved)
-			.extracting("id", "userId", "itemId")
-			.contains(1L, 2L, 3L);
+			.extracting("userId", "itemId")
+			.contains(userId, itemId);
+	}
+	
+	@Test
+	@DisplayName("사용자의 관심 목록에서 삭제 되었는지 확인한다.")
+	void deleteTest() {
+		// given
+		Long userId = 2L;
+		Long itemId = 3L;
+		Favorite favorite = createFavorite(userId, itemId);
+		Favorite saved = favoriteRepository.save(favorite);
+
+		// when
+		favoriteRepository.deleteById(saved.getId());
+
+		// then
+		Optional<Favorite> searched = favoriteRepository.findById(saved.getId());
+		assertThat(searched.isEmpty()).isTrue();
+
 	}
 
-	// TODO: 작성
-	// @Test
-	// @DisplayName("사용자의 관심 목록에서 삭제 되었는지 확인한다.")
-	// void deleteTest() {
-	// 	// given
-	// 	favoriteRepository.deleteById(foundFavorite.getId());
-	// 	// when
-	//
-	// 	// then
-	//
-	// }
-	//
-	// @Test
-	// @DisplayName("사용자의 관심 목록에 추가 된 게시글인지 조회한다.")
-	// void test() {
-	// 	// given
-	//
-	// 	// favorite에 저장
-	//
-	//
-	// 	// when
-	// 	favoriteRepository.findByUserIdAndItemId(userId, itemId);
-	//
-	// 	// then
-	//
-	// }
+	@Test
+	@DisplayName("사용자의 관심 목록에 추가 된 게시글을 조회한다.")
+	void searchByUserIdAndItemIdExistTest() {
+		// given
+		Long userId = 2L;
+		Long itemId = 3L;
+		Favorite favorite = createFavorite(userId, itemId);
+		Favorite saved = favoriteRepository.save(favorite);
 
-	// TODO: favorite에서는 필요 없지만, 리스트를 이용한 테스트가 필요할 때 예시
-	// @Test
-	// @DisplayName("findAll")
-	// void findAllTest() {
-	// 	// given
-	//
-	// 	// when
-	//
-	// 	// then
-	// 	assertThat(items)
-	// 		.hasSize(2)
-	// 		.extracting("title", "content", "status") // 내가 검색하고자 하는 필드만 추출해서 사용할 수 있다.
-	// 		.containsExactlyInAnyOrder( // 순서 상관 없이 안에 있는 값을 확인해 준다.
-	// 		tuple("제목1", "내용1", ItemStatus.판매중),
-	// 		tuple("제목2", "내용2", ItemStatus.판매완료),
-	// 		tuple("제목3", "내용3", ItemStatus.예약중)
-	// 	);
-	// }
+		// when
+		Optional<Favorite> searched = favoriteRepository.findByUserIdAndItemId(saved.getUserId(), saved.getItemId());
+
+		// then
+		assertThat(searched.isPresent()).isTrue();
+
+	}
+
+	@Test
+	@DisplayName("사용자의 관심 목록에 추가 되지 않은 게시글을 조회한다.")
+	void searchByUserIdAndItemIdNotExistTest() {
+		// given
+		Long userId = 2L;
+		Long itemId = 3L;
+		Favorite favorite = createFavorite(userId, itemId);
+
+		// when
+		Optional<Favorite> searched = favoriteRepository.findByUserIdAndItemId(favorite.getUserId(),
+			favorite.getItemId());
+
+		// then
+		assertThat(searched.isPresent()).isFalse();
+
+	}
+
+	/* ex) favorite에서는 필요 없지만, 리스트를 이용한 테스트가 필요할 때 예시
+
+	@Test
+	@DisplayName("findAll")
+	void findAllTest() {
+		// given
+
+		// when
+
+		// then
+		assertThat(items)
+			.hasSize(2)
+			.extracting("title", "content", "status") // 내가 검색하고자 하는 필드만 추출해서 사용할 수 있다.
+			.containsExactlyInAnyOrder( // 순서 상관 없이 안에 있는 값을 확인해 준다.
+			tuple("제목1", "내용1", ItemStatus.판매중),
+			tuple("제목2", "내용2", ItemStatus.판매완료),
+			tuple("제목3", "내용3", ItemStatus.예약중)
+		);
+	}
+	 */
+
+	Favorite createFavorite(Long userId, Long itemId) {
+		return Favorite.builder()
+			.userId(userId)
+			.itemId(itemId).build();
+	}
+
 }
