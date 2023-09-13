@@ -12,11 +12,7 @@ server:
       charset: utf-8
       force: true
   port: 8080
----
-spring:
-  config:
-    activate:
-      on-profile: test
+
 ---
 # 404 Not Found 예외를 위한 설정
 spring:
