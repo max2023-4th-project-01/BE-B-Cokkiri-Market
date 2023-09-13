@@ -1,4 +1,8 @@
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import {
+  useInfiniteQuery,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { SalesListData } from '../../page/SalesList';
 import { CategoryData, ItemData, categoryDataType } from '../../types';
 import {
@@ -12,6 +16,8 @@ import {
 const ITEMS_QUERY_KEY = 'items';
 const SALES_LIST_QUERY_KEY = 'salesList';
 const FAVORITES_QUERY_KEY = 'favorites';
+const RECOMMEND_CATEGORY = 'recommendCategory';
+const FAVORITES_CATEGORY = 'favoritesCategory';
 
 export const useGetItemData = (categoryId?: number) => {
   return useInfiniteQuery<ItemData>(
@@ -51,13 +57,22 @@ export const useGetFavorites = (categoryId?: number) => {
 
 export const useGetFavoritesCategoryData = () => {
   return useQuery<categoryDataType>(
-    ['favoritesCategory'],
+    [FAVORITES_CATEGORY],
     getFavoritesCategories
   );
 };
 
 export const useGetRecommendCategoryData = () => {
-  return useQuery<CategoryData>(['recommendCategory'], getRecommendCategories, {
+  return useQuery<CategoryData>([RECOMMEND_CATEGORY], getRecommendCategories, {
     enabled: false,
   });
+};
+
+export const useResetRecommendCategory = () => {
+  const queryClient = useQueryClient();
+  return () =>
+    queryClient.resetQueries({
+      queryKey: [RECOMMEND_CATEGORY],
+      exact: false,
+    });
 };
