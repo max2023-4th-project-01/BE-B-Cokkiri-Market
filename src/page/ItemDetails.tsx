@@ -1,15 +1,20 @@
 import { styled } from 'styled-components';
-import backpackImg from '../assets/image/backpack.jpeg';
 import { Header } from '../components/Header';
 import { Button } from '../components/button/Button';
 import { Dropdown } from '../components/dropdown/Dropdown';
 import { MenuItem } from '../components/dropdown/MenuItem';
 import { Icon } from '../components/icon/Icon';
+import { ImageSlider } from '../components/itemDetails/ImageSlider';
 
 export function ItemDetails() {
+  // const { data } = useQuery(['itemDetails', itemId], () =>
+  //   getItemsDetails(itemId)
+  // );
+
   const fakeAction = () => {
     console.log('dropdown menu clicked');
   };
+
   return (
     <Container>
       <Header
@@ -22,9 +27,7 @@ export function ItemDetails() {
       />
 
       <Main>
-        <ImageSlider>
-          <img src={backpackImg} alt="상품 이미지" />
-        </ImageSlider>
+        <ImageSlider />
         <Body>
           <SellorInfo>
             <Button color="neutralBackgroundWeak" align="space-between">
@@ -86,7 +89,6 @@ const Container = styled.div`
   height: 100%;
   position: absolute;
   background-color: ${({ theme }) => theme.color.neutralBackground};
-  overflow: hidden;
 `;
 
 const Main = styled.div`
@@ -98,17 +100,6 @@ const Main = styled.div`
   }
   -ms-overflow-style: none;
   scrollbar-width: none;
-`;
-
-const ImageSlider = styled.div`
-  width: 100%;
-  height: 491px;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
 `;
 
 const Body = styled.div`
