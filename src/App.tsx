@@ -27,7 +27,7 @@ export function App() {
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
-          <Route path="/test" element={<ItemDetails />} />
+          <Route path="/items/:itemId" element={<ItemDetails />} />
           <Route path="/myAccount" element={<MyAccount />} />
           <Route path="/sellHistory" element={<SalesList />} />
           <Route path="/favoritesHistory" element={<Favorites />} />

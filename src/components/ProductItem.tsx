@@ -19,6 +19,7 @@ type ItemProps = {
   };
   thumbnailUrl: string;
   isSeller: boolean;
+  onClick: () => void;
 };
 
 export function ProductItem({
@@ -31,6 +32,7 @@ export function ProductItem({
   countData,
   thumbnailUrl,
   isSeller,
+  onClick,
 }: ItemProps) {
   const { chat, favorite } = countData;
 
@@ -62,11 +64,7 @@ export function ProductItem({
   };
 
   return (
-    <Div
-      onClick={() => {
-        console.log(id);
-      }}
-    >
+    <Div onClick={onClick}>
       <Thumbnail src={thumbnailUrl} />
       <Information>
         <Title>

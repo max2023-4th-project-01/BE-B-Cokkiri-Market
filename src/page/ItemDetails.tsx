@@ -1,4 +1,7 @@
+import { useQuery } from '@tanstack/react-query';
+import { useParams } from 'react-router-dom';
 import { styled } from 'styled-components';
+import { getItemDetails } from '../api/itemFetcher';
 import { Header } from '../components/Header';
 import { Button } from '../components/button/Button';
 import { Dropdown } from '../components/dropdown/Dropdown';
@@ -7,9 +10,18 @@ import { Icon } from '../components/icon/Icon';
 import { ImageSlider } from '../components/itemDetails/ImageSlider';
 
 export function ItemDetails() {
-  // const { data } = useQuery(['itemDetails', itemId], () =>
-  //   getItemsDetails(itemId)
-  // );
+  const { itemId } = useParams();
+  const { data } = useQuery(
+    ['itemDetails', itemId],
+    () => {
+      if (itemId) {
+        return getItemDetails(Number(itemId));
+      }
+    },
+    {
+      enabled: !!itemId, // itemId가 정의되어 있을 때만 요청을 활성화
+    }
+  );
 
   const fakeAction = () => {
     console.log('dropdown menu clicked');

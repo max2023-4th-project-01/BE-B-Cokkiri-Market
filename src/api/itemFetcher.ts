@@ -68,7 +68,7 @@ export const getCategories = async () => {
   return res.data;
 };
 
-export const getItemsDetails = async (itemId: number) => {
+export const getItemDetails = async (itemId: number) => {
   const res = await fetcher.get(`${API_ENDPOINT.ITEMS}/${itemId}`);
 
   return res.data;
