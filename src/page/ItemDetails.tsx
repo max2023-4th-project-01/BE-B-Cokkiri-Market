@@ -123,6 +123,7 @@ const Status = styled.div`
   width: 108px;
   border: 1px solid ${({ theme }) => theme.color.neutralBorder};
   border-radius: 8px;
+  position: relative;
 
   button {
     width: 100%;

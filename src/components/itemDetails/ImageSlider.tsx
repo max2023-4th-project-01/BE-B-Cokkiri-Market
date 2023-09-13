@@ -3,6 +3,8 @@ import { styled } from 'styled-components';
 import backpackImg from '../../assets/image/backpack.jpeg';
 import { Badge } from '../Badge';
 
+// TODO: 이미지 순서에 맞게 페이지 표시 기능 구현하기
+
 export function ImageSlider() {
   const [isDragStart, setIsDragStart] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
