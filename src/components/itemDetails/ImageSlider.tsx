@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { styled } from 'styled-components';
 import backpackImg from '../../assets/image/backpack.jpeg';
+import { Badge } from '../Badge';
 
 export function ImageSlider() {
   const [isDragStart, setIsDragStart] = useState(false);
@@ -77,6 +78,13 @@ export function ImageSlider() {
         <SliderItem src={backpackImg} alt="상품 이미지" draggable="false" />
         <SliderItem src={backpackImg} alt="상품 이미지" draggable="false" />
       </Slider>
+      <PageNav
+        fontColor="neutralTextWeak"
+        badgeColor="neutralBackgroundBlur"
+        text="1 / 2"
+        size="M"
+        type="container"
+      />
     </Container>
   );
 }
@@ -84,6 +92,7 @@ export function ImageSlider() {
 const Container = styled.div`
   width: 100%;
   height: 491px;
+  position: relative;
 `;
 
 const Slider = styled.div`
@@ -96,4 +105,10 @@ const SliderItem = styled.img`
   width: 100%;
   height: 491px;
   object-fit: cover;
+`;
+
+const PageNav = styled(Badge)`
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
 `;
