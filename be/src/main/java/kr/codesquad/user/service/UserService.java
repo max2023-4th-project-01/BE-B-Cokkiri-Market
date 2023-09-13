@@ -1,7 +1,6 @@
 package kr.codesquad.user.service;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,6 +15,7 @@ import kr.codesquad.location.entity.Location;
 import kr.codesquad.location.repository.LocationRepository;
 import kr.codesquad.user.dto.UserMapper;
 import kr.codesquad.user.dto.request.UserSignUpRequest;
+import kr.codesquad.user.dto.response.UpdateProfileImageResponse;
 import kr.codesquad.user.entity.User;
 import kr.codesquad.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -60,5 +60,14 @@ public class UserService implements UserDetailsService {
 		User user = userRepository.findByLoginId(username);
 		return new org.springframework.security.core.userdetails.User(username, user.getPassword(),
 			new ArrayList<>());
+	}
+
+	@Transactional
+	public UpdateProfileImageResponse updateProfileImage(MultipartFile profileImageFile, String userLoginId) {
+		// TODO: 기존 이미지 파일 삭제 로직 추가 (S3 용량 관리)
+		String newProfileImageUrl = amazonS3Service.upload(profileImageFile, "profileImage");
+		userRepository.findByLoginId(userLoginId).updateProfileImage(newProfileImageUrl);
+
+		return new UpdateProfileImageResponse(newProfileImageUrl);
 	}
 }
