@@ -18,11 +18,19 @@ export function ItemDetails() {
   return (
     <Container>
       <Header
-        leftButton={<Button styledType="text">뒤로</Button>}
-        rightButton={
+        leftButton={
           <Button styledType="text">
-            <Icon name="dots" color="neutralTextStrong" />
+            <Icon name="chevronLeft" color="neutralText" />
+            뒤로
           </Button>
+        }
+        rightButton={
+          <Dropdown iconName="dots" align="right">
+            <MenuItem onAction={fakeAction}>게시글 수정</MenuItem>
+            <MenuItem color="systemWarning" onAction={fakeAction}>
+              삭제
+            </MenuItem>
+          </Dropdown>
         }
       />
 

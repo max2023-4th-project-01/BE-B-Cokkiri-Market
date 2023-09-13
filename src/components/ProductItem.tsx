@@ -155,6 +155,7 @@ const Information = styled.div`
   & > div {
     width: 100%;
     display: flex;
+    align-items: center;
   }
 `;
 
