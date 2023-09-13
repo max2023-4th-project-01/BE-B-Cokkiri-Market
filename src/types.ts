@@ -52,3 +52,13 @@ export type categoryTabsType = {
 export type categoryDataType = {
   categories: categoryTabsType[];
 };
+
+export type CategoryData = {
+  categories: CategoryItem[];
+};
+
+export type CategoryItem = {
+  id: number;
+  name: string;
+  iconName: string;
+};
