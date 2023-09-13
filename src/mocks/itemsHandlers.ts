@@ -50,6 +50,12 @@ export const itemsHandlers = [
 
     return res(ctx.status(200), ctx.json({ categories: result }));
   }),
+  rest.post(API_ENDPOINT.ITEMS, (_, res, ctx) => {
+    return res(ctx.status(201), ctx.json({ itemId: 3 }));
+  }),
+  rest.put(`${API_ENDPOINT.ITEMS}/:id`, (_, res, ctx) => {
+    return res(ctx.status(201), ctx.json({ itemId: 3 }));
+  }),
 ];
 
 const homeData: ItemData = {

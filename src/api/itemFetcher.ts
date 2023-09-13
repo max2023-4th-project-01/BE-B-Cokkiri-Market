@@ -73,3 +73,23 @@ export const getCategories = async () => {
 
   return res.data;
 };
+
+export const addItems = async (formData: FormData) => {
+  const res = await fetcher.post(API_ENDPOINT.ITEMS, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+
+  return res;
+};
+
+export const editItems = async (formData: FormData, itemId: number) => {
+  const res = await fetcher.put(`${API_ENDPOINT.ITEMS}/${itemId}`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+
+  return res;
+};
