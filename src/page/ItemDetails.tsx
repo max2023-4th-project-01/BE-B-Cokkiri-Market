@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { getItemDetails } from '../api/itemFetcher';
 import { Header } from '../components/Header';
@@ -8,30 +8,62 @@ import { Dropdown } from '../components/dropdown/Dropdown';
 import { MenuItem } from '../components/dropdown/MenuItem';
 import { Icon } from '../components/icon/Icon';
 import { ImageSlider } from '../components/itemDetails/ImageSlider';
+import { getElapsedSince } from '../utils/getElapsedSince';
+
+type ItemDetailsData = {
+  isSeller: boolean;
+  images: { id: number; url: string }[];
+  seller: string;
+  status: { name: string; isSelected: boolean }[];
+  title: string;
+  categoryName: string;
+  createdAt: Date;
+  content: string;
+  countData: {
+    chat: number;
+    favorite: number;
+    view: number;
+  };
+  isFavorite: boolean;
+  price: number;
+};
 
 export function ItemDetails() {
   const { itemId } = useParams();
-  const { data } = useQuery(
+  const { data, isLoading, isError } = useQuery<ItemDetailsData>(
     ['itemDetails', itemId],
-    () => {
-      if (itemId) {
-        return getItemDetails(Number(itemId));
-      }
-    },
-    {
-      enabled: !!itemId, // itemId가 정의되어 있을 때만 요청을 활성화
-    }
+    () => getItemDetails(Number(itemId))
   );
+  const navigate = useNavigate();
 
   const fakeAction = () => {
     console.log('dropdown menu clicked');
   };
 
+  const setPrice = (price: number | null) => {
+    switch (price) {
+      case null:
+        return '가격 미정';
+      case 0:
+        return '나눔';
+      default:
+        return `${price.toLocaleString('ko')}원`;
+    }
+  };
+
+  if (isLoading) {
+    return <div>loading...</div>;
+  }
+
+  if (isError) {
+    return <div>error...</div>;
+  }
+
   return (
     <Container>
       <Header
         leftButton={
-          <Button styledType="text">
+          <Button styledType="text" onClick={() => navigate('/')}>
             <Icon name="chevronLeft" color="neutralText" />
             뒤로
           </Button>
@@ -47,41 +79,52 @@ export function ItemDetails() {
       />
 
       <Main>
-        <ImageSlider />
+        <ImageSlider imageList={data.images} />
         <Body>
           <SellorInfo>
             <Button color="neutralBackgroundWeak" align="space-between">
               <span>판매자 정보</span>
-              <Name>퓨즈아님</Name>
+              <Name>{data.seller}</Name>
             </Button>
           </SellorInfo>
           <Status>
-            <Dropdown btnText="판매중" iconName="chevronDown">
-              <MenuItem onAction={fakeAction}>판매중</MenuItem>
-              <MenuItem onAction={fakeAction}>예약중</MenuItem>
-              <MenuItem onAction={fakeAction}>판매완료</MenuItem>
+            <Dropdown
+              btnText={data.status.find(item => item.isSelected)?.name || ''}
+              iconName="chevronDown"
+            >
+              <MenuItem
+                isSelected={data.status[0].isSelected}
+                onAction={fakeAction}
+              >
+                판매중
+              </MenuItem>
+              <MenuItem
+                isSelected={data.status[1].isSelected}
+                onAction={fakeAction}
+              >
+                예약중
+              </MenuItem>
+              <MenuItem
+                isSelected={data.status[2].isSelected}
+                onAction={fakeAction}
+              >
+                판매완료
+              </MenuItem>
             </Dropdown>
           </Status>
           <Content>
             <ContentHeader>
-              <Title>새학기 가방 팝니다</Title>
+              <Title>{data.title}</Title>
               <SubInfo>
-                <CategoryInfo>남성패션/잡화</CategoryInfo>
-                <TimeStamp>1분 전</TimeStamp>
+                <CategoryInfo>{data.categoryName}</CategoryInfo>
+                <TimeStamp>{getElapsedSince(data.createdAt)}</TimeStamp>
               </SubInfo>
             </ContentHeader>
-            <ContentBody>
-              저번달에 새로 산 가방인데, 사용할 일이 많지 않아서 판매합니다.
-              저번달에 새로 산 가방인데, 사용할 일이 많지 않아서 판매합니다.
-              저번달에 새로 산 가방인데, 사용할 일이 많지 않아서 판매합니다.
-              저번달에 새로 산 가방인데, 사용할 일이 많지 않아서 판매합니다.
-              저번달에 새로 산 가방인데, 사용할 일이 많지 않아서 판매합니다.
-              저번달에 새로 산 가방인데, 사용할 일이 많지 않아서 판매합니다.
-            </ContentBody>
+            <ContentBody>{data.content}</ContentBody>
             <ContentFooter>
-              <ChatCount>채팅 0</ChatCount>
-              <FavoritesCount>관심 2</FavoritesCount>
-              <ViewCount>조회 5</ViewCount>
+              <ChatCount>채팅 {data.countData.chat}</ChatCount>
+              <FavoritesCount>관심 {data.countData.favorite}</FavoritesCount>
+              <ViewCount>조회 {data.countData.view}</ViewCount>
             </ContentFooter>
           </Content>
         </Body>
@@ -92,7 +135,7 @@ export function ItemDetails() {
           <IconButton styledType="text">
             <Icon name="heart" color="neutralTextStrong" />
           </IconButton>
-          <Price>99,000원</Price>
+          <Price>{setPrice(data.price)}</Price>
         </FooterLeft>
         <FooterRight>
           <Button size="M" color="accentPrimary" fontColor="accentText">
