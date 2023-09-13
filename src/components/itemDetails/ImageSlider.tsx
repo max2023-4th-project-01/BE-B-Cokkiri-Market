@@ -13,6 +13,7 @@ export function ImageSlider({ imageList }: ImageSliderProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [prevPageX, setPrevPageX] = useState(0);
   const [prevScrollLeft, setPrevScrollLeft] = useState(0);
+  const [currentImageIndex, setCurrentImageIndex] = useState(1);
   const sliderRef = useRef<HTMLDivElement | null>(null);
   let positionDiff = 0;
 
@@ -27,7 +28,7 @@ export function ImageSlider({ imageList }: ImageSliderProps) {
 
   const onDragging = (event: React.MouseEvent | React.TouchEvent) => {
     if (!isDragStart || !sliderRef.current) return;
-    // event.preventDefault();
+    // event.preventDefault(); 모바일 환경에서 에러 발생
     setIsDragging(true);
     const pageX = 'touches' in event ? event.touches[0].pageX : event.pageX;
     positionDiff = pageX - prevPageX;
@@ -59,10 +60,12 @@ export function ImageSlider({ imageList }: ImageSliderProps) {
     if (sliderRef.current.scrollLeft > prevScrollLeft) {
       sliderRef.current.scrollLeft +=
         positionDiff > imgWidth / 3 ? diffValue : -positionDiff;
+      setCurrentImageIndex(prev => prev + 1);
       return;
     }
     sliderRef.current.scrollLeft -=
       positionDiff > imgWidth / 3 ? diffValue : -positionDiff;
+    setCurrentImageIndex(prev => prev - 1);
   };
 
   return (
@@ -89,7 +92,7 @@ export function ImageSlider({ imageList }: ImageSliderProps) {
       <PageNav
         fontColor="neutralTextWeak"
         badgeColor="neutralBackgroundBlur"
-        text="1 / 2"
+        text={`${currentImageIndex} / ${imageList.length}`}
         size="M"
         type="container"
       />
