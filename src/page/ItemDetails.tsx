@@ -1,7 +1,9 @@
-import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import { styled } from 'styled-components';
-import { getItemDetails } from '../api/itemFetcher';
+import {
+  useGetItemDetails,
+  usePatchFavorite,
+} from '../api/queries/useItemQuery';
 import { Header } from '../components/Header';
 import { Button } from '../components/button/Button';
 import { Dropdown } from '../components/dropdown/Dropdown';
@@ -10,7 +12,7 @@ import { Icon } from '../components/icon/Icon';
 import { ImageSlider } from '../components/itemDetails/ImageSlider';
 import { getElapsedSince } from '../utils/getElapsedSince';
 
-type ItemDetailsData = {
+export type ItemDetailsData = {
   isSeller: boolean;
   images: { id: number; url: string }[];
   seller: string;
@@ -30,10 +32,8 @@ type ItemDetailsData = {
 
 export function ItemDetails() {
   const { itemId } = useParams();
-  const { data, isLoading, isError } = useQuery<ItemDetailsData>(
-    ['itemDetails', itemId],
-    () => getItemDetails(Number(itemId))
-  );
+  const { data, isLoading, isError } = useGetItemDetails(Number(itemId));
+  const patchMutation = usePatchFavorite();
   const navigate = useNavigate();
 
   const fakeAction = () => {
@@ -58,6 +58,13 @@ export function ItemDetails() {
   if (isError) {
     return <div>error...</div>;
   }
+
+  const toggleFavorites = () => {
+    patchMutation.mutate({
+      itemId: Number(itemId),
+      isFavorite: !data.isFavorite,
+    });
+  };
 
   return (
     <Container>
@@ -132,8 +139,12 @@ export function ItemDetails() {
 
       <Footer>
         <FooterLeft>
-          <IconButton styledType="text">
-            <Icon name="heart" color="neutralTextStrong" />
+          <IconButton styledType="text" onClick={toggleFavorites}>
+            {data.isFavorite ? (
+              <Icon name="heart" color="systemWarning" />
+            ) : (
+              <Icon name="heart" color="neutralTextStrong" />
+            )}
           </IconButton>
           <Price>{setPrice(data.price)}</Price>
         </FooterLeft>

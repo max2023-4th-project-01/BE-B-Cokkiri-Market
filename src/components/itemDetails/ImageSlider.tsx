@@ -1,6 +1,5 @@
 import { useRef, useState } from 'react';
 import { styled } from 'styled-components';
-import backpackImg from '../../assets/image/backpack.jpeg';
 import { Badge } from '../Badge';
 
 // TODO: 이미지 순서에 맞게 페이지 표시 기능 구현하기
@@ -86,11 +85,6 @@ export function ImageSlider({ imageList }: ImageSliderProps) {
             draggable="false"
           />
         ))}
-        {/* <SliderItem src={backpackImg} alt="상품 이미지" draggable="false" />
-        <SliderItem src={backpackImg} alt="상품 이미지" draggable="false" />
-        <SliderItem src={backpackImg} alt="상품 이미지" draggable="false" />
-        <SliderItem src={backpackImg} alt="상품 이미지" draggable="false" />
-        <SliderItem src={backpackImg} alt="상품 이미지" draggable="false" /> */}
       </Slider>
       <PageNav
         fontColor="neutralTextWeak"

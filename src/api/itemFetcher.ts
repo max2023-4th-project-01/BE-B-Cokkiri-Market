@@ -73,3 +73,17 @@ export const getItemDetails = async (itemId: number) => {
 
   return res.data;
 };
+
+export const patchFavorite = async ({
+  itemId,
+  isFavorite,
+}: {
+  itemId: number;
+  isFavorite: boolean;
+}) => {
+  const res = await fetcher.patch(`${API_ENDPOINT.ITEMS}/${itemId}/favorites`, {
+    isFavorite,
+  });
+
+  return res.data;
+};

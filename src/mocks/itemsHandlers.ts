@@ -3,6 +3,10 @@ import { API_ENDPOINT } from '../api/endPoint';
 import { ItemData } from '../types';
 import { fakeItems, fakeSellItems } from './faker';
 
+type PatchFavoriteRequestBody = {
+  isFavorite: boolean;
+};
+
 export const itemsHandlers = [
   rest.get(API_ENDPOINT.ITEMS, (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(homeData));
@@ -15,6 +19,21 @@ export const itemsHandlers = [
   rest.get(`${API_ENDPOINT.ITEMS}/:itemId`, (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(ItemDetailsData));
   }),
+
+  rest.patch<PatchFavoriteRequestBody>(
+    `${API_ENDPOINT.ITEMS}/:itemId/favorites`,
+    (req, res, ctx) => {
+      ItemDetailsData = {
+        ...ItemDetailsData,
+        isFavorite: req.body.isFavorite,
+      };
+
+      return res(
+        ctx.status(200),
+        ctx.json({ isFavorite: req.body.isFavorite })
+      );
+    }
+  ),
 
   rest.get(API_ENDPOINT.SALES_LIST('testUser'), (req, res, ctx) => {
     const isSoldParams = req.url.searchParams.get('isSold');
@@ -183,7 +202,7 @@ const categoryData = {
   ],
 };
 
-const ItemDetailsData = {
+let ItemDetailsData = {
   isSeller: true,
   images: [
     {
