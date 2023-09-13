@@ -14,6 +14,7 @@ import {
   getItems,
   getSalesList,
   patchFavorite,
+  patchStatus,
 } from '../itemFetcher';
 
 const ITEMS_QUERY_KEY = 'items';
@@ -79,7 +80,6 @@ export const usePatchFavorite = () => {
 
   return useMutation(patchFavorite, {
     onSuccess: (data, variables) => {
-      console.log(data);
       queryClient.setQueryData<ItemDetailsData>(
         [DETAILS_QUERY_KEY, variables.itemId],
         prevData => {
@@ -87,6 +87,31 @@ export const usePatchFavorite = () => {
             ? {
                 ...prevData,
                 isFavorite: data.isFavorite,
+              }
+            : prevData;
+        }
+      );
+    },
+  });
+};
+
+export const usePatchStatus = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation(patchStatus, {
+    onSuccess: (data, variables) => {
+      queryClient.setQueryData<ItemDetailsData>(
+        [DETAILS_QUERY_KEY, variables.itemId],
+        prevData => {
+          return prevData
+            ? {
+                ...prevData,
+                status: prevData.status.map(status => {
+                  return {
+                    ...status,
+                    isSelected: status.name === data.statusName,
+                  };
+                }),
               }
             : prevData;
         }

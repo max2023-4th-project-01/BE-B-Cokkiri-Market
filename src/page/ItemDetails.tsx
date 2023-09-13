@@ -3,6 +3,7 @@ import { styled } from 'styled-components';
 import {
   useGetItemDetails,
   usePatchFavorite,
+  usePatchStatus,
 } from '../api/queries/useItemQuery';
 import { Header } from '../components/Header';
 import { Button } from '../components/button/Button';
@@ -33,7 +34,8 @@ export type ItemDetailsData = {
 export function ItemDetails() {
   const { itemId } = useParams();
   const { data, isLoading, isError } = useGetItemDetails(Number(itemId));
-  const patchMutation = usePatchFavorite();
+  const favoriteMutation = usePatchFavorite();
+  const statusMutation = usePatchStatus();
   const navigate = useNavigate();
 
   const fakeAction = () => {
@@ -60,9 +62,19 @@ export function ItemDetails() {
   }
 
   const toggleFavorites = () => {
-    patchMutation.mutate({
+    favoriteMutation.mutate({
       itemId: Number(itemId),
       isFavorite: !data.isFavorite,
+    });
+  };
+
+  const editStatus = (statusName: '판매중' | '예약중' | '판매완료') => {
+    const prevStatusName = data.status.find(item => item.isSelected)?.name;
+    if (prevStatusName === statusName) return;
+
+    statusMutation.mutate({
+      itemId: Number(itemId),
+      statusName,
     });
   };
 
@@ -101,19 +113,19 @@ export function ItemDetails() {
             >
               <MenuItem
                 isSelected={data.status[0].isSelected}
-                onAction={fakeAction}
+                onAction={() => editStatus('판매중')}
               >
                 판매중
               </MenuItem>
               <MenuItem
                 isSelected={data.status[1].isSelected}
-                onAction={fakeAction}
+                onAction={() => editStatus('예약중')}
               >
                 예약중
               </MenuItem>
               <MenuItem
                 isSelected={data.status[2].isSelected}
-                onAction={fakeAction}
+                onAction={() => editStatus('판매완료')}
               >
                 판매완료
               </MenuItem>
@@ -194,7 +206,7 @@ const SellorInfo = styled.div`
 const Name = styled.span``;
 
 const Status = styled.div`
-  width: 108px;
+  width: 112px;
   border: 1px solid ${({ theme }) => theme.color.neutralBorder};
   border-radius: 8px;
   position: relative;

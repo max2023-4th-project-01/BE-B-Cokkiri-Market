@@ -7,6 +7,10 @@ type PatchFavoriteRequestBody = {
   isFavorite: boolean;
 };
 
+type PatchStatusRequestBody = {
+  statusName: '판매중' | '예약중' | '판매완료';
+};
+
 export const itemsHandlers = [
   rest.get(API_ENDPOINT.ITEMS, (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(homeData));
@@ -14,6 +18,34 @@ export const itemsHandlers = [
 
   rest.get(API_ENDPOINT.CATEGORIES, (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(categoryData));
+  }),
+
+  rest.get(API_ENDPOINT.SALES_LIST('testUser'), (req, res, ctx) => {
+    const isSoldParams = req.url.searchParams.get('isSold');
+
+    if (!isSoldParams) {
+      return res(ctx.status(200), ctx.json(sellHistoryData));
+    }
+
+    const isSold = isSoldParams === 'true';
+    const newItems = sellHistoryData.items.filter(item => {
+      return isSold
+        ? item.statusName === '판매완료'
+        : item.statusName === '판매중';
+    });
+
+    return res(
+      ctx.status(200),
+      ctx.json({ ...sellHistoryData, items: newItems })
+    );
+  }),
+
+  rest.get(API_ENDPOINT.FAVORITES_CATEGORY, (_, res, ctx) => {
+    return res(ctx.status(200), ctx.json(categoryData));
+  }),
+
+  rest.get(API_ENDPOINT.FAVORITES, (_, res, ctx) => {
+    return res(ctx.status(200), ctx.json(sellHistoryData));
   }),
 
   rest.get(`${API_ENDPOINT.ITEMS}/:itemId`, (_, res, ctx) => {
@@ -35,31 +67,24 @@ export const itemsHandlers = [
     }
   ),
 
-  rest.get(API_ENDPOINT.SALES_LIST('testUser'), (req, res, ctx) => {
-    const isSoldParams = req.url.searchParams.get('isSold');
+  rest.patch<PatchStatusRequestBody>(
+    `${API_ENDPOINT.ITEMS}/:itemId/status`,
+    (req, res, ctx) => {
+      const statusName = req.body.statusName;
 
-    if (!isSoldParams) {
-      return res(ctx.status(200), ctx.json(sellHistoryData));
+      ItemDetailsData = {
+        ...ItemDetailsData,
+        status: ItemDetailsData.status.map(status => {
+          return {
+            ...status,
+            isSelected: status.name === statusName,
+          };
+        }),
+      };
+
+      return res(ctx.status(200), ctx.json({ statusName }));
     }
-
-    const isSold = isSoldParams === 'true';
-    const newItems = sellHistoryData.items.filter(item => {
-      return isSold
-        ? item.statusName === '판매완료'
-        : item.statusName === '판매중';
-    });
-
-    return res(
-      ctx.status(200),
-      ctx.json({ ...sellHistoryData, items: newItems })
-    );
-  }),
-  rest.get(API_ENDPOINT.FAVORITES_CATEGORY, (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json(categoryData));
-  }),
-  rest.get(API_ENDPOINT.FAVORITES, (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json(sellHistoryData));
-  }),
+  ),
 ];
 
 const homeData: ItemData = {

@@ -87,3 +87,17 @@ export const patchFavorite = async ({
 
   return res.data;
 };
+
+export const patchStatus = async ({
+  itemId,
+  statusName,
+}: {
+  itemId: number;
+  statusName: '판매중' | '예약중' | '판매완료';
+}) => {
+  const res = await fetcher.patch(`${API_ENDPOINT.ITEMS}/${itemId}/status`, {
+    statusName,
+  });
+
+  return res.data;
+};
