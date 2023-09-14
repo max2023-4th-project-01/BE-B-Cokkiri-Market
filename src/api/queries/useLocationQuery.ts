@@ -12,7 +12,7 @@ import {
   getLocationData,
   getUserLocations,
   selectUserLocation,
-} from '../locationFetcher';
+} from '../fetchers/locationFetcher';
 
 const USER_LOCATION_QUERY_KEY = 'userLocations';
 const LOCATION_QUERY_KEY = 'locations';

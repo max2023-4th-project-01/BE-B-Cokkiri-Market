@@ -47,7 +47,7 @@ export const locationHandlers = [
         locations: [...userLocations.locations, newLocationData],
       };
 
-      return res(ctx.status(200), ctx.json(newLocationData));
+      return res(ctx.status(201), ctx.json(newLocationData));
     }
   ),
 
@@ -71,7 +71,7 @@ export const locationHandlers = [
         location => location.id !== Number(id)
       ),
     };
-    return res(ctx.status(200), ctx.json({ message: '동네 삭제 성공' }));
+    return res(ctx.status(204));
   }),
 ];
 
