@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { styled } from 'styled-components';
-import { getCategories } from '../../api/itemFetcher';
+import { getCategories } from '../../api/fetchers/itemFetcher';
 import { Error } from '../../components/Error';
 import { Loader } from '../../components/Loader';
 import { Modal } from '../../components/Modal';
