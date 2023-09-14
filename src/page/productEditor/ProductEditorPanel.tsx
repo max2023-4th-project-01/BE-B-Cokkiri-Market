@@ -73,8 +73,6 @@ export function ProductEditorPanel() {
   );
 
   const selectLocation = (productId: number) => {
-    console.log(productId);
-    console.log(selectLocationId(productId));
     setLocationData(selectLocationId(productId));
   };
 
@@ -286,10 +284,9 @@ export function ProductEditorPanel() {
 
     if (isEdit && !isError) {
       const res = await editItems(formData, productId!);
-      console.log(res);
+
       if (res.status === 201) {
         // 해당 상품 상세 페이지로 이동
-        console.log(1);
         onClosePanel();
       }
     } else {
@@ -297,7 +294,6 @@ export function ProductEditorPanel() {
 
       if (res.status === 201) {
         // 해당 상품 상세 페이지로 이동
-        console.log(2);
         onClosePanel();
       }
     }
