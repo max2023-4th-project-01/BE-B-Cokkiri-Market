@@ -71,6 +71,6 @@ public class AuthorizationFilter implements Filter {
 
 	private String getToken(HttpServletRequest request) {
 		String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
-		return authorization.substring(7).replace("\"", "");
+		return authorization.substring(Constants.TOKEN_PREFIX.length()).replace("\"", "");
 	}
 }
