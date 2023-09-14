@@ -37,9 +37,6 @@ const FooterDiv = styled.div`
   align-items: center;
   padding: 8px 16px;
   border-top: ${({ theme }) => `0.8px solid ${theme.color.neutralBorder}`};
-  position: absolute;
-  bottom: 0;
-  background-color: ${({ theme }) => theme.color.neutralBackgroundWeak};
 `;
 
 const Tab = styled(Link)`
