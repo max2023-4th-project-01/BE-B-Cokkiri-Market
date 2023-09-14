@@ -75,10 +75,14 @@ class CategoryRepositoryTest extends IntegrationTestSupport {
         List<CategoryResponse> response = categoryRepository.findAlltoDto();
 
         // then
-        assertEquals(response.size(), 18);
-        assertEquals(response.get(0).getId(), 1L);
-        assertEquals(response.get(0).getName(), "디지털기기");
-
+        assertThat(response)
+                .hasSize(18)
+                .extracting("id", "name", "iconName")
+                .contains(
+                        tuple(1L, "디지털기기", "icon_digital"),
+                        tuple(2L, "생활가전", "icon_appliance"),
+                        tuple(18L, "기타중고물품", "icon_etc")
+                );
     }
 
     @Test
@@ -94,7 +98,7 @@ class CategoryRepositoryTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("카테고리 영어 이름으로 조회 테스트 (3개)")
+    @DisplayName("카테고리 이름으로 조회 테스트 (3개 입력 순서대로 가져오기)")
     void findByName() {
         // given
 
@@ -102,13 +106,15 @@ class CategoryRepositoryTest extends IntegrationTestSupport {
         List<CategoryResponse> response = categoryRepository.findByName("여성의류", "디지털기기", "생활/주방");
 
         // then
-        assertEquals(response.size(), 3);
-        assertEquals(response.get(0).getId(), 7L);
-        assertEquals(response.get(0).getName(), "여성의류");
-        assertEquals(response.get(1).getId(), 1L);
-        assertEquals(response.get(1).getName(), "디지털기기");
-        assertEquals(response.get(2).getId(), 4L);
-        assertEquals(response.get(2).getName(), "생활/주방");
+        assertThat(response)
+                .hasSize(3)
+                .extracting("id", "name")
+                .contains(
+                        tuple(7L, "여성의류"),
+                        tuple(1L, "디지털기기"),
+                        tuple(4L, "생활/주방")
+                );
+
     }
 
     Category createCategory(Long id, String name, String icon) {
