@@ -64,9 +64,11 @@ public class UserService implements UserDetailsService {
 
 	@Transactional
 	public UpdateProfileImageResponse updateProfileImage(MultipartFile profileImageFile, String userLoginId) {
-		// TODO: 기존 이미지 파일 삭제 로직 추가 (S3 용량 관리)
+		User user = userRepository.findByLoginId(userLoginId);
+		amazonS3Service.deleteImage(user.getProfileImageUrl()); // 기존 프로필 이미지 삭제
+
 		String newProfileImageUrl = amazonS3Service.upload(profileImageFile, "profileImage");
-		userRepository.findByLoginId(userLoginId).updateProfileImage(newProfileImageUrl);
+		user.updateProfileImage(newProfileImageUrl);
 
 		return new UpdateProfileImageResponse(newProfileImageUrl);
 	}
