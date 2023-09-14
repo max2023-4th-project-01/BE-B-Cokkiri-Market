@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { styled } from 'styled-components';
 import {
   useGetItemDetails,
+  useGetItemDetailsEdit,
   usePatchFavorite,
   usePatchStatus,
 } from '../api/queries/useItemDetailsQuery';
@@ -15,13 +16,16 @@ import { Dropdown } from '../components/dropdown/Dropdown';
 import { MenuItem } from '../components/dropdown/MenuItem';
 import { Icon } from '../components/icon/Icon';
 import { ImageSlider } from '../components/itemDetails/ImageSlider';
+import { useProductEditorStore } from '../stores/useProductEditorStore';
 import { getElapsedSince } from '../utils/getElapsedSince';
+
+type DetailsStatus = '판매중' | '예약중' | '판매완료';
 
 export type ItemDetailsData = {
   isSeller: boolean;
   images: { id: number; url: string }[];
   seller: string;
-  status: { name: string; isSelected: boolean }[];
+  status: { name: DetailsStatus; isSelected: boolean }[];
   title: string;
   categoryName: string;
   createdAt: Date;
@@ -37,8 +41,15 @@ export type ItemDetailsData = {
 
 export function ItemDetails() {
   const [isAlertOpen, setIsAlertOpen] = useState(false);
-
   const { itemId } = useParams();
+  const {
+    data: itemDetailsEditData,
+    isError: isErrorEdit,
+    isLoading: isLoadingEdit,
+    refetch: refetchEdit,
+  } = useGetItemDetailsEdit(Number(itemId));
+  const openEditorPanel = useProductEditorStore(state => state.openPanel);
+
   const {
     data: itemDetailsData,
     isLoading,
@@ -50,7 +61,19 @@ export function ItemDetails() {
   const navigate = useNavigate();
 
   const fakeAction = () => {
-    console.log('dropdown menu clicked');
+    if (!itemDetailsEditData || isLoadingEdit) {
+      // '문제가 생겼습니다 다시 시도해 주세요' 같은 toast
+      // 또는 잠깐 로딩 보여주고 data, isLoading을 useEffect로 체크 후 panel 열어 주기
+      return;
+    } else if (isErrorEdit || !itemId) {
+      // 에러 toast
+      return;
+    }
+    openEditorPanel({
+      mode: 'edit',
+      data: itemDetailsEditData,
+      id: Number(itemId),
+    });
   };
 
   const setPrice = (price: number | null) => {
@@ -61,6 +84,12 @@ export function ItemDetails() {
         return '나눔';
       default:
         return `${price.toLocaleString('ko')}원`;
+    }
+  };
+
+  const hoverToFetch = () => {
+    if (!itemDetailsEditData && !isErrorEdit) {
+      refetchEdit();
     }
   };
 
@@ -80,7 +109,7 @@ export function ItemDetails() {
     });
   };
 
-  const editStatus = (statusName: '판매중' | '예약중' | '판매완료') => {
+  const editStatus = (statusName: DetailsStatus) => {
     const prevStatusName = itemDetailsData.status.find(item => item.isSelected)
       ?.name;
     if (prevStatusName === statusName) return;
@@ -111,12 +140,14 @@ export function ItemDetails() {
         }
         rightButton={
           itemDetailsData.isSeller ? (
-            <Dropdown iconName="dots" align="right">
-              <MenuItem onAction={fakeAction}>게시글 수정</MenuItem>
-              <MenuItem color="systemWarning" onAction={onClickDelete}>
-                삭제
-              </MenuItem>
-            </Dropdown>
+            <div onMouseOver={hoverToFetch}>
+              <Dropdown iconName="dots" align="right">
+                <MenuItem onAction={fakeAction}>게시글 수정</MenuItem>
+                <MenuItem color="systemWarning" onAction={onClickDelete}>
+                  삭제
+                </MenuItem>
+              </Dropdown>
+            </div>
           ) : undefined
         }
       />
@@ -134,29 +165,21 @@ export function ItemDetails() {
             <Status>
               <Dropdown
                 btnText={
-                  itemDetailsData.status.find(item => item.isSelected)?.name ||
-                  ''
+                  itemDetailsData.status.find(item => item.isSelected)?.name
                 }
                 iconName="chevronDown"
               >
-                <MenuItem
-                  isSelected={itemDetailsData.status[0].isSelected}
-                  onAction={() => editStatus('판매중')}
-                >
-                  판매중
-                </MenuItem>
-                <MenuItem
-                  isSelected={itemDetailsData.status[1].isSelected}
-                  onAction={() => editStatus('예약중')}
-                >
-                  예약중
-                </MenuItem>
-                <MenuItem
-                  isSelected={itemDetailsData.status[2].isSelected}
-                  onAction={() => editStatus('판매완료')}
-                >
-                  판매완료
-                </MenuItem>
+                {itemDetailsData.status.map((state, index) => {
+                  return (
+                    <MenuItem
+                      key={index}
+                      isSelected={state.isSelected}
+                      onAction={() => editStatus(state.name)}
+                    >
+                      {state.name}
+                    </MenuItem>
+                  );
+                })}
               </Dropdown>
             </Status>
           )}
@@ -181,24 +204,21 @@ export function ItemDetails() {
       <Footer>
         <FooterLeft>
           <IconButton styledType="text" onClick={toggleFavorites}>
-            {itemDetailsData.isFavorite ? (
-              <Icon name="heart" color="systemWarning" />
-            ) : (
-              <Icon name="heart" color="neutralTextStrong" />
-            )}
+            <Icon
+              name="heart"
+              color={
+                itemDetailsData.isFavorite
+                  ? 'systemWarning'
+                  : 'neutralTextStrong'
+              }
+            />
           </IconButton>
           <Price>{setPrice(itemDetailsData.price)}</Price>
         </FooterLeft>
         <div>
-          {itemDetailsData.isSeller ? (
-            <Button size="M" color="accentPrimary" fontColor="accentText">
-              대화 중인 채팅방
-            </Button>
-          ) : (
-            <Button size="M" color="accentPrimary" fontColor="accentText">
-              채팅하기
-            </Button>
-          )}
+          <Button size="M" color="accentPrimary" fontColor="accentText">
+            {itemDetailsData.isSeller ? '대화 중인 채팅방' : ' 채팅하기'}
+          </Button>
         </div>
       </Footer>
       {isAlertOpen && (
