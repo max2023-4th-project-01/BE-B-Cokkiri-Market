@@ -41,7 +41,7 @@ export const itemsHandlers = [
   }),
 
   rest.delete(`${API_ENDPOINT.ITEMS}/:itemId`, (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json({ message: '삭제 성공' }));
+    return res(ctx.status(204));
   }),
 ];
 

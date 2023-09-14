@@ -3,7 +3,7 @@ import { styled } from 'styled-components';
 
 type HeaderProps = {
   leftButton?: ReactElement;
-  rightButton?: ReactElement | null;
+  rightButton?: ReactElement;
   title?: string;
 };
 

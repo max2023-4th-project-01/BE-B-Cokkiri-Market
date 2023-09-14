@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { useGetItemData } from '../../api/queries/useItemQuery';
 import {
@@ -23,7 +22,6 @@ export function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isOpenPanel, setIsOpenPanel] = useState(false);
   const { ref: observingTargetRef, inView } = useInView();
-  const navigate = useNavigate();
 
   const {
     data: itemData,
@@ -68,10 +66,6 @@ export function Home() {
   const selectCategory = useCallback((id: number) => {
     setCategoryId(id);
   }, []);
-
-  const selectProductItem = (itemid: number) => {
-    navigate(`/items/${itemid}`);
-  };
 
   const extractKeyName = (locationName: string | undefined) => {
     if (!locationName) return;
@@ -134,13 +128,7 @@ export function Home() {
           <>
             {itemData?.pages.map(page =>
               page.items.map(item => {
-                return (
-                  <ProductItem
-                    key={item.id}
-                    {...item}
-                    onClick={() => selectProductItem(item.id)}
-                  />
-                );
+                return <ProductItem key={item.id} {...item} />;
               })
             )}
             <ObservingTarget ref={observingTargetRef} />

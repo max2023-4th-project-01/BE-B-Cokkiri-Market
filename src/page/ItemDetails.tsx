@@ -39,7 +39,11 @@ export function ItemDetails() {
   const [isAlertOpen, setIsAlertOpen] = useState(false);
 
   const { itemId } = useParams();
-  const { data, isLoading, isError } = useGetItemDetails(Number(itemId));
+  const {
+    data: itemDetailsData,
+    isLoading,
+    isError,
+  } = useGetItemDetails(Number(itemId));
   const favoriteMutation = usePatchFavorite();
   const statusMutation = usePatchStatus();
   const deleteMutation = useDeleteItem();
@@ -72,12 +76,13 @@ export function ItemDetails() {
   const toggleFavorites = () => {
     favoriteMutation.mutate({
       itemId: Number(itemId),
-      isFavorite: !data.isFavorite,
+      isFavorite: !itemDetailsData.isFavorite,
     });
   };
 
   const editStatus = (statusName: '판매중' | '예약중' | '판매완료') => {
-    const prevStatusName = data.status.find(item => item.isSelected)?.name;
+    const prevStatusName = itemDetailsData.status.find(item => item.isSelected)
+      ?.name;
     if (prevStatusName === statusName) return;
 
     statusMutation.mutate({
@@ -105,46 +110,49 @@ export function ItemDetails() {
           </Button>
         }
         rightButton={
-          data.isSeller ? (
+          itemDetailsData.isSeller ? (
             <Dropdown iconName="dots" align="right">
               <MenuItem onAction={fakeAction}>게시글 수정</MenuItem>
               <MenuItem color="systemWarning" onAction={onClickDelete}>
                 삭제
               </MenuItem>
             </Dropdown>
-          ) : null
+          ) : undefined
         }
       />
 
       <Main>
-        <ImageSlider imageList={data.images} />
+        <ImageSlider imageList={itemDetailsData.images} />
         <Body>
-          <SellorInfo>
+          <SellerInfo>
             <Button color="neutralBackgroundWeak" align="space-between">
               <InfoText>판매자 정보</InfoText>
-              <SellerName>{data.seller}</SellerName>
+              <span>{itemDetailsData.seller}</span>
             </Button>
-          </SellorInfo>
-          {data.isSeller && (
+          </SellerInfo>
+          {itemDetailsData.isSeller && (
             <Status>
               <Dropdown
-                btnText={data.status.find(item => item.isSelected)?.name || ''}
+                btnText={
+                  itemDetailsData.status.find(item => item.isSelected)?.name ||
+                  ''
+                }
                 iconName="chevronDown"
               >
                 <MenuItem
-                  isSelected={data.status[0].isSelected}
+                  isSelected={itemDetailsData.status[0].isSelected}
                   onAction={() => editStatus('판매중')}
                 >
                   판매중
                 </MenuItem>
                 <MenuItem
-                  isSelected={data.status[1].isSelected}
+                  isSelected={itemDetailsData.status[1].isSelected}
                   onAction={() => editStatus('예약중')}
                 >
                   예약중
                 </MenuItem>
                 <MenuItem
-                  isSelected={data.status[2].isSelected}
+                  isSelected={itemDetailsData.status[2].isSelected}
                   onAction={() => editStatus('판매완료')}
                 >
                   판매완료
@@ -154,18 +162,18 @@ export function ItemDetails() {
           )}
           <Content>
             <ContentHeader>
-              <Title>{data.title}</Title>
+              <Title>{itemDetailsData.title}</Title>
               <SubInfo>
-                <CategoryInfo>{data.categoryName}</CategoryInfo>
-                <TimeStamp>{getElapsedSince(data.createdAt)}</TimeStamp>
+                <CategoryInfo>{itemDetailsData.categoryName}</CategoryInfo>
+                <span>{getElapsedSince(itemDetailsData.createdAt)}</span>
               </SubInfo>
             </ContentHeader>
-            <ContentBody>{data.content}</ContentBody>
-            <ContentFooter>
-              <ChatCount>채팅 {data.countData.chat}</ChatCount>
-              <FavoritesCount>관심 {data.countData.favorite}</FavoritesCount>
-              <ViewCount>조회 {data.countData.view}</ViewCount>
-            </ContentFooter>
+            <ContentBody>{itemDetailsData.content}</ContentBody>
+            <CountData>
+              <span>채팅 {itemDetailsData.countData.chat}</span>
+              <span>관심 {itemDetailsData.countData.favorite}</span>
+              <span>조회 {itemDetailsData.countData.view}</span>
+            </CountData>
           </Content>
         </Body>
       </Main>
@@ -173,16 +181,16 @@ export function ItemDetails() {
       <Footer>
         <FooterLeft>
           <IconButton styledType="text" onClick={toggleFavorites}>
-            {data.isFavorite ? (
+            {itemDetailsData.isFavorite ? (
               <Icon name="heart" color="systemWarning" />
             ) : (
               <Icon name="heart" color="neutralTextStrong" />
             )}
           </IconButton>
-          <Price>{setPrice(data.price)}</Price>
+          <Price>{setPrice(itemDetailsData.price)}</Price>
         </FooterLeft>
-        <FooterRight>
-          {data.isSeller ? (
+        <div>
+          {itemDetailsData.isSeller ? (
             <Button size="M" color="accentPrimary" fontColor="accentText">
               대화 중인 채팅방
             </Button>
@@ -191,7 +199,7 @@ export function ItemDetails() {
               채팅하기
             </Button>
           )}
-        </FooterRight>
+        </div>
       </Footer>
       {isAlertOpen && (
         <Alert
@@ -243,15 +251,13 @@ const Body = styled.div`
   padding: 16px;
 `;
 
-const SellorInfo = styled.div`
+const SellerInfo = styled.div`
   width: 361px;
 `;
 
 const InfoText = styled.span`
   font: ${({ theme }) => theme.font.displayDefault16};
 `;
-
-const SellerName = styled.span``;
 
 const Status = styled.div`
   width: 112px;
@@ -307,14 +313,12 @@ const CategoryInfo = styled.span`
   }
 `;
 
-const TimeStamp = styled.span``;
-
 const ContentBody = styled.div`
   font: ${({ theme }) => theme.font.displayDefault16};
   color: ${({ theme }) => theme.color.neutralText};
 `;
 
-const ContentFooter = styled.div`
+const CountData = styled.div`
   display: flex;
   align-items: flex-start;
   gap: 8px;
@@ -322,12 +326,6 @@ const ContentFooter = styled.div`
   font: ${({ theme }) => theme.font.displayDefault12};
   color: ${({ theme }) => theme.color.neutralTextWeak};
 `;
-
-const ChatCount = styled.span``;
-
-const FavoritesCount = styled.span``;
-
-const ViewCount = styled.span``;
 
 const Footer = styled.div`
   width: 100%;
@@ -359,5 +357,3 @@ const Price = styled.p`
   font: ${({ theme }) => theme.font.displayDefault16};
   color: ${({ theme }) => theme.color.neutralTextStrong};
 `;
-
-const FooterRight = styled.div``;

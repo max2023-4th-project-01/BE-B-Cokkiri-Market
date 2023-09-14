@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { addCommasToNumber } from '../utils/addCommasToNumber';
 import { getElapsedSince } from '../utils/getElapsedSince';
@@ -19,7 +20,6 @@ type ItemProps = {
   };
   thumbnailUrl: string;
   isSeller: boolean;
-  onClick: () => void;
 };
 
 export function ProductItem({
@@ -32,9 +32,9 @@ export function ProductItem({
   countData,
   thumbnailUrl,
   isSeller,
-  onClick,
 }: ItemProps) {
   const { chat, favorite } = countData;
+  const navigate = useNavigate();
 
   const setPrice = (price: number | null) => {
     switch (price) {
@@ -63,8 +63,12 @@ export function ProductItem({
     },
   };
 
+  const showItemDetails = (itemid: number) => {
+    navigate(`/items/${itemid}`);
+  };
+
   return (
-    <Div onClick={onClick}>
+    <Div onClick={() => showItemDetails(id)}>
       <Thumbnail src={thumbnailUrl} />
       <Information>
         <Title>
