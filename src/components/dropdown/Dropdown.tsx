@@ -43,10 +43,10 @@ export function Dropdown({
 
   return (
     <div>
-      <StyledButton styledType="text" onClick={onToggle} $isOpen={isOpen}>
+      <DropdownButton styledType="text" onClick={onToggle} $isOpen={isOpen}>
         {btnText && <Text>{btnText}</Text>}
         <Icon name={iconName} color="neutralTextStrong" />
-      </StyledButton>
+      </DropdownButton>
       {isOpen && (
         <Container $isOpen={isOpen} $align={align}>
           <Menus onClick={onClose}>{children}</Menus>
@@ -56,7 +56,9 @@ export function Dropdown({
   );
 }
 
-const StyledButton = styled(Button)<{ $isOpen: boolean }>`
+const DropdownButton = styled(Button)<{ $isOpen: boolean }>`
+  padding: 0 8px;
+
   ${({ $isOpen }) => {
     if ($isOpen) {
       return css`
@@ -86,7 +88,7 @@ const Container = styled.div<{
 }>`
   border-radius: 12px;
   position: absolute;
-  right: ${({ $align }) => ($align === 'right' ? 0 : 'auto')};
+  right: ${({ $align }) => ($align === 'right' ? '8px' : 'auto')};
   z-index: 10;
   background-color: ${({ theme }) => theme.color.neutralBackground};
 `;

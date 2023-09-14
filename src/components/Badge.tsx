@@ -21,6 +21,7 @@ export function Badge({
   size,
   type,
   onClick,
+  ...rest
 }: BadgeProps) {
   const isClickable = !!onClick;
 
@@ -32,6 +33,7 @@ export function Badge({
       $type={type}
       $isClickable={isClickable}
       onClick={onClick}
+      {...rest}
     >
       {text}
     </Div>

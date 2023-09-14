@@ -1,6 +1,6 @@
-import { useAuthStore } from '../stores/useAuthStore';
-import { fetcher } from './axios';
-import { API_ENDPOINT } from './endPoint';
+import { useAuthStore } from '../../stores/useAuthStore';
+import { fetcher } from '../axios';
+import { API_ENDPOINT } from '../endPoint';
 
 type loginInfo = {
   username: string;
