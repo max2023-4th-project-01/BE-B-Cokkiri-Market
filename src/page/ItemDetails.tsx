@@ -5,6 +5,7 @@ import {
   usePatchFavorite,
   usePatchStatus,
 } from '../api/queries/useItemQuery';
+import { Error } from '../components/Error';
 import { Header } from '../components/Header';
 import { Button } from '../components/button/Button';
 import { Dropdown } from '../components/dropdown/Dropdown';
@@ -53,12 +54,13 @@ export function ItemDetails() {
     }
   };
 
+  // TODO: 페이지 로딩 시 스켈레톤 UI 추가 예정
   if (isLoading) {
     return <div>loading...</div>;
   }
 
   if (isError) {
-    return <div>error...</div>;
+    return <Error />;
   }
 
   const toggleFavorites = () => {
@@ -310,6 +312,7 @@ const Footer = styled.div`
   border-top: ${({ theme }) => `0.8px solid ${theme.color.neutralBorder}`};
   position: absolute;
   bottom: 0;
+  z-index: 1;
   background-color: ${({ theme }) => theme.color.neutralBackgroundWeak};
 `;
 
