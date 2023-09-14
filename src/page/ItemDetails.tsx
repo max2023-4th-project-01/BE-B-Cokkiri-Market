@@ -80,7 +80,7 @@ export function ItemDetails() {
 
   return (
     <Container>
-      <Header
+      <StyledHeader
         leftButton={
           <Button styledType="text" onClick={() => navigate('/')}>
             <Icon name="chevronLeft" color="neutralText" />
@@ -88,12 +88,14 @@ export function ItemDetails() {
           </Button>
         }
         rightButton={
-          <Dropdown iconName="dots" align="right">
-            <MenuItem onAction={fakeAction}>게시글 수정</MenuItem>
-            <MenuItem color="systemWarning" onAction={fakeAction}>
-              삭제
-            </MenuItem>
-          </Dropdown>
+          data.isSeller ? (
+            <Dropdown iconName="dots" align="right">
+              <MenuItem onAction={fakeAction}>게시글 수정</MenuItem>
+              <MenuItem color="systemWarning" onAction={fakeAction}>
+                삭제
+              </MenuItem>
+            </Dropdown>
+          ) : null
         }
       />
 
@@ -102,35 +104,37 @@ export function ItemDetails() {
         <Body>
           <SellorInfo>
             <Button color="neutralBackgroundWeak" align="space-between">
-              <span>판매자 정보</span>
-              <Name>{data.seller}</Name>
+              <InfoText>판매자 정보</InfoText>
+              <SellerName>{data.seller}</SellerName>
             </Button>
           </SellorInfo>
-          <Status>
-            <Dropdown
-              btnText={data.status.find(item => item.isSelected)?.name || ''}
-              iconName="chevronDown"
-            >
-              <MenuItem
-                isSelected={data.status[0].isSelected}
-                onAction={() => editStatus('판매중')}
+          {data.isSeller && (
+            <Status>
+              <Dropdown
+                btnText={data.status.find(item => item.isSelected)?.name || ''}
+                iconName="chevronDown"
               >
-                판매중
-              </MenuItem>
-              <MenuItem
-                isSelected={data.status[1].isSelected}
-                onAction={() => editStatus('예약중')}
-              >
-                예약중
-              </MenuItem>
-              <MenuItem
-                isSelected={data.status[2].isSelected}
-                onAction={() => editStatus('판매완료')}
-              >
-                판매완료
-              </MenuItem>
-            </Dropdown>
-          </Status>
+                <MenuItem
+                  isSelected={data.status[0].isSelected}
+                  onAction={() => editStatus('판매중')}
+                >
+                  판매중
+                </MenuItem>
+                <MenuItem
+                  isSelected={data.status[1].isSelected}
+                  onAction={() => editStatus('예약중')}
+                >
+                  예약중
+                </MenuItem>
+                <MenuItem
+                  isSelected={data.status[2].isSelected}
+                  onAction={() => editStatus('판매완료')}
+                >
+                  판매완료
+                </MenuItem>
+              </Dropdown>
+            </Status>
+          )}
           <Content>
             <ContentHeader>
               <Title>{data.title}</Title>
@@ -161,9 +165,15 @@ export function ItemDetails() {
           <Price>{setPrice(data.price)}</Price>
         </FooterLeft>
         <FooterRight>
-          <Button size="M" color="accentPrimary" fontColor="accentText">
-            대화 중인 채팅방
-          </Button>
+          {data.isSeller ? (
+            <Button size="M" color="accentPrimary" fontColor="accentText">
+              대화 중인 채팅방
+            </Button>
+          ) : (
+            <Button size="M" color="accentPrimary" fontColor="accentText">
+              채팅하기
+            </Button>
+          )}
         </FooterRight>
       </Footer>
     </Container>
@@ -175,6 +185,15 @@ const Container = styled.div`
   height: 100%;
   position: absolute;
   background-color: ${({ theme }) => theme.color.neutralBackground};
+`;
+
+const StyledHeader = styled(Header)`
+  background-color: transparent;
+  border-bottom: none;
+
+  &::before {
+    backdrop-filter: none;
+  }
 `;
 
 const Main = styled.div`
@@ -197,13 +216,13 @@ const Body = styled.div`
 
 const SellorInfo = styled.div`
   width: 361px;
-
-  span:first-child {
-    font: ${({ theme }) => theme.font.displayDefault16};
-  }
 `;
 
-const Name = styled.span``;
+const InfoText = styled.span`
+  font: ${({ theme }) => theme.font.displayDefault16};
+`;
+
+const SellerName = styled.span``;
 
 const Status = styled.div`
   width: 112px;

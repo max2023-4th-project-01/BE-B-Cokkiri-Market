@@ -2,8 +2,6 @@ import { useRef, useState } from 'react';
 import { styled } from 'styled-components';
 import { Badge } from '../Badge';
 
-// TODO: 이미지 순서에 맞게 페이지 표시 기능 구현하기
-
 type ImageSliderProps = {
   imageList: { id: number; url: string }[];
 };
@@ -50,8 +48,9 @@ export function ImageSlider({ imageList }: ImageSliderProps) {
         (sliderRef.current.scrollWidth - sliderRef.current.clientWidth) >
         -1 ||
       sliderRef.current.scrollLeft <= 0
-    )
+    ) {
       return;
+    }
 
     positionDiff = Math.abs(positionDiff);
     const imgWidth = sliderRef.current?.children[0].clientWidth;

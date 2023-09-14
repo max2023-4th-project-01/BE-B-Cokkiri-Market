@@ -3,13 +3,18 @@ import { styled } from 'styled-components';
 
 type HeaderProps = {
   leftButton?: ReactElement;
-  rightButton?: ReactElement;
+  rightButton?: ReactElement | null;
   title?: string;
 };
 
-export function Header({ leftButton, rightButton, title }: HeaderProps) {
+export function Header({
+  leftButton,
+  rightButton,
+  title,
+  ...rest
+}: HeaderProps) {
   return (
-    <Div>
+    <Div {...rest}>
       <Left>{leftButton}</Left>
       <Title>{title}</Title>
       <Right>{rightButton}</Right>
