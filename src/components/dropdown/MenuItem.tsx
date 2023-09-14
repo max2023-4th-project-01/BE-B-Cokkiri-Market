@@ -1,10 +1,9 @@
 import { ReactNode } from 'react';
 import { styled } from 'styled-components';
-import { ColorType, FontType } from '../../styles/designSystem';
+import { ColorType } from '../../styles/designSystem';
 
 type MenuItemProps = {
   children: ReactNode;
-  font?: FontType;
   color?: ColorType;
   isSelected?: boolean;
   onAction: () => void;
