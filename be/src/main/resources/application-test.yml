@@ -6,6 +6,7 @@ spring:
     password:
 
   jpa:
+    defer-datasource-initialization: true
     hibernate:
       ddl-auto: create
     show-sql: true
@@ -17,10 +18,11 @@ spring:
       enabled: true
 logging:
   level:
-    kr.codesquad:
-      DEBUG
+    kr.codesquad: DEBUG
+    org.hibernate.type: TRACE
+    com.amazonaws.util.EC2MetadataUtils: error
 ---
 spring:
   sql:
     init:
-      mode: never
+      mode: always
