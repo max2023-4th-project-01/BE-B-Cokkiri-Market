@@ -7,6 +7,12 @@ export const getItemDetails = async (itemId: number) => {
   return res.data;
 };
 
+export const getItemDetailsEdit = async (itemId: number) => {
+  const res = await fetcher.get(`${API_ENDPOINT.ITEMS}/${itemId}/edit`);
+
+  return res.data;
+};
+
 export const patchFavorite = async ({
   itemId,
   isFavorite,
