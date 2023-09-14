@@ -140,12 +140,14 @@ export function ItemDetails() {
         }
         rightButton={
           itemDetailsData.isSeller ? (
-            <Dropdown iconName="dots" align="right">
-              <MenuItem onAction={fakeAction}>게시글 수정</MenuItem>
-              <MenuItem color="systemWarning" onAction={onClickDelete}>
-                삭제
-              </MenuItem>
-            </Dropdown>
+            <div onMouseOver={hoverToFetch}>
+              <Dropdown iconName="dots" align="right">
+                <MenuItem onAction={fakeAction}>게시글 수정</MenuItem>
+                <MenuItem color="systemWarning" onAction={onClickDelete}>
+                  삭제
+                </MenuItem>
+              </Dropdown>
+            </div>
           ) : undefined
         }
       />
@@ -201,11 +203,7 @@ export function ItemDetails() {
 
       <Footer>
         <FooterLeft>
-          <IconButton
-            styledType="text"
-            onClick={toggleFavorites}
-            onMouseOver={hoverToFetch}
-          >
+          <IconButton styledType="text" onClick={toggleFavorites}>
             <Icon
               name="heart"
               color={

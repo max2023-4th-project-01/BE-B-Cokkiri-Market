@@ -89,26 +89,28 @@ export function ProductItem({
     <Div onClick={() => showItemDetails(id)}>
       <Thumbnail src={thumbnailUrl} />
       <Information>
-        <Title onMouseOver={hoverToFetch}>
+        <Title>
           <span>{title}</span>
           {isSeller && (
-            <Dropdown iconName="dots" align="right">
-              <MenuItem onAction={dropdownActions['edit']}>
-                게시글 수정
-              </MenuItem>
-              <MenuItem onAction={dropdownActions['reserved']}>
-                예약중 상태로 전환
-              </MenuItem>
-              <MenuItem onAction={dropdownActions['sold']}>
-                판매완료 상태로 전환
-              </MenuItem>
-              <MenuItem
-                color="systemWarning"
-                onAction={dropdownActions['delete']}
-              >
-                삭제
-              </MenuItem>
-            </Dropdown>
+            <div onMouseOver={hoverToFetch}>
+              <Dropdown iconName="dots" align="right">
+                <MenuItem onAction={dropdownActions['edit']}>
+                  <div>게시글 수정</div>
+                </MenuItem>
+                <MenuItem onAction={dropdownActions['reserved']}>
+                  예약중 상태로 전환
+                </MenuItem>
+                <MenuItem onAction={dropdownActions['sold']}>
+                  판매완료 상태로 전환
+                </MenuItem>
+                <MenuItem
+                  color="systemWarning"
+                  onAction={dropdownActions['delete']}
+                >
+                  삭제
+                </MenuItem>
+              </Dropdown>
+            </div>
           )}
         </Title>
         <LocationAndTimestamp>
