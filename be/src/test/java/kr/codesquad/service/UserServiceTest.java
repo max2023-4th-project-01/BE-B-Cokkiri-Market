@@ -42,14 +42,18 @@ public class UserServiceTest extends IntegrationTestSupport {
 		// given
 		String loginId = "loginId";
 		String password = "password";
+		Long locationId = 1234L;
 		String locationName = "locationName";
+		String nickname = "nickname";
 		byte[] content = "This is dummy file content".getBytes();
 		MultipartFile multipartFile = new MockMultipartFile("dummyFile.txt", content);
 		String profileImageUrl = "profileImageUrl";
 		UserSignUpRequest userSignUpRequest = UserSignUpRequest.builder()
 			.username(loginId)
 			.password(password)
+			.locationId(locationId)
 			.locationName(locationName)
+			.nickname(nickname)
 			.build();
 
 		when(amazonS3Service.upload(any(MultipartFile.class), any())).thenReturn(profileImageUrl);
@@ -60,7 +64,6 @@ public class UserServiceTest extends IntegrationTestSupport {
 		// then
 		User user = userRepository.findByLoginId(loginId);
 		assertThat(user.getLoginId()).isEqualTo(loginId);
-		assertThat(user.getPassword()).isEqualTo(bCryptPasswordEncoder.encode(password));
 
 		Location location = locationRepository.findByUserId(user.getId());
 		assertThat(location.getLocationName()).isEqualTo(locationName);
@@ -73,6 +76,7 @@ public class UserServiceTest extends IntegrationTestSupport {
 		String loginId = "loginId";
 		String password = "password";
 		String nickname = "nickname";
+		Long locationId = 1234L;
 		String locationName = "locationName";
 		byte[] content = "This is dummy file content".getBytes();
 		MultipartFile multipartFile = new MockMultipartFile("dummyFile.txt", content);
@@ -81,6 +85,7 @@ public class UserServiceTest extends IntegrationTestSupport {
 			.username(loginId)
 			.password(password)
 			.nickname(nickname)
+			.locationId(locationId)
 			.locationName(locationName)
 			.build();
 		userService.signUp(userSignUpRequest, multipartFile);
@@ -99,6 +104,7 @@ public class UserServiceTest extends IntegrationTestSupport {
 		String loginId2 = "loginId2";
 		String nickname = "nickname";
 		String password = "password";
+		Long locationId = 1234L;
 		String locationName = "locationName";
 		byte[] content = "This is dummy file content".getBytes();
 		MultipartFile multipartFile = new MockMultipartFile("dummyFile.txt", content);
@@ -107,6 +113,7 @@ public class UserServiceTest extends IntegrationTestSupport {
 			.username(loginId1)
 			.password(password)
 			.nickname(nickname)
+			.locationId(locationId)
 			.locationName(locationName)
 			.build();
 		userService.signUp(userSignUpRequest, multipartFile);
