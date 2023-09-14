@@ -1,4 +1,4 @@
-import { ChangeEvent, useRef } from 'react';
+import { ChangeEvent, useMemo, useRef } from 'react';
 import { styled } from 'styled-components';
 import { Button } from '../../components/button/Button';
 import { Icon } from '../../components/icon/Icon';
@@ -18,6 +18,9 @@ export function PictureContainer({
   deletePicture,
 }: PictureContainerProps) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const memoizedUrls = useMemo(() => {
+    return uploadPictureList.map(picture => URL.createObjectURL(picture));
+  }, [uploadPictureList]);
 
   return (
     <>
@@ -50,13 +53,12 @@ export function PictureContainer({
             </Picture>
           );
         })}
-        {uploadPictureList.map((picture, index) => {
+        {memoizedUrls.map((url, index) => {
           return (
-            <Picture
-              key={index}
-              $backgroundImage={URL.createObjectURL(picture)}
-            >
-              <PictureDeleteButton onClick={() => deletePicture(picture)}>
+            <Picture key={index} $backgroundImage={url}>
+              <PictureDeleteButton
+                onClick={() => deletePicture(uploadPictureList[index])}
+              >
                 <Icon name="x" color="accentText" />
               </PictureDeleteButton>
               {pictureList.length === 0 && index === 0 && (
