@@ -18,13 +18,19 @@ export function ProductContent(props: ProductContentProps) {
   }, []);
 
   return (
-    <CustomTextArea
-      ref={textareaRef}
-      onInput={onInput}
-      {...props}
-    ></CustomTextArea>
+    <Wrapper>
+      <CustomTextArea
+        ref={textareaRef}
+        onInput={onInput}
+        {...props}
+      ></CustomTextArea>
+    </Wrapper>
   );
 }
+
+const Wrapper = styled.div`
+  width: 100%;
+`;
 
 const CustomTextArea = styled.textarea`
   min-width: 100%;

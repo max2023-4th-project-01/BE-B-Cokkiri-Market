@@ -406,6 +406,17 @@ const Body = styled.div`
   gap: 16px;
   padding: 24px 16px;
   margin: 56px 0;
+
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: ${({ theme }) => theme.color.neutralBorderStrong};
+    border-radius: 10px;
+  }
 `;
 
 const Wrapper = styled.div`
