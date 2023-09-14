@@ -212,24 +212,21 @@ export function ItemDetails() {
             onClick={toggleFavorites}
             onMouseOver={hoverToFetch}
           >
-            {itemDetailsData.isFavorite ? (
-              <Icon name="heart" color="systemWarning" />
-            ) : (
-              <Icon name="heart" color="neutralTextStrong" />
-            )}
+            <Icon
+              name="heart"
+              color={
+                itemDetailsData.isFavorite
+                  ? 'systemWarning'
+                  : 'neutralTextStrong'
+              }
+            />
           </IconButton>
           <Price>{setPrice(itemDetailsData.price)}</Price>
         </FooterLeft>
         <div>
-          {itemDetailsData.isSeller ? (
-            <Button size="M" color="accentPrimary" fontColor="accentText">
-              대화 중인 채팅방
-            </Button>
-          ) : (
-            <Button size="M" color="accentPrimary" fontColor="accentText">
-              채팅하기
-            </Button>
-          )}
+          <Button size="M" color="accentPrimary" fontColor="accentText">
+            {itemDetailsData.isSeller ? '대화 중인 채팅방' : ' 채팅하기'}
+          </Button>
         </div>
       </Footer>
       {isAlertOpen && (
