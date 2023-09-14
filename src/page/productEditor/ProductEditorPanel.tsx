@@ -1,6 +1,6 @@
 import { ChangeEvent, useEffect, useState } from 'react';
 import { styled } from 'styled-components';
-import { addItems, editItems } from '../../api/itemFetcher';
+import { addItems, editItems } from '../../api/fetchers/itemFetcher';
 import {
   useGetRecommendCategoryData,
   useResetRecommendCategory,

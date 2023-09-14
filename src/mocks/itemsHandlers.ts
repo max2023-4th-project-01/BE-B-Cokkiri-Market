@@ -14,7 +14,6 @@ export const itemsHandlers = [
 
   rest.get(API_ENDPOINT.SALES_LIST('testUser'), (req, res, ctx) => {
     const isSoldParams = req.url.searchParams.get('isSold');
-    // const cursorParams = req.url.searchParams.get('cursor');
 
     if (!isSoldParams) {
       return res(ctx.status(200), ctx.json(sellHistoryData));
@@ -32,11 +31,17 @@ export const itemsHandlers = [
       ctx.json({ ...sellHistoryData, items: newItems })
     );
   }),
+
   rest.get(API_ENDPOINT.FAVORITES_CATEGORY, (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(categoryData));
   }),
+
   rest.get(API_ENDPOINT.FAVORITES, (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(sellHistoryData));
+  }),
+
+  rest.delete(`${API_ENDPOINT.ITEMS}/:itemId`, (_, res, ctx) => {
+    return res(ctx.status(204));
   }),
   rest.get(API_ENDPOINT.RECOMMENDED_CATEGORIES, (_, res, ctx) => {
     const clonedArr = [...categoryData.categories];

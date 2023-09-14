@@ -1,17 +1,19 @@
 import {
   useInfiniteQuery,
+  useMutation,
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
 import { SalesListData } from '../../page/SalesList';
 import { CategoryData, ItemData, categoryDataType } from '../../types';
 import {
+  deleteItem,
   getFavorites,
   getFavoritesCategories,
   getItems,
   getRecommendCategories,
   getSalesList,
-} from '../itemFetcher';
+} from '../fetchers/itemFetcher';
 
 const ITEMS_QUERY_KEY = 'items';
 const SALES_LIST_QUERY_KEY = 'salesList';
@@ -27,6 +29,16 @@ export const useGetItemData = (categoryId?: number) => {
       getNextPageParam: lastPage => lastPage.nextCursor ?? undefined,
     }
   );
+};
+
+export const useDeleteItem = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation(deleteItem, {
+    onSuccess: () => {
+      queryClient.invalidateQueries([ITEMS_QUERY_KEY]);
+    },
+  });
 };
 
 export const useGetSalesList = ({

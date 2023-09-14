@@ -29,9 +29,6 @@ export function LocationDropdown({
           return (
             <MenuItem
               key={location.id}
-              font={
-                location.isSelected ? 'enabledStrong16' : 'availableDefault16'
-              }
               onAction={() => selectLocation(location.id)}
             >
               {location.name}
