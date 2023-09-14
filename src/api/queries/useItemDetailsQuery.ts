@@ -5,11 +5,12 @@ import {
   patchFavorite,
   patchStatus,
 } from '../fetchers/itemDetailsFetcher';
-import { QUERY_KEY } from './queryKeys';
+
+const ITEM_DETAILS_QUERY_KEY = 'itemDetails';
 
 export const useGetItemDetails = (itemId: number) => {
   return useQuery<ItemDetailsData>(
-    [QUERY_KEY.ITEM_DETAILS, itemId],
+    [ITEM_DETAILS_QUERY_KEY, itemId],
     () => getItemDetails(Number(itemId)),
     {
       enabled: Boolean(itemId),
@@ -23,7 +24,7 @@ export const usePatchFavorite = () => {
   return useMutation(patchFavorite, {
     onSuccess: (data, variables) => {
       queryClient.setQueryData<ItemDetailsData>(
-        [QUERY_KEY.ITEM_DETAILS, variables.itemId],
+        [ITEM_DETAILS_QUERY_KEY, variables.itemId],
         prevData => {
           return prevData
             ? {
@@ -43,7 +44,7 @@ export const usePatchStatus = () => {
   return useMutation(patchStatus, {
     onSuccess: (data, variables) => {
       queryClient.setQueryData<ItemDetailsData>(
-        [QUERY_KEY.ITEM_DETAILS, variables.itemId],
+        [ITEM_DETAILS_QUERY_KEY, variables.itemId],
         prevData => {
           return prevData
             ? {

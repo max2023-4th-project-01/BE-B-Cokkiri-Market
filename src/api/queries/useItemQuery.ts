@@ -13,11 +13,14 @@ import {
   getItems,
   getSalesList,
 } from '../fetchers/itemFetcher';
-import { QUERY_KEY } from './queryKeys';
+
+const ITEMS_QUERY_KEY = 'items';
+const SALES_LIST_QUERY_KEY = 'salesList';
+const FAVORITES_QUERY_KEY = 'favorites';
 
 export const useGetItemData = (categoryId?: number) => {
   return useInfiniteQuery<ItemData>(
-    [QUERY_KEY.ITEMS, categoryId],
+    [ITEMS_QUERY_KEY, categoryId],
     ({ pageParam }) => getItems({ pageParam, categoryId }),
     {
       getNextPageParam: lastPage => lastPage.nextCursor ?? undefined,
@@ -30,7 +33,7 @@ export const useDeleteItem = () => {
 
   return useMutation(deleteItem, {
     onSuccess: () => {
-      queryClient.invalidateQueries([QUERY_KEY.ITEMS]);
+      queryClient.invalidateQueries([ITEMS_QUERY_KEY]);
     },
   });
 };
@@ -43,7 +46,7 @@ export const useGetSalesList = ({
   isSold?: boolean;
 }) => {
   return useInfiniteQuery<SalesListData>(
-    [QUERY_KEY.SALES_LIST, nickname, isSold],
+    [SALES_LIST_QUERY_KEY, nickname, isSold],
     ({ pageParam }) => getSalesList({ pageParam, nickname, isSold }),
     {
       getNextPageParam: lastPage => lastPage.nextCursor ?? undefined,
@@ -53,7 +56,7 @@ export const useGetSalesList = ({
 
 export const useGetFavorites = (categoryId?: number) => {
   return useInfiniteQuery<ItemData>(
-    [QUERY_KEY.FAVORITES, categoryId],
+    [FAVORITES_QUERY_KEY, categoryId],
     ({ pageParam }) => getFavorites({ pageParam, categoryId }),
     {
       getNextPageParam: lastPage => lastPage.nextCursor ?? undefined,
