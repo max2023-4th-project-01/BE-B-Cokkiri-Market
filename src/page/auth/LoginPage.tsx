@@ -1,7 +1,7 @@
 import { ChangeEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
-import { useLogin } from '../../api/authFetcher';
+import { useLogin } from '../../api/fetchers/authFetcher';
 import { BASE_URL } from '../../api/axios';
 import { Button } from '../../components/button/Button';
 import { Icon } from '../../components/icon/Icon';

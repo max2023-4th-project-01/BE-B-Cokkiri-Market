@@ -12,15 +12,13 @@ import {
   getLocationData,
   getUserLocations,
   selectUserLocation,
-} from '../locationFetcher';
-
-const USER_LOCATION_QUERY_KEY = 'userLocations';
-const LOCATION_QUERY_KEY = 'locations';
+} from '../fetchers/locationFetcher';
+import { QUERY_KEY } from './queryKeys';
 
 // 홈: 동네설정 지역리스트 검색
 export const useGetLocationResult = (searchParam: string) => {
   return useInfiniteQuery<LocationResultData>(
-    [LOCATION_QUERY_KEY, searchParam],
+    [QUERY_KEY.LOCATION, searchParam],
     ({ pageParam = 1 }) => getLocationData({ pageParam, searchParam }),
     {
       getNextPageParam: lastPage => lastPage.nextPage ?? undefined,
@@ -32,7 +30,7 @@ export const useResetLocationResult = () => {
   const queryClient = useQueryClient();
   return () =>
     queryClient.resetQueries({
-      queryKey: [LOCATION_QUERY_KEY],
+      queryKey: [QUERY_KEY.LOCATION],
       exact: false,
     });
 };
@@ -40,7 +38,7 @@ export const useResetLocationResult = () => {
 // 홈: 동네설정 내 동네 목록 불러오기
 export const useGetUserLocation = () => {
   return useQuery<UserLocationData>(
-    [USER_LOCATION_QUERY_KEY],
+    [QUERY_KEY.USER_LOCATION],
     getUserLocations
   );
 };
@@ -52,7 +50,7 @@ export const useAddUserLocation = () => {
   return useMutation(addUserLocation, {
     onSuccess: data => {
       queryClient.setQueryData<UserLocationData>(
-        [USER_LOCATION_QUERY_KEY],
+        [QUERY_KEY.USER_LOCATION],
         prevData => {
           return prevData
             ? {
@@ -80,7 +78,7 @@ export const useDeleteUserLocation = () => {
     // onSuccess의 첫번쨰 인자 data, 두번째 인자 mutate()로 넘겨준 variables
     onSuccess: (_, locationId) => {
       queryClient.setQueryData<UserLocationData>(
-        [USER_LOCATION_QUERY_KEY],
+        [QUERY_KEY.USER_LOCATION],
         prevData => {
           return prevData
             ? {
@@ -102,7 +100,7 @@ export const useSelectUserLocation = () => {
   return useMutation(selectUserLocation, {
     onSuccess: (_, locationId) => {
       queryClient.setQueryData<UserLocationData>(
-        [USER_LOCATION_QUERY_KEY],
+        [QUERY_KEY.USER_LOCATION],
         prevData => {
           if (!prevData) return;
           return {

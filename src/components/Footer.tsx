@@ -39,6 +39,7 @@ const FooterDiv = styled.div`
   border-top: ${({ theme }) => `0.8px solid ${theme.color.neutralBorder}`};
   position: absolute;
   bottom: 0;
+  background-color: ${({ theme }) => theme.color.neutralBackgroundWeak};
 `;
 
 const Tab = styled(Link)`

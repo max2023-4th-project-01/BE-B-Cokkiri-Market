@@ -4,32 +4,35 @@ import {
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
-import { ItemDetailsData } from '../../page/ItemDetails';
 import { SalesListData } from '../../page/SalesList';
 import { ItemData, categoryDataType } from '../../types';
 import {
+  deleteItem,
   getFavorites,
   getFavoritesCategories,
-  getItemDetails,
   getItems,
   getSalesList,
-  patchFavorite,
-  patchStatus,
-} from '../itemFetcher';
-
-const ITEMS_QUERY_KEY = 'items';
-const SALES_LIST_QUERY_KEY = 'salesList';
-const FAVORITES_QUERY_KEY = 'favorites';
-const DETAILS_QUERY_KEY = 'itemDetails';
+} from '../fetchers/itemFetcher';
+import { QUERY_KEY } from './queryKeys';
 
 export const useGetItemData = (categoryId?: number) => {
   return useInfiniteQuery<ItemData>(
-    [ITEMS_QUERY_KEY, categoryId],
+    [QUERY_KEY.ITEMS, categoryId],
     ({ pageParam }) => getItems({ pageParam, categoryId }),
     {
       getNextPageParam: lastPage => lastPage.nextCursor ?? undefined,
     }
   );
+};
+
+export const useDeleteItem = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation(deleteItem, {
+    onSuccess: () => {
+      queryClient.invalidateQueries([QUERY_KEY.ITEMS]);
+    },
+  });
 };
 
 export const useGetSalesList = ({
@@ -40,7 +43,7 @@ export const useGetSalesList = ({
   isSold?: boolean;
 }) => {
   return useInfiniteQuery<SalesListData>(
-    [SALES_LIST_QUERY_KEY, nickname, isSold],
+    [QUERY_KEY.SALES_LIST, nickname, isSold],
     ({ pageParam }) => getSalesList({ pageParam, nickname, isSold }),
     {
       getNextPageParam: lastPage => lastPage.nextCursor ?? undefined,
@@ -50,7 +53,7 @@ export const useGetSalesList = ({
 
 export const useGetFavorites = (categoryId?: number) => {
   return useInfiniteQuery<ItemData>(
-    [FAVORITES_QUERY_KEY, categoryId],
+    [QUERY_KEY.FAVORITES, categoryId],
     ({ pageParam }) => getFavorites({ pageParam, categoryId }),
     {
       getNextPageParam: lastPage => lastPage.nextCursor ?? undefined,
@@ -63,59 +66,4 @@ export const useGetFavoritesCategoryData = () => {
     ['favoritesCategory'],
     getFavoritesCategories
   );
-};
-
-export const useGetItemDetails = (itemId: number) => {
-  return useQuery<ItemDetailsData>(
-    [DETAILS_QUERY_KEY, itemId],
-    () => getItemDetails(Number(itemId)),
-    {
-      enabled: Boolean(itemId),
-    }
-  );
-};
-
-export const usePatchFavorite = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation(patchFavorite, {
-    onSuccess: (data, variables) => {
-      queryClient.setQueryData<ItemDetailsData>(
-        [DETAILS_QUERY_KEY, variables.itemId],
-        prevData => {
-          return prevData
-            ? {
-                ...prevData,
-                isFavorite: data.isFavorite,
-              }
-            : prevData;
-        }
-      );
-    },
-  });
-};
-
-export const usePatchStatus = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation(patchStatus, {
-    onSuccess: (data, variables) => {
-      queryClient.setQueryData<ItemDetailsData>(
-        [DETAILS_QUERY_KEY, variables.itemId],
-        prevData => {
-          return prevData
-            ? {
-                ...prevData,
-                status: prevData.status.map(status => {
-                  return {
-                    ...status,
-                    isSelected: status.name === data.statusName,
-                  };
-                }),
-              }
-            : prevData;
-        }
-      );
-    },
-  });
 };

@@ -1,10 +1,13 @@
+import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { styled } from 'styled-components';
 import {
   useGetItemDetails,
   usePatchFavorite,
   usePatchStatus,
-} from '../api/queries/useItemQuery';
+} from '../api/queries/useItemDetailsQuery';
+import { useDeleteItem } from '../api/queries/useItemQuery';
+import { Alert } from '../components/Alert';
 import { Error } from '../components/Error';
 import { Header } from '../components/Header';
 import { Button } from '../components/button/Button';
@@ -33,10 +36,13 @@ export type ItemDetailsData = {
 };
 
 export function ItemDetails() {
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
+
   const { itemId } = useParams();
   const { data, isLoading, isError } = useGetItemDetails(Number(itemId));
   const favoriteMutation = usePatchFavorite();
   const statusMutation = usePatchStatus();
+  const deleteMutation = useDeleteItem();
   const navigate = useNavigate();
 
   const fakeAction = () => {
@@ -80,6 +86,15 @@ export function ItemDetails() {
     });
   };
 
+  const onClickDelete = () => {
+    setIsAlertOpen(true);
+  };
+
+  const deleteItem = () => {
+    deleteMutation.mutate(Number(itemId));
+    navigate('/');
+  };
+
   return (
     <Container>
       <StyledHeader
@@ -93,7 +108,7 @@ export function ItemDetails() {
           data.isSeller ? (
             <Dropdown iconName="dots" align="right">
               <MenuItem onAction={fakeAction}>게시글 수정</MenuItem>
-              <MenuItem color="systemWarning" onAction={fakeAction}>
+              <MenuItem color="systemWarning" onAction={onClickDelete}>
                 삭제
               </MenuItem>
             </Dropdown>
@@ -178,6 +193,17 @@ export function ItemDetails() {
           )}
         </FooterRight>
       </Footer>
+      {isAlertOpen && (
+        <Alert
+          isOpen={isAlertOpen}
+          onClose={() => {
+            setIsAlertOpen(false);
+          }}
+          onAction={deleteItem}
+        >
+          게시글을 삭제하시겠습니까?
+        </Alert>
+      )}
     </Container>
   );
 }
@@ -186,6 +212,7 @@ const Container = styled.div`
   width: 100%;
   height: 100%;
   position: absolute;
+  z-index: 1;
   background-color: ${({ theme }) => theme.color.neutralBackground};
 `;
 
@@ -312,7 +339,6 @@ const Footer = styled.div`
   border-top: ${({ theme }) => `0.8px solid ${theme.color.neutralBorder}`};
   position: absolute;
   bottom: 0;
-  z-index: 1;
   background-color: ${({ theme }) => theme.color.neutralBackgroundWeak};
 `;
 
