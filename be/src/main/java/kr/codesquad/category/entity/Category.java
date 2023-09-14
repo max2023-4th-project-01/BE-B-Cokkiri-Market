@@ -20,7 +20,9 @@ public class Category {
 	@Column(nullable = false, length = 45)
 	private String iconName;
 
-	public Category(String name, String iconName) {
+	@Builder
+	public Category(Long id, String name, String iconName) {
+		this.id = id;
 		this.name = name;
 		this.iconName = iconName;
 	}
