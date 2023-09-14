@@ -48,7 +48,7 @@ export function ProductEditorPanel() {
   const isEdit = editorMode === 'edit';
   const isError = isEdit && (!productData || !productId);
 
-  const selectLocationId = (productId: number) => {
+  const matchLocationId = (productId: number) => {
     return userLocationData!.locations.map(location => ({
       ...location,
       isSelected: location.id === productId,
@@ -66,14 +66,14 @@ export function ProductEditorPanel() {
   const [locationData, setLocationData] = useState(
     (() => {
       if (productData?.myLocation) {
-        return selectLocationId(productData.myLocation.id);
+        return matchLocationId(productData.myLocation.id);
       }
       return userLocationData!.locations;
     })()
   );
 
   const selectLocation = (productId: number) => {
-    setLocationData(selectLocationId(productId));
+    setLocationData(matchLocationId(productId));
   };
 
   const title = useInput(isEdit ? productData!.title : '');

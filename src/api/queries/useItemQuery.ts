@@ -73,6 +73,5 @@ export const useResetRecommendCategory = () => {
   return () =>
     queryClient.resetQueries({
       queryKey: [RECOMMEND_CATEGORY],
-      exact: false,
     });
 };

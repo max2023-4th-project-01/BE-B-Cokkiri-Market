@@ -1,7 +1,5 @@
-import { useState } from 'react';
 import { Dropdown } from '../../components/dropdown/Dropdown';
 import { MenuItem } from '../../components/dropdown/MenuItem';
-import { HomeLocationModal } from '../../components/locations/HomeLocationModal';
 
 export function LocationDropdown({
   myLocation,
@@ -10,8 +8,6 @@ export function LocationDropdown({
   myLocation: { id: number; name: string; isSelected: boolean }[];
   selectLocation: (productId: number) => void;
 }) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
   const selectedLocationData = myLocation.filter(
     data => data.isSelected === true
   )[0];
@@ -20,14 +16,6 @@ export function LocationDropdown({
     if (!locationName) return;
     const keyName = locationName.split(' ').at(-1);
     return keyName;
-  };
-
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
   };
 
   return (
@@ -50,11 +38,7 @@ export function LocationDropdown({
             </MenuItem>
           );
         })}
-        <MenuItem onAction={openModal}>내 동네 설정하기</MenuItem>
       </Dropdown>
-      {isModalOpen && (
-        <HomeLocationModal isOpen={isModalOpen} onClose={closeModal} />
-      )}
     </div>
   );
 }
