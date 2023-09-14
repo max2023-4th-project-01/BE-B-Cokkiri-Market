@@ -17,7 +17,7 @@ public enum S3ImageDirectory {
 
 	public static String findDirectory(String fileUrl) {
 		return Arrays.stream(S3ImageDirectory.values())
-			.filter(dir -> fileUrl.contains(dir.name()))
-			.findFirst().orElseThrow(() -> new CustomException(FileErrorCode.DIRECTROTY_NOT_FOUND)).name();
+			.filter(dir -> fileUrl.contains(dir.name))
+			.findFirst().orElseThrow(() -> new CustomException(FileErrorCode.DIRECTROTY_NOT_FOUND)).name;
 	}
 }
