@@ -2,7 +2,7 @@ import { styled } from 'styled-components';
 import { Badge, BadgeProps } from '../../components/Badge';
 import { Button } from '../../components/button/Button';
 import { Icon } from '../../components/icon/Icon';
-import { categoryTabsType } from '../../types';
+import { FavoritesCategoryTabsType } from '../../types';
 import { CategoryData } from './ProductEditorPanel';
 
 type CategoryContainerProps = {
@@ -18,7 +18,7 @@ export function CategoryContainer({
   openModal,
   setCategoryId,
 }: CategoryContainerProps) {
-  const setBadgeOption = (category: categoryTabsType) => {
+  const setBadgeOption = (category: FavoritesCategoryTabsType) => {
     const isSelected = category.id === selectedCategoryId;
     const options: BadgeProps = {
       size: 'M',

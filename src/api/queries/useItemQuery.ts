@@ -5,7 +5,7 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 import { SalesListData } from '../../page/SalesList';
-import { CategoryData, ItemData, categoryDataType } from '../../types';
+import { CategoryData, FavoritesCategoryDataType, ItemData } from '../../types';
 import {
   deleteItem,
   getFavorites,
@@ -68,7 +68,7 @@ export const useGetFavorites = (categoryId?: number) => {
 };
 
 export const useGetFavoritesCategoryData = () => {
-  return useQuery<categoryDataType>(
+  return useQuery<FavoritesCategoryDataType>(
     [FAVORITES_CATEGORY],
     getFavoritesCategories
   );
