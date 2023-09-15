@@ -6,17 +6,10 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import kr.codesquad.item.dto.request.ItemStatusDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import kr.codesquad.item.dto.request.ItemSaveRequest;
@@ -77,5 +70,12 @@ public class ItemController {
 		String loginId = (String)request.getAttribute(Constants.LOGIN_ID);
 		return ResponseEntity.ok()
 			.body(itemService.readAll(cursor, categoryId, size, loginId));
+	}
+
+	@PatchMapping("/{id}/status")
+	public ResponseEntity<ItemStatusDto> updateItemStatus(@PathVariable Long id,
+		@RequestBody ItemStatusDto itemStatusDto, HttpServletRequest request) {
+		String userLoginId = (String)request.getAttribute(Constants.LOGIN_ID);
+		return ResponseEntity.ok().body(itemService.updateItemStatus(id, itemStatusDto, userLoginId));
 	}
 }

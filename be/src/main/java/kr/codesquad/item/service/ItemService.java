@@ -3,6 +3,10 @@ package kr.codesquad.item.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import kr.codesquad.core.error.CustomException;
+import kr.codesquad.core.error.statuscode.ErrorCode;
+import kr.codesquad.item.dto.request.ItemStatusDto;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -255,5 +259,17 @@ public class ItemService {
 			return itemListVos.subList(0, pageSize);
 		}
 		return itemListVos;
+	}
+
+	@Transactional
+	public ItemStatusDto updateItemStatus(Long id, ItemStatusDto itemStatusDto, String userLoginId) {
+		Item item = itemRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 아이템이 없습니다."));
+		User user = userRepository.findByLoginId(userLoginId);
+		if (!item.getUserId().equals(user.getId())) {
+			throw new IllegalArgumentException("해당 아이템의 소유자가 아닙니다.");
+		}
+
+		String statusName = item.updateStatus(itemStatusDto.getStatusName());
+		return new ItemStatusDto(statusName);
 	}
 }

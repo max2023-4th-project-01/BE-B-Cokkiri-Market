@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import kr.codesquad.item.dto.request.ItemStatusDto;
 import kr.codesquad.item.dto.request.ItemUpdateRequest;
 import kr.codesquad.item.dto.response.ItemCountDataResponse;
 import kr.codesquad.location.service.AddressService;
@@ -84,5 +85,10 @@ public class Item extends TimeStamped {
 
 	public void setThumbnailUrl(String thumbnailUrl) {
 		this.thumbnailUrl = thumbnailUrl;
+	}
+
+	public String updateStatus(String statusName) {
+		this.status = ItemStatus.valueOf(statusName);
+		return this.status.name();
 	}
 }
