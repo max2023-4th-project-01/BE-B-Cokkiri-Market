@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import kr.codesquad.IntegrationTestSupport;
 import kr.codesquad.category.dto.response.FavoriteCategoryResponse;
+import kr.codesquad.category.dto.response.FavoriteCategoryResponseList;
 import kr.codesquad.category.entity.Category;
 import kr.codesquad.category.repository.CategoryRepository;
 import kr.codesquad.core.error.CustomException;
@@ -154,11 +155,11 @@ public class FavoriteServiceTest extends IntegrationTestSupport {
 		Category notFavoritecategory = categoryRepository.save(createCategory());
 		Item item2 = itemRepository.save(createItem(user.getId(), notFavoritecategory.getId()));
 		// when
-		List<FavoriteCategoryResponse> categoryResponses = favoriteService.getFavoriteCategories(user.getLoginId());
+		FavoriteCategoryResponseList categoryResponses = favoriteService.getFavoriteCategories(user.getLoginId());
 
 		// then
-		assertThat(categoryResponses.size()).isEqualTo(favoriteCategories.size());
-		for (FavoriteCategoryResponse categoryResponse : categoryResponses) {
+		assertThat(categoryResponses.getCategories().size()).isEqualTo(favoriteCategories.size());
+		for (FavoriteCategoryResponse categoryResponse : categoryResponses.getCategories()) {
 			assertThat(categoryResponse.getId()).isNotEqualTo(notFavoritecategory.getId());
 		}
 	}
