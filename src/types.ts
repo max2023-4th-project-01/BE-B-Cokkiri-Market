@@ -44,11 +44,21 @@ export type LocationResultData = {
   nextPage: number | null;
 };
 
-export type categoryTabsType = {
+export type FavoritesCategoryTabsType = {
   id?: number;
   name: string;
 };
 
-export type categoryDataType = {
-  categories: categoryTabsType[];
+export type FavoritesCategoryDataType = {
+  categories: FavoritesCategoryTabsType[];
+};
+
+export type CategoryData = {
+  categories: CategoryItem[];
+};
+
+export type CategoryItem = {
+  id: number;
+  name: string;
+  iconName: string;
 };
