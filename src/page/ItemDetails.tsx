@@ -11,6 +11,7 @@ import { useDeleteItem } from '../api/queries/useItemQuery';
 import { Alert } from '../components/Alert';
 import { Error } from '../components/Error';
 import { Header } from '../components/Header';
+import { Loader } from '../components/Loader';
 import { Button } from '../components/button/Button';
 import { Dropdown } from '../components/dropdown/Dropdown';
 import { MenuItem } from '../components/dropdown/MenuItem';
@@ -95,11 +96,19 @@ export function ItemDetails() {
 
   // TODO: 페이지 로딩 시 스켈레톤 UI 추가 예정
   if (isLoading) {
-    return <div>loading...</div>;
+    return (
+      <Wrapper>
+        <Loader />
+      </Wrapper>
+    );
   }
 
   if (isError) {
-    return <Error />;
+    return (
+      <Wrapper>
+        <Error />
+      </Wrapper>
+    );
   }
 
   const toggleFavorites = () => {
@@ -235,6 +244,10 @@ export function ItemDetails() {
     </Container>
   );
 }
+
+const Wrapper = styled.div`
+  flex: 1;
+`;
 
 const Container = styled.div`
   width: 100%;
