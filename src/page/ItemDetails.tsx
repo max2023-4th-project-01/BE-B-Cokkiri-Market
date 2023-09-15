@@ -61,7 +61,7 @@ export function ItemDetails() {
   const deleteMutation = useDeleteItem();
   const navigate = useNavigate();
 
-  const fakeAction = () => {
+  const openEditPanel = () => {
     if (!itemDetailsEditData || isLoadingEdit) {
       // '문제가 생겼습니다 다시 시도해 주세요' 같은 toast
       // 또는 잠깐 로딩 보여주고 data, isLoading을 useEffect로 체크 후 panel 열어 주기
@@ -151,7 +151,7 @@ export function ItemDetails() {
           itemDetailsData.isSeller ? (
             <div onMouseOver={hoverToFetch}>
               <Dropdown iconName="dots" align="right">
-                <MenuItem onAction={fakeAction}>게시글 수정</MenuItem>
+                <MenuItem onAction={openEditPanel}>게시글 수정</MenuItem>
                 <MenuItem color="systemWarning" onAction={onClickDelete}>
                   삭제
                 </MenuItem>
