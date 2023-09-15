@@ -138,7 +138,7 @@ export function ProductItem({
           {favorite > 0 && (
             <CountWrapper>
               <Icon name="heart" color="neutralTextWeak" />
-              {chat}
+              {favorite}
             </CountWrapper>
           )}
         </History>
