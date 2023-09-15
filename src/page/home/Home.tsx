@@ -5,6 +5,7 @@ import { useGetItemData } from '../../api/queries/useItemQuery';
 import {
   useGetUserLocation,
   useResetLocationResult,
+  useSelectUserLocation,
 } from '../../api/queries/useLocationQuery';
 import { Error } from '../../components/Error';
 import { Header } from '../../components/Header';
@@ -30,6 +31,7 @@ export function Home() {
     hasNextPage,
   } = useGetItemData(categoryId);
   const { data: userLocationData, isLoading, isError } = useGetUserLocation();
+  const selectMutation = useSelectUserLocation();
   const resetLocationResult = useResetLocationResult();
 
   useEffect(() => {
@@ -67,6 +69,11 @@ export function Home() {
     setCategoryId(id);
   }, []);
 
+  const selectLocation = (locationId: number, isSelected: boolean) => {
+    if (isSelected) return;
+    selectMutation.mutate(locationId);
+  };
+
   const extractKeyName = (locationName: string | undefined) => {
     if (!locationName) return;
     const keyName = locationName.split(' ').at(-1);
@@ -94,13 +101,9 @@ export function Home() {
                 return (
                   <MenuItem
                     key={location.id}
-                    font={
-                      location.isSelected
-                        ? 'enabledStrong16'
-                        : 'availableDefault16'
-                    }
+                    isSelected={location.isSelected}
                     onAction={() => {
-                      console.log(`${location.name} 클릭됨`);
+                      selectLocation(location.id, location.isSelected);
                     }}
                   >
                     {location.name}

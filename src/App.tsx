@@ -3,8 +3,8 @@ import { Route, Routes } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { Layout } from './components/Layout';
 import { Favorites } from './page/Favorites';
+import { ItemDetails } from './page/ItemDetails';
 import { SalesList } from './page/SalesList';
-import { Test } from './page/Test';
 import { MyAccount } from './page/auth/MyAccount';
 import { OAuthLoading } from './page/auth/OAuthLoading';
 import { Home } from './page/home/Home';
@@ -27,7 +27,7 @@ export function App() {
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
-          <Route path="/test" element={<Test />} />
+          <Route path="/items/:itemId" element={<ItemDetails />} />
           <Route path="/myAccount" element={<MyAccount />} />
           <Route path="/sellHistory" element={<SalesList />} />
           <Route path="/favoritesHistory" element={<Favorites />} />

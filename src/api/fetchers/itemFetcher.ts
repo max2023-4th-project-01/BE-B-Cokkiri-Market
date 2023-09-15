@@ -1,5 +1,5 @@
-import { BASE_URL, fetcher } from './axios';
-import { API_ENDPOINT } from './endPoint';
+import { BASE_URL, fetcher } from '../axios';
+import { API_ENDPOINT } from '../endPoint';
 
 export const getItems = async ({
   pageParam: cursor,
@@ -15,6 +15,12 @@ export const getItems = async ({
     url.searchParams.append('categoryId', String(categoryId));
 
   const res = await fetcher.get(url.toString());
+
+  return res.data;
+};
+
+export const deleteItem = async (itemId: number) => {
+  const res = await fetcher.delete(`${API_ENDPOINT.ITEMS}/${itemId}`);
 
   return res.data;
 };
