@@ -13,4 +13,6 @@ public interface ImageRepository extends JpaRepository<Image, Long> {
 	// dto 로 받기
 	@Query("SELECT new kr.codesquad.item.dto.response.ItemImageResponse(i.id, i.url) FROM Image i WHERE i.itemId = :itemId")
 	List<ItemImageResponse> findByItemId(Long itemId);
+
+	void deleteAllByIdIn(List<Long> deleteImageIds);
 }
