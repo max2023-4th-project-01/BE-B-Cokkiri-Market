@@ -3,7 +3,7 @@ package kr.codesquad.item.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.data.domain.Slice;
+import kr.codesquad.item.dto.request.ItemStatusDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -119,11 +119,41 @@ public class ItemService {
 	public void updateItem(Long id, List<MultipartFile> newImageFiles, List<Long> deleteImageIds,
 		ItemUpdateRequest request, String userLoginId) {
 		Long userId = userRepository.findIdByLoginId(userLoginId);
+
+		List<ItemImageResponse> images = imageRepository.findByItemId(id);
+
+		String thumbnailUrl = images.get(0).getUrl();
+
 		// 이미지 삭제
-		// 새로운 이미지 처리
-		String thumbnailUrl = null;
-		// 썸네일 삭제되면 썸네일 새로 정함
-		// if ~ thumbnailUrl = ~
+		if (deleteImageIds != null && !deleteImageIds.isEmpty()) {
+			for (int i = 0; i < images.size(); i++) {
+				if (deleteImageIds.contains(images.get(i).getId())) {
+					//amazonS3Service.delete(images.get(i).getUrl());
+					images.remove(i);
+					i--;
+				}
+			}
+			if (!images.isEmpty()) {
+				thumbnailUrl = images.get(0).getUrl();
+			}
+			// 이미지 테이블에서 삭제
+			imageRepository.deleteAllByIdIn(deleteImageIds);
+		}
+
+		// 이미지 추가
+		if (newImageFiles != null && !newImageFiles.isEmpty()) {
+			for (MultipartFile newImageFile : newImageFiles) {
+				String url = amazonS3Service.upload(newImageFile, S3ImageDirectory.ITEM_IMAGE);
+				imageRepository.save(Image.builder()
+					.url(url)
+					.itemId(id)
+					.build());
+			}
+		} else {
+			if (images.isEmpty()) {
+				thumbnailUrl = "https://cokkiri-s3.s3.ap-northeast-2.amazonaws.com/profileImage/%EC%BD%94%EB%81%BC%EB%A6%AC.png";
+			}
+		}
 
 		Item targetItem = itemRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 아이템이 없습니다."));
 		if (!targetItem.getUserId().equals(userId)) {
@@ -134,7 +164,7 @@ public class ItemService {
 			String locationName = locationRepository.findLocationNameById(request.getMyLocationId());
 			targetItem.update(request, locationName, thumbnailUrl);
 		} else {
-			targetItem.update(request, null, thumbnailUrl);
+			targetItem.update(request, targetItem.getLocationName(), thumbnailUrl);
 		}
 	}
 
@@ -257,5 +287,17 @@ public class ItemService {
 			return itemListVos.subList(0, pageSize);
 		}
 		return itemListVos;
+	}
+
+	@Transactional
+	public ItemStatusDto updateItemStatus(Long id, ItemStatusDto itemStatusDto, String userLoginId) {
+		Item item = itemRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 아이템이 없습니다."));
+		User user = userRepository.findByLoginId(userLoginId);
+		if (!item.getUserId().equals(user.getId())) {
+			throw new IllegalArgumentException("해당 아이템의 소유자가 아닙니다.");
+		}
+
+		String statusName = item.updateStatus(itemStatusDto.getStatusName());
+		return new ItemStatusDto(statusName);
 	}
 }
