@@ -1,5 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
+import { useGetItemDetailsEdit } from '../api/queries/useItemDetailsQuery';
+import { useProductEditorStore } from '../stores/useProductEditorStore';
 import { addCommasToNumber } from '../utils/addCommasToNumber';
 import { getElapsedSince } from '../utils/getElapsedSince';
 import { Badge } from './Badge';
@@ -35,6 +37,8 @@ export function ProductItem({
 }: ItemProps) {
   const { chat, favorite } = countData;
   const navigate = useNavigate();
+  const { data, isError, isLoading, refetch } = useGetItemDetailsEdit(id);
+  const openEditorPanel = useProductEditorStore(state => state.openPanel);
 
   const setPrice = (price: number | null) => {
     switch (price) {
@@ -47,10 +51,24 @@ export function ProductItem({
     }
   };
 
+  const hoverToFetch = () => {
+    if (!data && !isError) {
+      refetch();
+    }
+  };
+
   // TODO: 각 드롭다운 메뉴 아이템들에 맞는 액션 추가하기
   const dropdownActions = {
     edit: () => {
-      console.log('게시글 수정');
+      if (!data || isLoading) {
+        // '문제가 생겼습니다 다시 시도해 주세요' 같은 toast
+        // 또는 잠깐 로딩 보여주고 data, isLoading을 useEffect로 체크 후 panel 열어 주기
+        return;
+      } else if (isError) {
+        // 에러 toast
+        return;
+      }
+      openEditorPanel({ mode: 'edit', data: data, id: id });
     },
     reserved: () => {
       console.log('예약중');
@@ -74,23 +92,25 @@ export function ProductItem({
         <Title>
           <span>{title}</span>
           {isSeller && (
-            <Dropdown iconName="dots" align="right">
-              <MenuItem onAction={dropdownActions['edit']}>
-                게시글 수정
-              </MenuItem>
-              <MenuItem onAction={dropdownActions['reserved']}>
-                예약중 상태로 전환
-              </MenuItem>
-              <MenuItem onAction={dropdownActions['sold']}>
-                판매완료 상태로 전환
-              </MenuItem>
-              <MenuItem
-                color="systemWarning"
-                onAction={dropdownActions['delete']}
-              >
-                삭제
-              </MenuItem>
-            </Dropdown>
+            <div onMouseOver={hoverToFetch}>
+              <Dropdown iconName="dots" align="right">
+                <MenuItem onAction={dropdownActions['edit']}>
+                  <div>게시글 수정</div>
+                </MenuItem>
+                <MenuItem onAction={dropdownActions['reserved']}>
+                  예약중 상태로 전환
+                </MenuItem>
+                <MenuItem onAction={dropdownActions['sold']}>
+                  판매완료 상태로 전환
+                </MenuItem>
+                <MenuItem
+                  color="systemWarning"
+                  onAction={dropdownActions['delete']}
+                >
+                  삭제
+                </MenuItem>
+              </Dropdown>
+            </div>
           )}
         </Title>
         <LocationAndTimestamp>

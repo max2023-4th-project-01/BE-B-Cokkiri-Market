@@ -10,12 +10,12 @@ import { Error } from '../components/Error';
 import { Header } from '../components/Header';
 import { Loader } from '../components/Loader';
 import { ProductItem } from '../components/ProductItem';
-import { categoryTabsType } from '../types';
+import { FavoritesCategoryTabsType } from '../types';
 
 export function Favorites() {
-  const [categoryTabs, setCategoryTabs] = useState<categoryTabsType[]>([
-    { name: '전체' },
-  ]);
+  const [categoryTabs, setCategoryTabs] = useState<FavoritesCategoryTabsType[]>(
+    [{ name: '전체' }]
+  );
   const [selectedCategory, setSelectedCategory] = useState<number>();
   const tabsRef = useRef<HTMLDivElement>(null);
   const { ref: observingTargetRef, inView } = useInView();
@@ -56,7 +56,7 @@ export function Favorites() {
     };
   }, []);
 
-  const setBadgeOption = (categoryTab: categoryTabsType) => {
+  const setBadgeOption = (categoryTab: FavoritesCategoryTabsType) => {
     const isSelected = categoryTab.id === selectedCategory;
 
     const options: BadgeProps = {
@@ -76,7 +76,7 @@ export function Favorites() {
       <TopBar>
         <Header title="관심 목록" />
         <Tabs ref={tabsRef}>
-          {categoryTabs.map((categoryTab: categoryTabsType, index) => {
+          {categoryTabs.map((categoryTab: FavoritesCategoryTabsType, index) => {
             return <Badge key={index} {...setBadgeOption(categoryTab)} />;
           })}
         </Tabs>

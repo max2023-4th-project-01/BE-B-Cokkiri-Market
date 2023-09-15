@@ -11,13 +11,16 @@ import { Error } from '../../components/Error';
 import { Header } from '../../components/Header';
 import { Loader } from '../../components/Loader';
 import { ProductItem } from '../../components/ProductItem';
+import { Button } from '../../components/button/Button';
 import { Dropdown } from '../../components/dropdown/Dropdown';
 import { MenuItem } from '../../components/dropdown/MenuItem';
 import { Icon } from '../../components/icon/Icon';
 import { HomeLocationModal } from '../../components/locations/HomeLocationModal';
+import { useProductEditorStore } from '../../stores/useProductEditorStore';
 import { CategoryFilterPanel } from './CategoryFilterPanel';
 
 export function Home() {
+  const openEditorPanel = useProductEditorStore(state => state.openPanel);
   const bodyRef = useRef<HTMLDivElement>(null);
   const [categoryId, setCategoryId] = useState<number>();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -145,6 +148,13 @@ export function Home() {
       {isModalOpen && (
         <HomeLocationModal isOpen={isModalOpen} onClose={closeModal} />
       )}
+      <FAB
+        styledType="circle"
+        color="accentPrimary"
+        onClick={() => openEditorPanel({ mode: 'add' })}
+      >
+        <Icon name="plus" color="accentText" />
+      </FAB>
     </Div>
   );
 }
@@ -196,4 +206,12 @@ const ObservingTarget = styled.div`
   height: 152px;
   position: relative;
   bottom: 152px;
+`;
+
+const FAB = styled(Button)`
+  width: 56px;
+  height: 56px;
+  position: absolute;
+  right: 24px;
+  bottom: 88px;
 `;
