@@ -49,11 +49,6 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
     !isNullLocation
   );
 
-  const addSignUpLocation = (locationId: number, locationName: string) => {
-    setLocation({ id: locationId, name: locationName });
-    setIsModalOpen(false);
-  };
-
   useEffect(() => {
     setRightPosition(0);
   }, []);
@@ -143,6 +138,11 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
     }
   };
 
+  const setSignUpLocation = (locationId: number, locationName: string) => {
+    setLocation({ id: locationId, name: locationName });
+    setIsModalOpen(false);
+  };
+
   return (
     <Div $right={rightPosition} onTransitionEnd={onTransitionEndHandler}>
       <Header
@@ -217,7 +217,7 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
         <SignUpLocationModal
           isOpen={isModalOpen}
           onClose={closeModal}
-          addLocation={addSignUpLocation}
+          setSignUpLocation={setSignUpLocation}
         />
       )}
     </Div>

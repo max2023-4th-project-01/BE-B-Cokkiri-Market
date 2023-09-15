@@ -11,6 +11,7 @@ import { useDeleteItem } from '../api/queries/useItemQuery';
 import { Alert } from '../components/Alert';
 import { Error } from '../components/Error';
 import { Header } from '../components/Header';
+import { Loader } from '../components/Loader';
 import { Button } from '../components/button/Button';
 import { Dropdown } from '../components/dropdown/Dropdown';
 import { MenuItem } from '../components/dropdown/MenuItem';
@@ -60,7 +61,7 @@ export function ItemDetails() {
   const deleteMutation = useDeleteItem();
   const navigate = useNavigate();
 
-  const fakeAction = () => {
+  const openEditPanel = () => {
     if (!itemDetailsEditData || isLoadingEdit) {
       // '문제가 생겼습니다 다시 시도해 주세요' 같은 toast
       // 또는 잠깐 로딩 보여주고 data, isLoading을 useEffect로 체크 후 panel 열어 주기
@@ -95,11 +96,19 @@ export function ItemDetails() {
 
   // TODO: 페이지 로딩 시 스켈레톤 UI 추가 예정
   if (isLoading) {
-    return <div>loading...</div>;
+    return (
+      <Wrapper>
+        <Loader />
+      </Wrapper>
+    );
   }
 
   if (isError) {
-    return <Error />;
+    return (
+      <Wrapper>
+        <Error />
+      </Wrapper>
+    );
   }
 
   const toggleFavorites = () => {
@@ -142,7 +151,7 @@ export function ItemDetails() {
           itemDetailsData.isSeller ? (
             <div onMouseOver={hoverToFetch}>
               <Dropdown iconName="dots" align="right">
-                <MenuItem onAction={fakeAction}>게시글 수정</MenuItem>
+                <MenuItem onAction={openEditPanel}>게시글 수정</MenuItem>
                 <MenuItem color="systemWarning" onAction={onClickDelete}>
                   삭제
                 </MenuItem>
@@ -235,6 +244,10 @@ export function ItemDetails() {
     </Container>
   );
 }
+
+const Wrapper = styled.div`
+  flex: 1;
+`;
 
 const Container = styled.div`
   width: 100%;

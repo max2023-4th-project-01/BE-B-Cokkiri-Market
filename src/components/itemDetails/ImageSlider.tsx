@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { styled } from 'styled-components';
 import { Badge } from '../Badge';
+import { Error } from '../Error';
 
 type ImageSliderProps = {
   imageList: { id: number; url: string }[];
@@ -88,13 +89,17 @@ export function ImageSlider({ imageList }: ImageSliderProps) {
           />
         ))}
       </Slider>
-      <PageNav
-        fontColor="neutralTextWeak"
-        badgeColor="neutralBackgroundBlur"
-        text={`${currentImageIndex} / ${imageList.length}`}
-        size="M"
-        type="container"
-      />
+      {imageList.length === 0 ? (
+        <Error message="등록된 이미지가 없습니다." />
+      ) : (
+        <PageNav
+          fontColor="neutralTextWeak"
+          badgeColor="neutralBackgroundBlur"
+          text={`${currentImageIndex} / ${imageList.length}`}
+          size="M"
+          type="container"
+        />
+      )}
     </Container>
   );
 }

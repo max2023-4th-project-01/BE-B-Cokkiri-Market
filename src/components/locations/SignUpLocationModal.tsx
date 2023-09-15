@@ -7,13 +7,13 @@ import { AddLocation } from './AddLocation';
 type LocationModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  addLocation: (locationId: number, locationName: string) => void;
+  setSignUpLocation: (locationId: number, locationName: string) => void;
 };
 
 export function SignUpLocationModal({
   isOpen,
   onClose,
-  addLocation,
+  setSignUpLocation,
 }: LocationModalProps) {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -24,7 +24,7 @@ export function SignUpLocationModal({
         </Button>
       </Header>
       <Body>
-        <AddLocation addLocation={addLocation} />
+        <AddLocation clickLocationItem={setSignUpLocation} />
       </Body>
     </Modal>
   );

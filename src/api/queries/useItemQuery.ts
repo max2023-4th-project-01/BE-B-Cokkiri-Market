@@ -8,6 +8,7 @@ import { SalesListData } from '../../page/SalesList';
 import { CategoryData, FavoritesCategoryDataType, ItemData } from '../../types';
 import {
   deleteItem,
+  getCategories,
   getFavorites,
   getFavoritesCategories,
   getItems,
@@ -16,6 +17,7 @@ import {
 } from '../fetchers/itemFetcher';
 
 const ITEMS_QUERY_KEY = 'items';
+const CATEGORY_QUERY_KEY = 'category';
 const SALES_LIST_QUERY_KEY = 'salesList';
 const FAVORITES_QUERY_KEY = 'favorites';
 const RECOMMEND_CATEGORY = 'recommendCategory';
@@ -38,6 +40,12 @@ export const useDeleteItem = () => {
     onSuccess: () => {
       queryClient.invalidateQueries([ITEMS_QUERY_KEY]);
     },
+  });
+};
+
+export const useGetCategoryData = () => {
+  return useQuery<CategoryData>([CATEGORY_QUERY_KEY], getCategories, {
+    staleTime: Infinity,
   });
 };
 
