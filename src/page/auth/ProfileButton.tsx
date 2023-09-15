@@ -35,11 +35,13 @@ export function ProfileButton({
         onClick={() => inputRef.current?.click()}
         $backgroundImage={backgroundImage}
       >
-        <Icon name="camera" color="accentText" />
+        <IconWrapper $backgroundImage={backgroundImage}>
+          <Icon name="camera" color="accentText" />
+        </IconWrapper>
         {(file || backgroundImage) && (
-          <Test onClick={onOpenAlert}>
+          <RemoveButton onClick={onOpenAlert}>
             <Icon name="x" color="accentText" />
-          </Test>
+          </RemoveButton>
         )}
       </ImageButton>
       <input
@@ -85,7 +87,15 @@ const ImageButton = styled.button<{ $backgroundImage: string | undefined }>`
   cursor: pointer;
 `;
 
-const Test = styled.div`
+const IconWrapper = styled.div<{ $backgroundImage: string | undefined }>`
+  display: ${({ $backgroundImage }) => ($backgroundImage ? 'none' : 'block')};
+
+  ${ImageButton}:hover & {
+    display: block;
+  }
+`;
+
+const RemoveButton = styled.div`
   width: 28px;
   height: 28px;
   position: absolute;
