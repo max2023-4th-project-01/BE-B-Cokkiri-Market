@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import kr.codesquad.category.dto.CategoryMapper;
-import kr.codesquad.category.dto.response.FavoriteCategoryResponse;
+import kr.codesquad.category.dto.response.FavoriteCategoryResponseList;
 import kr.codesquad.category.entity.Category;
 import kr.codesquad.core.error.CustomException;
 import kr.codesquad.core.error.statuscode.FavoriteErrorCode;
@@ -28,12 +28,14 @@ public class FavoriteService {
 	private final FavoriteDslRespository favoriteDslRespository;
 	private final FavoriteRepository favoriteRepository;
 
-	public List<FavoriteCategoryResponse> getFavoriteCategories(String loginId) {
+	public FavoriteCategoryResponseList getFavoriteCategories(String loginId) {
 		User user = userRepository.findByLoginId(loginId);
 
 		List<Category> categories = favoriteDslRespository.readFavoriteCategories(user.getId());
-		return categories.stream().map(CategoryMapper.INSTANCE::toFavoriteCategoryResponse)
-			.collect(Collectors.toList());
+		return FavoriteCategoryResponseList.builder()
+			.categories(categories.stream().map(CategoryMapper.INSTANCE::toFavoriteCategoryResponse)
+				.collect(Collectors.toList()))
+			.build();
 	}
 
 	@Transactional
@@ -42,7 +44,7 @@ public class FavoriteService {
 		Boolean isFavorite = favoriteUpdateRequest.getIsFavorite();
 		Long userId = userRepository.findByLoginId(userLoginId).getId();
 		Favorite favorite = Favorite.builder().userId(userId).itemId(itemId).build();
-		
+
 		if (isFavorite) { // 좋아요 등록
 			addFavorite(favorite);
 		} else if (!isFavorite) { // 좋아요 해제

@@ -1,7 +1,5 @@
 package kr.codesquad.user.controller;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpStatus;
@@ -15,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import kr.codesquad.category.dto.response.FavoriteCategoryResponse;
+import kr.codesquad.category.dto.response.FavoriteCategoryResponseList;
 import kr.codesquad.favorite.service.FavoriteService;
 import kr.codesquad.item.dto.slice.UserItemListSlice;
 import kr.codesquad.item.service.ItemService;
@@ -62,9 +60,10 @@ public class UserController {
 	}
 
 	@GetMapping("/favorites/categories")
-	public ResponseEntity<List<FavoriteCategoryResponse>> favoriteCategories(HttpServletRequest request) {
+	public ResponseEntity<FavoriteCategoryResponseList> favoriteCategories(HttpServletRequest request) {
 		String loginId = (String)request.getAttribute(Constants.LOGIN_ID);
 		return ResponseEntity.ok()
 			.body(favoriteService.getFavoriteCategories(loginId));
 	}
+
 }
