@@ -19,6 +19,7 @@ import kr.codesquad.user.dto.response.UpdateProfileImageResponse;
 import kr.codesquad.user.entity.User;
 import kr.codesquad.user.repository.UserRepository;
 import kr.codesquad.util.Constants;
+import kr.codesquad.util.S3ImageDirectory;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -43,7 +44,7 @@ public class UserService implements UserDetailsService {
 		if (profileImageFile == null) {
 			url = Constants.DEFAULT_PROFILE_IMAGE_URL;
 		} else {
-			url = amazonS3Service.upload(profileImageFile, "profileImage");
+			url = amazonS3Service.upload(profileImageFile, S3ImageDirectory.PROFILE_IMAGE);
 		}
 
 		String encodedPassword = bCryptPasswordEncoder.encode(userSignUpRequest.getPassword());
@@ -68,7 +69,7 @@ public class UserService implements UserDetailsService {
 		User user = userRepository.findByLoginId(userLoginId);
 		amazonS3Service.deleteImage(user.getProfileImageUrl()); // 기존 프로필 이미지 삭제
 
-		String newProfileImageUrl = amazonS3Service.upload(profileImageFile, "profileImage");
+		String newProfileImageUrl = amazonS3Service.upload(profileImageFile, S3ImageDirectory.PROFILE_IMAGE);
 		user.updateProfileImage(newProfileImageUrl);
 
 		return new UpdateProfileImageResponse(newProfileImageUrl);

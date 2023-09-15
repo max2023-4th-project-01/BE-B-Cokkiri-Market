@@ -34,11 +34,11 @@ public class AmazonS3Service {
 		S3ImageDirectory.PROFILE_IMAGE.name() + "/" + "%EC%BD%94%EB%81%BC%EB%A6%AC.png"; // "코끼리.png"
 
 	@Transactional
-	public String upload(MultipartFile multipartFile, String dirName) {
+	public String upload(MultipartFile multipartFile, S3ImageDirectory s3ImageDirectory) {
 		File file = convertMultiPartFileToFile(multipartFile).orElseThrow(
 			() -> new CustomException(FileErrorCode.FILE_UPLOAD_FAIL));
 		// random file name
-		String key = dirName + "/" + UUID.randomUUID() + file.getName();
+		String key = s3ImageDirectory.getDirName() + "/" + UUID.randomUUID() + file.getName();
 		// put S3
 		amazonS3.putObject(new PutObjectRequest(bucketName, key, file).withCannedAcl(
 			CannedAccessControlList.PublicRead));
