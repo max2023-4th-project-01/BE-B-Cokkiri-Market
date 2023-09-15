@@ -5,19 +5,16 @@ import static org.assertj.core.api.Assertions.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import kr.codesquad.IntegrationTestSupport;
 import kr.codesquad.jwt.entity.Jwt;
 import kr.codesquad.jwt.entity.UserRefreshToken;
 import kr.codesquad.jwt.repository.UserRefreshTokenRepository;
 import kr.codesquad.jwt.service.JwtService;
 
-@SpringBootTest
-@ActiveProfiles("test")
 @Transactional
-public class JwtServiceTest {
+public class JwtServiceTest extends IntegrationTestSupport {
 	@Autowired
 	JwtService jwtService;
 	@Autowired

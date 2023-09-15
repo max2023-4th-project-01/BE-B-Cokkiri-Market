@@ -3,16 +3,24 @@ package kr.codesquad.service;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import kr.codesquad.IntegrationTestSupport;
+import kr.codesquad.category.dto.response.FavoriteCategoryResponse;
+import kr.codesquad.category.entity.Category;
+import kr.codesquad.category.repository.CategoryRepository;
 import kr.codesquad.core.error.CustomException;
 import kr.codesquad.core.error.statuscode.FavoriteErrorCode;
 import kr.codesquad.favorite.dto.request.FavoriteUpdateRequest;
 import kr.codesquad.favorite.dto.response.FavoriteUpdateResponse;
+import kr.codesquad.favorite.entity.Favorite;
+import kr.codesquad.favorite.repository.FavoriteRepository;
 import kr.codesquad.favorite.service.FavoriteService;
 import kr.codesquad.item.entity.Item;
 import kr.codesquad.item.repository.ItemRepository;
@@ -20,15 +28,26 @@ import kr.codesquad.user.entity.User;
 import kr.codesquad.user.repository.UserRepository;
 import kr.codesquad.util.ItemStatus;
 
-@Transactional
 public class FavoriteServiceTest extends IntegrationTestSupport {
 
 	@Autowired
-	private FavoriteService favoriteService;
+	CategoryRepository categoryRepository;
 	@Autowired
-	private ItemRepository itemRepository;
+	FavoriteRepository favoriteRepository;
 	@Autowired
-	private UserRepository userRepository;
+	FavoriteService favoriteService;
+	@Autowired
+	ItemRepository itemRepository;
+	@Autowired
+	UserRepository userRepository;
+
+	@AfterEach
+	void dbClean() {
+		favoriteRepository.deleteAllInBatch();
+		userRepository.deleteAllInBatch();
+		itemRepository.deleteAllInBatch();
+		categoryRepository.deleteAllInBatch();
+	}
 
 	@Test
 	@DisplayName("좋아요 버튼 클릭 시 관심 상품에 등록한다.")
@@ -37,7 +56,8 @@ public class FavoriteServiceTest extends IntegrationTestSupport {
 		Boolean isFavorite = Boolean.TRUE;
 		FavoriteUpdateRequest request = createFavoriteUpdateRequest(isFavorite);
 		User user = userRepository.save(createUser());
-		Item item = itemRepository.save(createItem(user.getId()));
+		Category category = categoryRepository.save(createCategory());
+		Item item = itemRepository.save(createItem(user.getId(), category.getId()));
 
 		// when
 		FavoriteUpdateResponse response = favoriteService.updateFavorite(request,
@@ -55,7 +75,8 @@ public class FavoriteServiceTest extends IntegrationTestSupport {
 		Boolean isFavorite = Boolean.TRUE;
 		FavoriteUpdateRequest request = createFavoriteUpdateRequest(isFavorite);
 		User user = userRepository.save(createUser());
-		Item item = itemRepository.save(createItem(user.getId()));
+		Category category = categoryRepository.save(createCategory());
+		Item item = itemRepository.save(createItem(user.getId(), category.getId()));
 		favoriteService.updateFavorite(request,
 			user.getLoginId(), item.getId());
 
@@ -71,7 +92,8 @@ public class FavoriteServiceTest extends IntegrationTestSupport {
 		// 	.hasMessage(FavoriteErrorCode.FAVORITE_ADD_FAILED.getMessage());
 
 		// then
-		assertEquals(FavoriteErrorCode.FAVORITE_ADD_FAILED.getMessage(), exception.getStatusCode().getMessage());
+		assertThat(FavoriteErrorCode.FAVORITE_ADD_FAILED.getMessage()).isEqualTo(
+			exception.getStatusCode().getMessage());
 
 	}
 
@@ -82,7 +104,8 @@ public class FavoriteServiceTest extends IntegrationTestSupport {
 		FavoriteUpdateRequest request = createFavoriteUpdateRequest(Boolean.FALSE);
 		FavoriteUpdateRequest trueRequest = createFavoriteUpdateRequest(Boolean.TRUE);
 		User user = userRepository.save(createUser());
-		Item item = itemRepository.save(createItem(user.getId()));
+		Category category = categoryRepository.save(createCategory());
+		Item item = itemRepository.save(createItem(user.getId(), category.getId()));
 		favoriteService.updateFavorite(trueRequest,
 			user.getLoginId(), item.getId());
 
@@ -101,7 +124,8 @@ public class FavoriteServiceTest extends IntegrationTestSupport {
 		Boolean isFavorite = Boolean.FALSE;
 		FavoriteUpdateRequest request = createFavoriteUpdateRequest(isFavorite);
 		User user = userRepository.save(createUser());
-		Item item = itemRepository.save(createItem(user.getId()));
+		Category category = categoryRepository.save(createCategory());
+		Item item = itemRepository.save(createItem(user.getId(), category.getId()));
 
 		// when
 		CustomException exception = assertThrows(CustomException.class, () -> {
@@ -110,7 +134,33 @@ public class FavoriteServiceTest extends IntegrationTestSupport {
 		});
 
 		// then
-		assertEquals(FavoriteErrorCode.FAVORITE_DELETE_FAILED.getMessage(), exception.getStatusCode().getMessage());
+		assertThat(FavoriteErrorCode.FAVORITE_DELETE_FAILED.getMessage()).isEqualTo(
+			exception.getStatusCode().getMessage());
+	}
+
+	@Test
+	@DisplayName("유저 관심품목의 카테고리를 반환한다")
+	void getFavoriteCategoriesTest() {
+		// given
+		User user = userRepository.save(createUser());
+		Category category = categoryRepository.save(createCategory());
+		Category category1 = categoryRepository.save(createCategory());
+		Item item = itemRepository.save(createItem(user.getId(), category.getId()));
+		Item item1 = itemRepository.save(createItem(user.getId(), category1.getId()));
+		favoriteRepository.save(createFavorite(user.getId(), item.getId()));
+		favoriteRepository.save(createFavorite(user.getId(), item1.getId()));
+		List<Category> favoriteCategories = new ArrayList<>(List.of(category, category1));
+
+		Category notFavoritecategory = categoryRepository.save(createCategory());
+		Item item2 = itemRepository.save(createItem(user.getId(), notFavoritecategory.getId()));
+		// when
+		List<FavoriteCategoryResponse> categoryResponses = favoriteService.getFavoriteCategories(user.getLoginId());
+
+		// then
+		assertThat(categoryResponses.size()).isEqualTo(favoriteCategories.size());
+		for (FavoriteCategoryResponse categoryResponse : categoryResponses) {
+			assertThat(categoryResponse.getId()).isNotEqualTo(notFavoritecategory.getId());
+		}
 	}
 
 	FavoriteUpdateRequest createFavoriteUpdateRequest(Boolean isFavorite) {
@@ -119,7 +169,6 @@ public class FavoriteServiceTest extends IntegrationTestSupport {
 
 	User createUser() {
 		return User.builder()
-			.id(2L)
 			.profileImageUrl("프로필 사진 url")
 			.loginId("로그인 한 유저 아이디")
 			.password(null)
@@ -127,12 +176,11 @@ public class FavoriteServiceTest extends IntegrationTestSupport {
 			.build();
 	}
 
-	Item createItem(Long userId) {
+	Item createItem(Long userId, Long categoryId) {
 		return Item.builder()
-			.id(1L)
 			.title("제목")
 			.content("내용")
-			.categoryId(1L)
+			.categoryId(categoryId)
 			.price(1000)
 			.locationId(1L)
 			.locationName("역삼1동")
@@ -141,6 +189,14 @@ public class FavoriteServiceTest extends IntegrationTestSupport {
 			.userId(userId)
 			.viewCount(3)
 			.build();
+	}
+
+	Category createCategory() {
+		return new Category("name", "iconName");
+	}
+
+	Favorite createFavorite(Long userId, Long itemId) {
+		return Favorite.builder().userId(userId).itemId(itemId).build();
 	}
 
 }
