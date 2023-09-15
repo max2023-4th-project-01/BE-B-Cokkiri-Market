@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { Layout } from './components/Layout';
+import { Chatting } from './page/Chatting';
 import { Favorites } from './page/Favorites';
 import { ItemDetails } from './page/ItemDetails';
 import { SalesList } from './page/SalesList';
@@ -28,9 +29,10 @@ export function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/items/:itemId" element={<ItemDetails />} />
-          <Route path="/myAccount" element={<MyAccount />} />
           <Route path="/sellHistory" element={<SalesList />} />
           <Route path="/favoritesHistory" element={<Favorites />} />
+          <Route path="/chat" element={<Chatting />} />
+          <Route path="/myAccount" element={<MyAccount />} />
           <Route
             path="/oauth2/authorization/github"
             element={<OAuthLoading />}
