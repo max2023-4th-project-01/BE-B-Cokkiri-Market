@@ -3,10 +3,7 @@ package kr.codesquad.item.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import kr.codesquad.core.error.CustomException;
-import kr.codesquad.core.error.statuscode.ErrorCode;
 import kr.codesquad.item.dto.request.ItemStatusDto;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,6 +35,7 @@ import kr.codesquad.location.repository.LocationRepository;
 import kr.codesquad.user.entity.User;
 import kr.codesquad.user.repository.UserRepository;
 import kr.codesquad.util.ItemStatus;
+import kr.codesquad.util.S3ImageDirectory;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -73,7 +71,7 @@ public class ItemService {
 			.status(ItemStatus.판매중)
 			.build());
 		if (imageFiles.size() != 0) {
-			String url = amazonS3Service.upload(imageFiles.get(0), "itemImage");
+			String url = amazonS3Service.upload(imageFiles.get(0), S3ImageDirectory.ITEM_IMAGE);
 			imageRepository.save(Image.builder()
 				.url(url)
 				.itemId(item.getId())
@@ -81,7 +79,7 @@ public class ItemService {
 			thumbnailUrl = url;
 			for (int i = 1; i < imageFiles.size(); i++) {
 				imageRepository.save(Image.builder()
-					.url(amazonS3Service.upload(imageFiles.get(i), "itemImage"))
+					.url(amazonS3Service.upload(imageFiles.get(i), S3ImageDirectory.ITEM_IMAGE))
 					.itemId(item.getId())
 					.build());
 			}
