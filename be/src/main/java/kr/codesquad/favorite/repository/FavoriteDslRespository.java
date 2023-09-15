@@ -20,15 +20,13 @@ public class FavoriteDslRespository {
 	private final JPAQueryFactory queryFactory;
 
 	public List<Category> readFavoriteCategories(Long userId) {
-		List<Category> categories = queryFactory
+		return queryFactory
 			.select(Projections.fields(Category.class,
 				category.id,
 				category.name))
 			.from(category)
-			.innerJoin(item).on(item.categoryId.eq(category.id))
-			.innerJoin(favorite).on(favorite.itemId.eq(item.id))
-			.groupBy(category.id, category.name)
+			.innerJoin(item).on(category.id.eq(item.categoryId))
+			.innerJoin(favorite).on(item.id.eq(favorite.itemId))
 			.where(favorite.userId.eq(userId)).fetch();
-		return categories;
 	}
 }

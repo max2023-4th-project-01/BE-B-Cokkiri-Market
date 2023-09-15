@@ -3,9 +3,6 @@ package kr.codesquad.item.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import kr.codesquad.image.entity.Image;
-import kr.codesquad.image.service.AmazonS3Service;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,7 +10,9 @@ import org.springframework.web.multipart.MultipartFile;
 import kr.codesquad.category.repository.CategoryRepository;
 import kr.codesquad.chat.repository.ChatRepository;
 import kr.codesquad.favorite.repository.FavoriteRepository;
+import kr.codesquad.image.entity.Image;
 import kr.codesquad.image.repository.ImageRepository;
+import kr.codesquad.image.service.AmazonS3Service;
 import kr.codesquad.item.dto.ItemMapper;
 import kr.codesquad.item.dto.request.ItemSaveRequest;
 import kr.codesquad.item.dto.request.ItemUpdateRequest;
@@ -59,28 +58,28 @@ public class ItemService {
 		String locationName = locationRepository.findLocationNameById(itemRequest.getMyLocationId());
 		String thumbnailUrl = "https://cokkiri-s3.s3.ap-northeast-2.amazonaws.com/profileImage/%EC%BD%94%EB%81%BC%EB%A6%AC.png";
 		Item item = itemRepository.save(Item.builder()
-				.title(itemRequest.getTitle())
-				.content(itemRequest.getContent())
-				.price(itemRequest.getPrice())
-				.locationId(itemRequest.getMyLocationId())
-				.locationName(locationName)
-				.categoryId(itemRequest.getCategoryId())
-				.thumbnailUrl(thumbnailUrl)
-				.userId(userId)
-				.status(ItemStatus.판매중)
-				.build());
+			.title(itemRequest.getTitle())
+			.content(itemRequest.getContent())
+			.price(itemRequest.getPrice())
+			.locationId(itemRequest.getMyLocationId())
+			.locationName(locationName)
+			.categoryId(itemRequest.getCategoryId())
+			.thumbnailUrl(thumbnailUrl)
+			.userId(userId)
+			.status(ItemStatus.판매중)
+			.build());
 		if (imageFiles.size() != 0) {
 			String url = amazonS3Service.upload(imageFiles.get(0), "itemImage");
 			imageRepository.save(Image.builder()
-					.url(url)
-					.itemId(item.getId())
-					.build());
+				.url(url)
+				.itemId(item.getId())
+				.build());
 			thumbnailUrl = url;
 			for (int i = 1; i < imageFiles.size(); i++) {
 				imageRepository.save(Image.builder()
-						.url(amazonS3Service.upload(imageFiles.get(i), "itemImage"))
-						.itemId(item.getId())
-						.build());
+					.url(amazonS3Service.upload(imageFiles.get(i), "itemImage"))
+					.itemId(item.getId())
+					.build());
 			}
 			item.setThumbnailUrl(thumbnailUrl);
 		}
@@ -91,7 +90,8 @@ public class ItemService {
 	public ItemDetailResponse getItem(Long id, String userLoginId) {
 		Long userId = userRepository.findIdByLoginId(userLoginId);
 		Item item = itemRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 아이템이 없습니다."));
-		User seller = userRepository.findById(item.getUserId()).orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다."));
+		User seller = userRepository.findById(item.getUserId())
+			.orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다."));
 
 		List<ItemImageResponse> images = imageRepository.findByItemId(item.getId());
 		String categoryName = categoryRepository.findNameById(item.getCategoryId());
@@ -128,21 +128,19 @@ public class ItemService {
 			throw new IllegalArgumentException("해당 아이템을 수정할 수 없습니다.");
 		}
 
-
 		if (targetItem.getLocationId() != request.getMyLocationId()) {
 			String locationName = locationRepository.findLocationNameById(request.getMyLocationId());
 			targetItem.update(request, locationName, thumbnailUrl);
-		}
-		else {
+		} else {
 			targetItem.update(request, null, thumbnailUrl);
 		}
 	}
 
 	@Transactional
 	public void deleteItem(Long id, String userLoginId) {
-//		if (!itemRepository.existsByIdAndUserLoginId(id, userLoginId)) {
-//			throw new IllegalArgumentException("해당 아이템을 삭제할 수 없습니다.");
-//		}
+		//		if (!itemRepository.existsByIdAndUserLoginId(id, userLoginId)) {
+		//			throw new IllegalArgumentException("해당 아이템을 삭제할 수 없습니다.");
+		//		}
 		itemRepository.deleteById(id);
 	}
 
@@ -172,17 +170,17 @@ public class ItemService {
 		User user = userRepository.findByLoginId(loginId);
 		String locationName = locationRepository.findByUserId(user.getId()).getLocationName();
 
-		Slice<ItemListVo> response = itemPaginationRepository.readByConditions(ItemConditions.builder()
+		List<ItemListVo> itemListVos = itemPaginationRepository.readByConditions(ItemConditions.builder()
 			.itemId(itemId)
 			.locationName(locationName)
 			.categoryId(categoryId)
 			.pageSize(pageSize)
 			.build());
 
-		List<ItemListVo> itemListVos = response.getContent();
-		Long nextCursor = setNextCursor(itemListVos);
+		Long nextCursor = setNextCursor(itemListVos, pageSize);
+		List<ItemListVo> itemListVosResized = resizeList(pageSize, itemListVos);
 
-		List<ItemListResponse> items = itemListVos.stream()
+		List<ItemListResponse> items = itemListVosResized.stream()
 			.map(itemListVo -> ItemMapper.INSTANCE.toItemListResponse(itemListVo,
 				ItemCountDataResponse.builder()
 					.chat(itemListVo.getChat().intValue())
@@ -199,9 +197,9 @@ public class ItemService {
 			.build();
 	}
 
-	private Long setNextCursor(List<ItemListVo> content) {
+	private Long setNextCursor(List<ItemListVo> content, Integer pageSize) {
 		Long nextCursor = null;
-		if (!content.isEmpty()) {
+		if (!content.isEmpty() && content.size() > pageSize) {
 			nextCursor = content.get(content.size() - 1).getId();
 		}
 		return nextCursor;
@@ -210,21 +208,20 @@ public class ItemService {
 	public UserItemListSlice getUserItems(Long itemId, Boolean isSold, int size, String loginId) {
 		User user = userRepository.findByLoginId(loginId);
 
-		Slice<ItemListVo> response = itemPaginationRepository.readByConditions(ItemConditions.builder()
+		List<ItemListVo> itemListVos = itemPaginationRepository.readByConditions(ItemConditions.builder()
 			.isSold(isSold)
 			.pageSize(size)
 			.userId(user.getId())
 			.itemId(itemId)
 			.build());
 
-		List<ItemListVo> itemListVos = response.getContent();
-		return createUserItemListSlice(itemListVos);
+		return createUserItemListSlice(itemListVos, size);
 	}
 
 	public UserItemListSlice getFavoriteItems(Long itemId, Long categoryId, int size, String loginId) {
 		User user = userRepository.findByLoginId(loginId);
 
-		Slice<ItemListVo> response = itemPaginationRepository.readByConditions(ItemConditions.builder()
+		List<ItemListVo> itemListVos = itemPaginationRepository.readByConditions(ItemConditions.builder()
 			.categoryId(categoryId)
 			.pageSize(size)
 			.userId(user.getId())
@@ -232,15 +229,13 @@ public class ItemService {
 			.itemId(itemId)
 			.build());
 
-		List<ItemListVo> itemListVos = response.getContent();
-
-		return createUserItemListSlice(itemListVos);
+		return createUserItemListSlice(itemListVos, size);
 	}
 
-	private UserItemListSlice createUserItemListSlice(List<ItemListVo> itemListVos) {
-		Long nextCursor = setNextCursor(itemListVos);
-
-		List<UserItemListResponse> items = itemListVos.stream()
+	private UserItemListSlice createUserItemListSlice(List<ItemListVo> itemListVos, Integer pageSize) {
+		Long nextCursor = setNextCursor(itemListVos, pageSize);
+		List<ItemListVo> itemListVosResized = resizeList(pageSize, itemListVos);
+		List<UserItemListResponse> items = itemListVosResized.stream()
 			.map(itemListVo -> ItemMapper.INSTANCE.toUserItemListResponse(itemListVo,
 				ItemCountDataResponse.builder()
 					.chat(itemListVo.getChat().intValue())
@@ -253,5 +248,12 @@ public class ItemService {
 			.items(items)
 			.nextCursor(nextCursor)
 			.build();
+	}
+
+	private List<ItemListVo> resizeList(Integer pageSize, List<ItemListVo> itemListVos) {
+		if (itemListVos.size() > pageSize) {
+			return itemListVos.subList(0, pageSize);
+		}
+		return itemListVos;
 	}
 }

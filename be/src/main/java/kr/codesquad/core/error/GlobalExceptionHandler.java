@@ -25,7 +25,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(CustomException.class)
 	protected ResponseEntity<ErrorResponse> handleCustomException(CustomException ex) {
 		StatusCode statusCode = ex.getStatusCode();
-		log.warn("CustomException handling: {}", ex.toString());
+		log.info("CustomException handling: {}", ex.toString());
 		return ResponseEntity.status(statusCode.getHttpStatus()).body(ErrorResponse.builder()
 			.statusCode(statusCode.getHttpStatus())
 			.message(statusCode.getMessage()).build());
@@ -36,7 +36,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers,
 		HttpStatus status, WebRequest request) {
 		ErrorCode errorCode = ErrorCode.PAGE_NOT_FOUND;
-		log.warn("NoHandlerFoundException handling: {}", ex.toString());
+		log.info("NoHandlerFoundException handling: {}", ex.toString());
 		return ResponseEntity.status(errorCode.getHttpStatus())
 			.body(ErrorResponse.builder()
 				.statusCode(errorCode.getHttpStatus())
@@ -76,7 +76,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 		HttpHeaders headers, HttpStatus status, WebRequest request) {
 		ErrorCode errorCode = ErrorCode.VALIDATION_FAILED;
-		log.warn("MethodArgumentNotValidException handling: {}", ex.getMessage());
+		log.info("MethodArgumentNotValidException handling: {}", ex.getMessage());
 		return ResponseEntity.status(errorCode.getHttpStatus())
 			.body(ErrorResponse.builder()
 				.statusCode(errorCode.getHttpStatus())
