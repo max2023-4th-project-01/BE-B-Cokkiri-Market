@@ -11,7 +11,7 @@ export const authHandlers = [
     );
   }),
   rest.post(API_ENDPOINT.SIGNUP, (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json('201'));
+    return res(ctx.status(201), ctx.json('201'));
   }),
 ];
 
