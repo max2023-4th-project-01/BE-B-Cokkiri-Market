@@ -1,6 +1,6 @@
-import { UserLocationData } from '../types';
-import { fetcher } from './axios';
-import { API_ENDPOINT } from './endPoint';
+import { UserLocationData } from '../../types';
+import { fetcher } from '../axios';
+import { API_ENDPOINT } from '../endPoint';
 
 export const getUserLocations = async (): Promise<UserLocationData> => {
   const res = await fetcher.get(API_ENDPOINT.USER_LOCATION);

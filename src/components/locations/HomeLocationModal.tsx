@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { styled } from 'styled-components';
+import { useAddUserLocation } from '../../api/queries/useLocationQuery';
 import { Modal } from '../Modal';
 import { Button } from '../button/Button';
 import { Icon } from '../icon/Icon';
@@ -15,6 +16,8 @@ export function HomeLocationModal({ isOpen, onClose }: LocationModalProps) {
   const [isAddLocation, setIsAddLocation] = useState(false);
   const [rightPosition, setRightPosition] = useState(-320);
 
+  const addUserLocation = useAddUserLocation();
+
   const openSearchPanel = () => {
     setIsAddLocation(true);
   };
@@ -23,12 +26,21 @@ export function HomeLocationModal({ isOpen, onClose }: LocationModalProps) {
     setIsAddLocation(false);
   };
 
-  const showSearchPanel = () => {
+  const showSearchPanel = useCallback(() => {
     setRightPosition(0);
-  };
+  }, []);
 
   const hideSearchPanel = () => {
     setRightPosition(-320);
+  };
+
+  const onTransitionEndHandler = () => {
+    rightPosition !== 0 && closeSearchPanel();
+  };
+
+  const clickLocationItem = (locationId: number, locationName: string) => {
+    addUserLocation.mutate({ locationId, locationName });
+    hideSearchPanel();
   };
 
   return (
@@ -51,8 +63,8 @@ export function HomeLocationModal({ isOpen, onClose }: LocationModalProps) {
           <AddLocation
             rightPosition={rightPosition}
             showSearchPanel={showSearchPanel}
-            closeSearchPanel={closeSearchPanel}
-            hideSearchPanel={hideSearchPanel}
+            onTransitionEndHandler={onTransitionEndHandler}
+            clickLocationItem={clickLocationItem}
           />
         )}
       </Body>

@@ -1,7 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
 import { memo, useEffect, useState } from 'react';
 import { styled } from 'styled-components';
-import { getCategories } from '../../api/mainFetcher';
+import { useGetCategoryData } from '../../api/queries/useItemQuery';
 import { categoryIconMap } from '../../assets/image';
 import { Error } from '../../components/Error';
 import { Header } from '../../components/Header';
@@ -9,16 +8,6 @@ import { Loader } from '../../components/Loader';
 import { Button } from '../../components/button/Button';
 import { Icon } from '../../components/icon/Icon';
 import { useScreenConfigStore } from '../../stores/useScreenConfigStore';
-
-type CategoryData = {
-  categories: CategoryItem[];
-};
-
-type CategoryItem = {
-  id: number;
-  name: string;
-  iconName: string;
-};
 
 type CategoryFilterPanelProps = {
   closePanel: () => void;
@@ -33,11 +22,7 @@ export const CategoryFilterPanel = memo(
       isOpenPanel ? 0 : -screenWidth
     );
 
-    const {
-      data: categoryData,
-      isLoading,
-      isError,
-    } = useQuery<CategoryData, Error>(['category'], getCategories);
+    const { data: categoryData, isLoading, isError } = useGetCategoryData();
 
     useEffect(() => {
       if (isOpenPanel) {

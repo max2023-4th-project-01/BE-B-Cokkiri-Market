@@ -9,17 +9,17 @@ export function Footer() {
         <Icon name="home" color="accentPrimary" />
         <Label>홈화면</Label>
       </Tab>
-      <Tab to="/">
+      <Tab to="/sellHistory">
         <Icon name="news" color="accentSecondary" />
         <Label>판매내역</Label>
       </Tab>
-      <Tab to="/">
+      <Tab to="/favoritesHistory">
         <Icon name="heart" color="systemWarning" />
         <Label>관심상품</Label>
       </Tab>
-      <Tab to="/test">
-        <Icon name="check" color="accentTextWeak" />
-        <Label>test</Label>
+      <Tab to="/chat">
+        <Icon name="message" color="neutralTextWeak" />
+        <Label>채팅</Label>
       </Tab>
       <Tab to="/myAccount">
         <Icon name="userCircle" color="neutralTextWeak" />

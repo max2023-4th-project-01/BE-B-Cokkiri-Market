@@ -5,7 +5,7 @@ export type ItemData = {
   nextCursor: number | null;
 };
 
-export type ItemProps = {
+export type ItemBaseType = {
   id: number;
   title: string;
   locationName: string;
@@ -17,6 +17,9 @@ export type ItemProps = {
     favorite: number;
   };
   thumbnailUrl: string;
+};
+
+export type ItemProps = ItemBaseType & {
   isSeller: boolean;
 };
 
@@ -39,4 +42,23 @@ export type LocationResultData = {
     name: string;
   }[];
   nextPage: number | null;
+};
+
+export type FavoritesCategoryTabsType = {
+  id?: number;
+  name: string;
+};
+
+export type FavoritesCategoryDataType = {
+  categories: FavoritesCategoryTabsType[];
+};
+
+export type CategoryData = {
+  categories: CategoryItem[];
+};
+
+export type CategoryItem = {
+  id: number;
+  name: string;
+  iconName: string;
 };

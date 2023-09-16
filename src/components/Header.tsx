@@ -7,9 +7,14 @@ type HeaderProps = {
   title?: string;
 };
 
-export function Header({ leftButton, rightButton, title }: HeaderProps) {
+export function Header({
+  leftButton,
+  rightButton,
+  title,
+  ...rest
+}: HeaderProps) {
   return (
-    <Div>
+    <Div {...rest}>
       <Left>{leftButton}</Left>
       <Title>{title}</Title>
       <Right>{rightButton}</Right>

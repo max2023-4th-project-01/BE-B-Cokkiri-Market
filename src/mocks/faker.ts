@@ -30,3 +30,26 @@ export const fakeItems = () => {
 
   return items;
 };
+
+export const fakeSellItems = () => {
+  const items = [];
+  for (let i = 2; i <= 20; i++) {
+    const item = {
+      id: i,
+      title: faker.lorem.words(3),
+      locationName: '역삼 1동',
+      createdAt: faker.date.past(),
+      statusName: faker.helpers.arrayElement(['예약중', '판매중', '판매완료']),
+      price: i * 1000,
+      countData: {
+        chat: faker.number.int({ min: 1, max: 100 }),
+        favorite: faker.number.int({ min: 1, max: 100 }),
+      },
+      thumbnailUrl: faker.helpers.arrayElement(thumbnailList),
+      isSeller: true,
+    };
+    items.push(item);
+  }
+
+  return items;
+};

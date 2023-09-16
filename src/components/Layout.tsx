@@ -1,18 +1,19 @@
 import { Outlet } from 'react-router-dom';
 import { styled } from 'styled-components';
+import { ProductEditorPanel } from '../page/productEditor/ProductEditorPanel';
+import { useProductEditorStore } from '../stores/useProductEditorStore';
 import { useScreenConfigStore } from '../stores/useScreenConfigStore';
 import { Footer } from './Footer';
-import { ToastContainer } from './Toast';
 
 export function Layout() {
   const { screenWidth, screenHeight } = useScreenConfigStore();
-  const positionGap = Math.abs(screenHeight - window.innerHeight) / 2;
+  const isOpenEditor = useProductEditorStore(state => state.isOpen);
 
   return (
     <Wrapper $width={screenWidth} $height={screenHeight}>
       <Outlet />
       <Footer />
-      <ToastContainer positionGap={positionGap} position="bottom" />
+      {isOpenEditor && <ProductEditorPanel />}
     </Wrapper>
   );
 }

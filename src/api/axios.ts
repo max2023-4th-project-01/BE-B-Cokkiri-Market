@@ -1,11 +1,15 @@
 import axios from 'axios';
-const BASE_URL = import.meta.env.DEV ? '' : import.meta.env.VITE_API_URL;
+
+const currentPort = window.location.port;
+
+export const BASE_URL = import.meta.env.DEV
+  ? `http://localhost:${currentPort}`
+  : import.meta.env.VITE_API_URL;
 
 export const fetcher = axios.create({
   baseURL: BASE_URL,
   headers: {
     'Content-Type': 'application/json',
-    'Refresh-Token': 'your-refresh-token-value',
   },
 });
 

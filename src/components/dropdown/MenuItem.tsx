@@ -1,28 +1,31 @@
 import { ReactNode } from 'react';
 import { styled } from 'styled-components';
-import { ColorType, FontType } from '../../styles/designSystem';
+import { ColorType } from '../../styles/designSystem';
 
 type MenuItemProps = {
   children: ReactNode;
-  font?: FontType;
   color?: ColorType;
+  isSelected?: boolean;
   onAction: () => void;
 };
 
 export function MenuItem({
   children,
-  font = 'availableDefault16',
   color = 'neutralTextStrong',
+  isSelected = false,
   onAction,
 }: MenuItemProps) {
   return (
-    <Item $font={font} $color={color} onClick={onAction}>
+    <Item $color={color} $isSelected={isSelected} onClick={onAction}>
       {children}
     </Item>
   );
 }
 
-const Item = styled.li<{ $font: FontType; $color: ColorType }>`
+const Item = styled.li<{
+  $color: ColorType;
+  $isSelected: boolean;
+}>`
   width: 240px;
   display: flex;
   padding: 8px;
@@ -31,7 +34,8 @@ const Item = styled.li<{ $font: FontType; $color: ColorType }>`
   align-self: stretch;
   padding: 16px;
   border-bottom: 1px solid ${({ theme }) => theme.color.neutralBorder};
-  font: ${({ theme, $font }) => theme.font[$font]};
+  font: ${({ theme, $isSelected }) =>
+    $isSelected ? theme.font.enabledStrong16 : theme.font.availableDefault16};
   color: ${({ theme, $color }) => theme.color[$color]};
 
   &:first-child {

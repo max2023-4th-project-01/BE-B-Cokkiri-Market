@@ -1,6 +1,6 @@
 import { MouseEvent } from 'react';
 import { styled } from 'styled-components';
-import { useSelectUserLocation } from '../../queries/useLocationQuery';
+import { useSelectUserLocation } from '../../api/queries/useLocationQuery';
 import { useLocationStore } from '../../stores/useLocationStore';
 import { Button } from '../button/Button';
 import { Icon } from '../icon/Icon';

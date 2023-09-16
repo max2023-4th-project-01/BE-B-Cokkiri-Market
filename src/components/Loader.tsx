@@ -1,9 +1,10 @@
-import { styled, keyframes } from 'styled-components';
+import { keyframes, styled } from 'styled-components';
 
-export function Loader() {
+export function Loader({ text }: { text?: string }) {
   return (
     <Wrapper>
       <Indicator />
+      {text && <div>{text}</div>}
     </Wrapper>
   );
 }
@@ -21,7 +22,9 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
   position: absolute;
+  gap: 16px;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);

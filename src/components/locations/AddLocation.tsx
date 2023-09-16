@@ -1,28 +1,23 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { styled } from 'styled-components';
+import { useGetLocationResult } from '../../api/queries/useLocationQuery';
 import { useDebounceValue } from '../../hooks/useDebounceValue';
-import {
-  useAddUserLocation,
-  useGetLocationResult,
-} from '../../queries/useLocationQuery';
 import { Error } from '../Error';
 import { Loader } from '../Loader';
 
 type AddLocationProps = {
   rightPosition?: number;
   showSearchPanel?: () => void;
-  closeSearchPanel?: () => void;
-  hideSearchPanel?: () => void;
-  addLocation?: (locationId: number, locationName: string) => void;
+  onTransitionEndHandler?: () => void;
+  clickLocationItem: (locationId: number, locationName: string) => void;
 };
 
 export function AddLocation({
   rightPosition,
   showSearchPanel,
-  closeSearchPanel,
-  hideSearchPanel,
-  addLocation,
+  onTransitionEndHandler,
+  clickLocationItem,
 }: AddLocationProps) {
   const [inputValue, setInputValue] = useState('');
   const query = useDebounceValue(inputValue, 500);
@@ -36,8 +31,7 @@ export function AddLocation({
     fetchNextPage,
   } = useGetLocationResult(query);
 
-  const addMutation = useAddUserLocation();
-  const { ref: lastItemRef, inView } = useInView();
+  const { ref: observingTargetRef, inView } = useInView();
 
   useEffect(() => {
     if (inView && hasNextPage) {
@@ -47,22 +41,7 @@ export function AddLocation({
 
   useEffect(() => {
     showSearchPanel && showSearchPanel();
-  }, []);
-
-  const onClickLocationItem = (locationId: number, locationName: string) => {
-    // SignUpPanel에서 사용하는 경우
-    if (addLocation) {
-      addLocation(locationId, locationName);
-      return;
-    }
-    // Home에서 사용하는 경우
-    addMutation.mutate({ locationId, locationName });
-    hideSearchPanel && hideSearchPanel();
-  };
-
-  const onTransitionEndHandler = () => {
-    rightPosition !== 0 && closeSearchPanel && closeSearchPanel();
-  };
+  }, [showSearchPanel]);
 
   const onChangeInputValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
@@ -85,14 +64,12 @@ export function AddLocation({
             <Loader />
           ) : (
             locationData?.pages.map(page => {
-              return page.locations.map((location, index) => {
-                const isLastItem = index === page.locations.length - 1;
+              return page.locations.map(location => {
                 return (
                   <LocationItem
-                    ref={isLastItem ? lastItemRef : null}
                     key={location.id}
                     onClick={() =>
-                      onClickLocationItem(location.id, location.name)
+                      clickLocationItem(location.id, location.name)
                     }
                   >
                     {location.name}
@@ -101,6 +78,7 @@ export function AddLocation({
               });
             })
           )}
+          <ObservingTarget ref={observingTargetRef} />
           {isFetchingNextPage && <LoadingMessage>Loading...</LoadingMessage>}
         </Content>
       )}
@@ -142,6 +120,7 @@ const Content = styled.ul`
   align-self: stretch;
   flex: 1;
   overflow-y: scroll;
+  position: relative;
 
   &::-webkit-scrollbar {
     width: 4px;
@@ -171,4 +150,10 @@ const LocationItem = styled.li`
 const LoadingMessage = styled.li`
   padding: 16px 0px 15px;
   margin: 0 auto;
+`;
+
+const ObservingTarget = styled.div`
+  height: 56px;
+  position: relative;
+  bottom: 10%;
 `;

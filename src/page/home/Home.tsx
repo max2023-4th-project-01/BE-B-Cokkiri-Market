@@ -1,29 +1,41 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { styled } from 'styled-components';
+import { useGetItemData } from '../../api/queries/useItemQuery';
+import {
+  useGetUserLocation,
+  useResetLocationResult,
+  useSelectUserLocation,
+} from '../../api/queries/useLocationQuery';
 import { Error } from '../../components/Error';
 import { Header } from '../../components/Header';
 import { Loader } from '../../components/Loader';
 import { ProductItem } from '../../components/ProductItem';
+import { Button } from '../../components/button/Button';
 import { Dropdown } from '../../components/dropdown/Dropdown';
 import { MenuItem } from '../../components/dropdown/MenuItem';
 import { Icon } from '../../components/icon/Icon';
 import { HomeLocationModal } from '../../components/locations/HomeLocationModal';
-import { useGetItemData } from '../../queries/useItemQuery';
-import { useGetUserLocation } from '../../queries/useLocationQuery';
+import { useProductEditorStore } from '../../stores/useProductEditorStore';
 import { CategoryFilterPanel } from './CategoryFilterPanel';
 
 export function Home() {
+  const openEditorPanel = useProductEditorStore(state => state.openPanel);
   const bodyRef = useRef<HTMLDivElement>(null);
   const [categoryId, setCategoryId] = useState<number>();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isOpenPanel, setIsOpenPanel] = useState(false);
-  const { ref: lastItemRef } = useInView();
+  const { ref: observingTargetRef, inView } = useInView();
 
-  const { data: itemData, refetch: refetchItems } = useGetItemData(
-    categoryId ?? null
-  );
+  const {
+    data: itemData,
+    refetch: refetchItems,
+    fetchNextPage,
+    hasNextPage,
+  } = useGetItemData(categoryId);
   const { data: userLocationData, isLoading, isError } = useGetUserLocation();
+  const selectMutation = useSelectUserLocation();
+  const resetLocationResult = useResetLocationResult();
 
   useEffect(() => {
     if (categoryId) {
@@ -31,12 +43,11 @@ export function Home() {
     }
   }, [categoryId]);
 
-  // useEffect에서 useInView 훅으로 무한스크롤 요청 구현 예정
-  // useEffect(() => {
-  //   if (inView && hasNextPage) {
-  //     fetchNextPage();
-  //   }
-  // }, [inView, hasNextPage, fetchNextPage]);
+  useEffect(() => {
+    if (inView && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, fetchNextPage]);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -44,6 +55,7 @@ export function Home() {
 
   const closeModal = () => {
     refetchItems();
+    resetLocationResult();
     setIsModalOpen(false);
   };
 
@@ -51,16 +63,21 @@ export function Home() {
     setIsOpenPanel(true);
   };
 
-  const closePanel = () => {
+  const closePanel = useCallback(() => {
     refetchItems();
     setIsOpenPanel(false);
-  };
+  }, [refetchItems]);
 
-  const selectCategory = (id: number) => {
+  const selectCategory = useCallback((id: number) => {
     setCategoryId(id);
+  }, []);
+
+  const selectLocation = (locationId: number, isSelected: boolean) => {
+    if (isSelected) return;
+    selectMutation.mutate(locationId);
   };
 
-  const extractKeyName = (locationName: string) => {
+  const extractKeyName = (locationName: string | undefined) => {
     if (!locationName) return;
     const keyName = locationName.split(' ').at(-1);
     return keyName;
@@ -87,13 +104,9 @@ export function Home() {
                 return (
                   <MenuItem
                     key={location.id}
-                    font={
-                      location.isSelected
-                        ? 'enabledStrong16'
-                        : 'availableDefault16'
-                    }
+                    isSelected={location.isSelected}
                     onAction={() => {
-                      console.log(`${location.name} 클릭됨`);
+                      selectLocation(location.id, location.isSelected);
                     }}
                   >
                     {location.name}
@@ -118,20 +131,16 @@ export function Home() {
         {isLoading ? (
           <Loader />
         ) : (
-          itemData?.pages?.map(page => {
-            return page?.items?.map((item, index) => {
-              const isLastItem = index === page.items.length - 1;
-              return (
-                <ProductItem
-                  ref={isLastItem ? lastItemRef : null}
-                  key={item.id}
-                  {...item}
-                />
-              );
-            });
-          })
+          <>
+            {itemData?.pages.map(page =>
+              page.items.map(item => {
+                return <ProductItem key={item.id} {...item} />;
+              })
+            )}
+            <ObservingTarget ref={observingTargetRef} />
+          </>
         )}
-        {itemData?.pages[0]?.items?.length === 0 && (
+        {itemData?.pages[0].items.length === 0 && (
           <Error message="판매 상품이 없습니다." />
         )}
         {isError && <Error message="판매 상품 목록을 불러오지 못했습니다." />}
@@ -139,6 +148,13 @@ export function Home() {
       {isModalOpen && (
         <HomeLocationModal isOpen={isModalOpen} onClose={closeModal} />
       )}
+      <FAB
+        styledType="circle"
+        color="accentPrimary"
+        onClick={() => openEditorPanel({ mode: 'add' })}
+      >
+        <Icon name="plus" color="accentText" />
+      </FAB>
     </Div>
   );
 }
@@ -184,4 +200,18 @@ const Body = styled.div`
   flex: 1;
   padding: 0 16px;
   margin-top: 56px;
+`;
+
+const ObservingTarget = styled.div`
+  height: 152px;
+  position: relative;
+  bottom: 152px;
+`;
+
+const FAB = styled(Button)`
+  width: 56px;
+  height: 56px;
+  position: absolute;
+  right: 24px;
+  bottom: 88px;
 `;
