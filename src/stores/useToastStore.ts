@@ -2,7 +2,7 @@ import { create } from 'zustand';
 
 type ToastType = {
   message: string;
-  type: 'success' | 'error';
+  type: 'success' | 'error' | 'warning';
   duration?: number;
 };
 

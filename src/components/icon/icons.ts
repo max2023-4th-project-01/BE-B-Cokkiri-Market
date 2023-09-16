@@ -26,6 +26,7 @@ import { ReactComponent as search } from '../../assets/icon/search.svg';
 import { ReactComponent as send } from '../../assets/icon/send.svg';
 import { ReactComponent as success } from '../../assets/icon/success.svg';
 import { ReactComponent as userCircle } from '../../assets/icon/user-circle.svg';
+import { ReactComponent as warning } from '../../assets/icon/warning.svg';
 import { ReactComponent as x } from '../../assets/icon/x.svg';
 
 export const icons = {
@@ -57,6 +58,7 @@ export const icons = {
   send,
   success,
   userCircle,
+  warning,
   x,
 };
 

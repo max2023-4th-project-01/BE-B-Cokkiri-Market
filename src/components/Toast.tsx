@@ -5,7 +5,7 @@ import { useToastStore } from '../stores/useToastStore';
 import { Button } from './button/Button';
 import { Icon } from './icon/Icon';
 
-type ToastType = 'success' | 'error';
+type ToastType = 'success' | 'error' | 'warning';
 
 type PositionType = 'top' | 'bottom';
 
@@ -77,6 +77,7 @@ export function ToastContainer({
       $positionGap={positionGap}
       $position={position}
     >
+      <div></div>
       <Icon name={toast.type} />
       {toast.message}
       <CloseButton styledType="text" size="S" onClick={handleClose}>
@@ -147,7 +148,7 @@ const ToastWrapper = styled.div<{
 }>`
   width: calc(${({ $width }) => $width} * 0.9px);
   height: 60px;
-  position: fixed;
+  position: absolute;
   display: flex;
   justify-content: left;
   align-items: center;
@@ -198,9 +199,29 @@ const ProgressBar = styled.div<{
 `;
 
 const typeToBackGroundColor = (type: ToastType): string => {
-  return type === 'success' ? '#edf9e4' : '#fee2e2';
+  switch (type) {
+    case 'success': {
+      return '#edf9e4';
+    }
+    case 'error': {
+      return '#fee2e2';
+    }
+    case 'warning': {
+      return '#fefee2';
+    }
+  }
 };
 
 const typeToBackProgressBarColor = (type: ToastType): string => {
-  return type === 'success' ? '#07bc0c' : '#e74c3c';
+  switch (type) {
+    case 'success': {
+      return '#07bc0c';
+    }
+    case 'error': {
+      return '#e74c3c';
+    }
+    case 'warning': {
+      return '#f0eb5c';
+    }
+  }
 };
