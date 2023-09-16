@@ -18,6 +18,7 @@ import { MenuItem } from '../components/dropdown/MenuItem';
 import { Icon } from '../components/icon/Icon';
 import { ImageSlider } from '../components/itemDetails/ImageSlider';
 import { useProductEditorStore } from '../stores/useProductEditorStore';
+import { useToastStore } from '../stores/useToastStore';
 import { getElapsedSince } from '../utils/getElapsedSince';
 
 type DetailsStatus = '판매중' | '예약중' | '판매완료';
@@ -50,6 +51,7 @@ export function ItemDetails() {
     refetch: refetchEdit,
   } = useGetItemDetailsEdit(Number(itemId));
   const openEditorPanel = useProductEditorStore(state => state.openPanel);
+  const showToast = useToastStore(state => state.showToast);
 
   const {
     data: itemDetailsData,
@@ -63,11 +65,16 @@ export function ItemDetails() {
 
   const openEditPanel = () => {
     if (!itemDetailsEditData || isLoadingEdit) {
-      // '문제가 생겼습니다 다시 시도해 주세요' 같은 toast
-      // 또는 잠깐 로딩 보여주고 data, isLoading을 useEffect로 체크 후 panel 열어 주기
+      showToast({
+        type: 'warning',
+        message: '문제가 생겼습니다. 다시 시도해 주세요!',
+      });
       return;
     } else if (isErrorEdit || !itemId) {
-      // 에러 toast
+      showToast({
+        type: 'error',
+        message: '에러 발생!',
+      });
       return;
     }
     openEditorPanel({

@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { useGetItemDetailsEdit } from '../api/queries/useItemDetailsQuery';
 import { useProductEditorStore } from '../stores/useProductEditorStore';
+import { useToastStore } from '../stores/useToastStore';
 import { addCommasToNumber } from '../utils/addCommasToNumber';
 import { getElapsedSince } from '../utils/getElapsedSince';
 import { Badge } from './Badge';
@@ -35,10 +36,11 @@ export function ProductItem({
   thumbnailUrl,
   isSeller,
 }: ItemProps) {
-  const { chat, favorite } = countData;
   const navigate = useNavigate();
-  const { data, isError, isLoading, refetch } = useGetItemDetailsEdit(id);
+  const showToast = useToastStore(state => state.showToast);
   const openEditorPanel = useProductEditorStore(state => state.openPanel);
+  const { data, isError, isLoading, refetch } = useGetItemDetailsEdit(id);
+  const { chat, favorite } = countData;
 
   const setPrice = (price: number | null) => {
     switch (price) {
@@ -61,11 +63,16 @@ export function ProductItem({
   const dropdownActions = {
     edit: () => {
       if (!data || isLoading) {
-        // '문제가 생겼습니다 다시 시도해 주세요' 같은 toast
-        // 또는 잠깐 로딩 보여주고 data, isLoading을 useEffect로 체크 후 panel 열어 주기
+        showToast({
+          type: 'warning',
+          message: '문제 발생! 다시 시도해 주세요!',
+        });
         return;
       } else if (isError) {
-        // 에러 toast
+        showToast({
+          type: 'error',
+          message: '에러 발생!',
+        });
         return;
       }
       openEditorPanel({ mode: 'edit', data: data, id: id });
