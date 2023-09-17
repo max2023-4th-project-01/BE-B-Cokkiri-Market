@@ -6,6 +6,7 @@ import { ReactComponent as chevronRight } from '../../assets/icon/chevron-right.
 import { ReactComponent as chevronUp } from '../../assets/icon/chevron-up.svg';
 import { ReactComponent as circleXFilled } from '../../assets/icon/circle-x-filled.svg';
 import { ReactComponent as dots } from '../../assets/icon/dots.svg';
+import { ReactComponent as error } from '../../assets/icon/error.svg';
 import { ReactComponent as exclamationCircle } from '../../assets/icon/exclamation-circle.svg';
 import { ReactComponent as heartFilled } from '../../assets/icon/heart-filled.svg';
 import { ReactComponent as heart } from '../../assets/icon/heart.svg';
@@ -23,7 +24,9 @@ import { ReactComponent as photo } from '../../assets/icon/photo.svg';
 import { ReactComponent as plus } from '../../assets/icon/plus.svg';
 import { ReactComponent as search } from '../../assets/icon/search.svg';
 import { ReactComponent as send } from '../../assets/icon/send.svg';
+import { ReactComponent as success } from '../../assets/icon/success.svg';
 import { ReactComponent as userCircle } from '../../assets/icon/user-circle.svg';
+import { ReactComponent as warning } from '../../assets/icon/warning.svg';
 import { ReactComponent as x } from '../../assets/icon/x.svg';
 
 export const icons = {
@@ -35,6 +38,7 @@ export const icons = {
   chevronUp,
   circleXFilled,
   dots,
+  error,
   exclamationCircle,
   heartFilled,
   heart,
@@ -52,7 +56,9 @@ export const icons = {
   plus,
   search,
   send,
+  success,
   userCircle,
+  warning,
   x,
 };
 

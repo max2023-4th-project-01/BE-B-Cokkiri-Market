@@ -6,20 +6,20 @@ import { IconsType, icons } from './icons';
 interface IconProps {
   name: IconsType;
   size?: number;
-  color: ColorType;
+  color?: ColorType;
   onClick?: (event: MouseEvent) => void;
 }
 
 export function Icon({ name, size = 24, color, onClick }: IconProps) {
   const IconComponent = icons[name];
-  const iconColor = designSystem.color[color];
+  const iconColor = color && designSystem.color[color];
   const iconRef = useRef<HTMLDivElement>(null);
   const isClickable = !!onClick;
 
   useEffect(() => {
     const svgElement = iconRef.current;
 
-    if (!svgElement) return;
+    if (!svgElement || !iconColor) return;
 
     const paths = svgElement.querySelectorAll('path');
     paths.forEach((path: SVGPathElement) => {

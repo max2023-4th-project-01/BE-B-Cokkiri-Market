@@ -7,6 +7,7 @@ import { Button } from '../../components/button/Button';
 import { Icon } from '../../components/icon/Icon';
 import { SignUpLocationModal } from '../../components/locations/SignUpLocationModal';
 import { useScreenConfigStore } from '../../stores/useScreenConfigStore';
+import { useToastStore } from '../../stores/useToastStore';
 import { AuthInput } from './AuthInput';
 import { ProfileButton } from './ProfileButton';
 import { isValid } from './authConstant';
@@ -22,6 +23,7 @@ type LocationState = {
 
 export function SignUpPanel({ closePanel }: SignUpPanelProps) {
   const { screenWidth } = useScreenConfigStore();
+  const showToast = useToastStore(state => state.showToast);
 
   const [rightPosition, setRightPosition] = useState(-screenWidth);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -130,10 +132,10 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
     }
 
     const res = await singup(formData);
-
+    console.log(res);
     // TODO : 에러 예외 처리
     if (res.status === 201) {
-      console.log('Response:', res.data);
+      showToast({ type: 'success', message: '회원가입 성공!' });
       closePanel();
     }
   };

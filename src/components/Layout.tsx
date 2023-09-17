@@ -4,6 +4,7 @@ import { ProductEditorPanel } from '../page/productEditor/ProductEditorPanel';
 import { useProductEditorStore } from '../stores/useProductEditorStore';
 import { useScreenConfigStore } from '../stores/useScreenConfigStore';
 import { Footer } from './Footer';
+import { ToastContainer } from './Toast';
 
 export function Layout() {
   const { screenWidth, screenHeight } = useScreenConfigStore();
@@ -13,6 +14,7 @@ export function Layout() {
     <Wrapper $width={screenWidth} $height={screenHeight}>
       <Outlet />
       <Footer />
+      <ToastContainer />
       {isOpenEditor && <ProductEditorPanel />}
     </Wrapper>
   );
