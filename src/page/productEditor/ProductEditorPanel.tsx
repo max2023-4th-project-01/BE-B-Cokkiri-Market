@@ -260,7 +260,10 @@ export function ProductEditorPanel() {
     const item = {
       title: title.value,
       categoryId: selectedCategoryId,
-      price: price.value === '' ? null : Number(price.value),
+      price:
+        price.value === ''
+          ? null
+          : Number(price.value?.toString().replaceAll(',', '')),
       content: content.value,
       myLocationId: selectedLocationData?.id,
     };
