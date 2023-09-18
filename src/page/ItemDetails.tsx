@@ -17,6 +17,7 @@ import { Dropdown } from '../components/dropdown/Dropdown';
 import { MenuItem } from '../components/dropdown/MenuItem';
 import { Icon } from '../components/icon/Icon';
 import { ImageSlider } from '../components/itemDetails/ImageSlider';
+import { Slider } from '../components/itemDetails/Slider';
 import { useProductEditorStore } from '../stores/useProductEditorStore';
 import { useToastStore } from '../stores/useToastStore';
 import { getElapsedSince } from '../utils/getElapsedSince';
@@ -169,7 +170,10 @@ export function ItemDetails() {
       />
 
       <Main>
-        <ImageSlider imageList={itemDetailsData.images} />
+        {/* <ImageSlider imageList={itemDetailsData.images} /> */}
+        <SliderWrapper>
+          <Slider imageList={itemDetailsData.images} />
+        </SliderWrapper>
         <Body>
           <SellerInfo>
             <Button color="neutralBackgroundWeak" align="space-between">
@@ -274,7 +278,7 @@ const StyledHeader = styled(Header)`
 `;
 
 const Main = styled.div`
-  height: 786px;
+  height: calc(100% - 64px);
   overflow-y: auto;
 
   &::-webkit-scrollbar {
@@ -282,6 +286,10 @@ const Main = styled.div`
   }
   -ms-overflow-style: none;
   scrollbar-width: none;
+`;
+
+const SliderWrapper = styled.div`
+  height: 62%;
 `;
 
 const Body = styled.div`
