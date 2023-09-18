@@ -1,10 +1,4 @@
-import {
-  PointerEventHandler,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { styled } from 'styled-components';
 import { Slide } from './Slide';
 
@@ -16,6 +10,17 @@ export function Slider({ imageList }: SliderProps) {
   const [sliderSize, setSliderSize] = useState({ width: 0, height: 0 });
   const sliderRef = useRef<HTMLDivElement>(null);
   const isDragging = useRef(false);
+  const currentIndex = useRef<number>(0);
+  const startPosition = useRef(0);
+  const animationRef = useRef<number | null>(null);
+  const prevTranslate = useRef(0);
+  const currentTranslate = useRef(0);
+
+  const setPositionByIndex = () => {
+    currentTranslate.current = currentIndex.current * -sliderSize.width;
+    prevTranslate.current = currentTranslate.current;
+    setSliderPosition();
+  };
 
   useEffect(() => {
     if (!sliderRef.current) return;
@@ -24,22 +29,59 @@ export function Slider({ imageList }: SliderProps) {
     setSliderSize({ width, height });
   }, []);
 
-  const onDragStart: PointerEventHandler = event => {
+  const onDragStart = (event: React.PointerEvent, index: number) => {
     event.preventDefault();
 
     isDragging.current = true;
-    console.log('drag start');
+    currentIndex.current = index;
+    startPosition.current = event.pageX;
+    animationRef.current = requestAnimationFrame(slideAnimation);
+
+    if (sliderRef.current) {
+      sliderRef.current.style.cursor = 'grabbing';
+    }
   };
 
-  const onDragging = () => {
+  const onDragging = (event: React.PointerEvent) => {
     if (isDragging.current) {
-      console.log('dragging');
+      const currentPostion = event.pageX;
+      currentTranslate.current =
+        prevTranslate.current + currentPostion - startPosition.current;
     }
   };
 
   const onDragEnd = () => {
     isDragging.current = false;
-    console.log('drag end');
+    cancelAnimationFrame(animationRef.current!);
+
+    const movedDist = currentTranslate.current - prevTranslate.current;
+
+    if (movedDist < -100 && currentIndex.current < imageList.length - 1) {
+      currentIndex.current += 1;
+    }
+
+    if (movedDist > 100 && currentIndex.current > 0) {
+      currentIndex.current -= 1;
+    }
+
+    setPositionByIndex();
+
+    if (sliderRef.current) {
+      sliderRef.current.style.cursor = 'grab';
+    }
+  };
+
+  const slideAnimation = () => {
+    console.log('slide animation');
+    setSliderPosition();
+    if (isDragging.current) {
+      requestAnimationFrame(slideAnimation);
+    }
+  };
+
+  const setSliderPosition = () => {
+    if (!sliderRef.current) return;
+    sliderRef.current.style.transform = `translateX(${currentTranslate.current}px)`;
   };
 
   return (
@@ -48,11 +90,17 @@ export function Slider({ imageList }: SliderProps) {
         {imageList.map((image, index) => (
           <div
             key={index}
-            onPointerDown={onDragStart}
+            onPointerDown={event => onDragStart(event, index)}
             onPointerMove={onDragging}
             onPointerUp={onDragEnd}
+            onPointerLeave={() => {
+              if (isDragging.current) {
+                onDragEnd();
+              }
+            }}
             onContextMenu={event => {
               event.preventDefault();
+              event.stopPropagation();
             }}
           >
             <Slide
