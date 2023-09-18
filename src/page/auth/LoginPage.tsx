@@ -78,6 +78,7 @@ export function LoginPage() {
             password={password}
             onChangeId={onChangeId}
             onChangePassword={onChangePassword}
+            onSubmit={submit}
           />
           <ButtonWrapper>
             <Button
