@@ -16,7 +16,6 @@ import { Button } from '../components/button/Button';
 import { Dropdown } from '../components/dropdown/Dropdown';
 import { MenuItem } from '../components/dropdown/MenuItem';
 import { Icon } from '../components/icon/Icon';
-import { ImageSlider } from '../components/itemDetails/ImageSlider';
 import { Slider } from '../components/itemDetails/Slider';
 import { useProductEditorStore } from '../stores/useProductEditorStore';
 import { useToastStore } from '../stores/useToastStore';

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { styled } from 'styled-components';
+// import { Badge } from '../Badge';
 import { Slide } from './Slide';
 
 type SliderProps = {
@@ -7,7 +8,7 @@ type SliderProps = {
 };
 
 export function Slider({ imageList }: SliderProps) {
-  const [sliderSize, setSliderSize] = useState({ width: 0, height: 0 });
+  const [slideSize, setSlideSize] = useState({ width: 0, height: 0 });
   const sliderRef = useRef<HTMLDivElement>(null);
   const isDragging = useRef(false);
   const currentIndex = useRef<number>(0);
@@ -17,7 +18,7 @@ export function Slider({ imageList }: SliderProps) {
   const currentTranslate = useRef(0);
 
   const setPositionByIndex = () => {
-    currentTranslate.current = currentIndex.current * -sliderSize.width;
+    currentTranslate.current = currentIndex.current * -slideSize.width;
     prevTranslate.current = currentTranslate.current;
     setSliderPosition();
   };
@@ -26,7 +27,7 @@ export function Slider({ imageList }: SliderProps) {
     if (!sliderRef.current) return;
 
     const { width, height } = sliderRef.current.getBoundingClientRect();
-    setSliderSize({ width, height });
+    setSlideSize({ width, height });
   }, []);
 
   const onDragStart = (event: React.PointerEvent, index: number) => {
@@ -56,11 +57,14 @@ export function Slider({ imageList }: SliderProps) {
 
     const movedDist = currentTranslate.current - prevTranslate.current;
 
-    if (movedDist < -100 && currentIndex.current < imageList.length - 1) {
+    if (
+      movedDist < -(slideSize.width / 3) &&
+      currentIndex.current < imageList.length - 1
+    ) {
       currentIndex.current += 1;
     }
 
-    if (movedDist > 100 && currentIndex.current > 0) {
+    if (movedDist > slideSize.width / 3 && currentIndex.current > 0) {
       currentIndex.current -= 1;
     }
 
@@ -72,7 +76,6 @@ export function Slider({ imageList }: SliderProps) {
   };
 
   const slideAnimation = () => {
-    console.log('slide animation');
     setSliderPosition();
     if (isDragging.current) {
       requestAnimationFrame(slideAnimation);
@@ -105,12 +108,19 @@ export function Slider({ imageList }: SliderProps) {
           >
             <Slide
               imageData={image}
-              slideWidth={sliderSize.width}
-              slideHeight={sliderSize.height}
+              slideWidth={slideSize.width}
+              slideHeight={slideSize.height}
             />
           </div>
         ))}
       </Wrapper>
+      {/* <PageNav
+        fontColor="neutralTextWeak"
+        badgeColor="neutralBackgroundBlur"
+        text={`${currentIndex.current} / ${imageList.length}`}
+        size="M"
+        type="container"
+      /> */}
     </Container>
   );
 }
@@ -119,6 +129,7 @@ const Container = styled.div`
   width: 100%;
   height: 100%;
   overflow: hidden;
+  position: relative;
 `;
 
 const Wrapper = styled.div`
@@ -126,6 +137,13 @@ const Wrapper = styled.div`
   height: 100%;
   display: flex;
   cursor: grab;
+  transition: transform 0.2s ease-out;
   // For mobile touch event
   touch-action: none;
 `;
+
+// const PageNav = styled(Badge)`
+//   position: absolute;
+//   bottom: 16px;
+//   right: 16px;
+// `;
