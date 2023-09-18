@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { styled } from 'styled-components';
-// import { Badge } from '../Badge';
 import { Slide } from './Slide';
 
 type SliderProps = {
   imageList: { id: number; url: string }[];
+  pagination: { plusPageNum: () => void; minusPageNum: () => void };
 };
 
-export function Slider({ imageList }: SliderProps) {
+export function Slider({ imageList, pagination }: SliderProps) {
   const [slideSize, setSlideSize] = useState({ width: 0, height: 0 });
   const sliderRef = useRef<HTMLDivElement>(null);
   const isDragging = useRef(false);
@@ -16,12 +16,6 @@ export function Slider({ imageList }: SliderProps) {
   const animationRef = useRef<number | null>(null);
   const prevTranslate = useRef(0);
   const currentTranslate = useRef(0);
-
-  const setPositionByIndex = () => {
-    currentTranslate.current = currentIndex.current * -slideSize.width;
-    prevTranslate.current = currentTranslate.current;
-    setSliderPosition();
-  };
 
   useEffect(() => {
     if (!sliderRef.current) return;
@@ -62,10 +56,12 @@ export function Slider({ imageList }: SliderProps) {
       currentIndex.current < imageList.length - 1
     ) {
       currentIndex.current += 1;
+      pagination.plusPageNum();
     }
 
     if (movedDist > slideSize.width / 3 && currentIndex.current > 0) {
       currentIndex.current -= 1;
+      pagination.minusPageNum();
     }
 
     setPositionByIndex();
@@ -85,6 +81,12 @@ export function Slider({ imageList }: SliderProps) {
   const setSliderPosition = () => {
     if (!sliderRef.current) return;
     sliderRef.current.style.transform = `translateX(${currentTranslate.current}px)`;
+  };
+
+  const setPositionByIndex = () => {
+    currentTranslate.current = currentIndex.current * -slideSize.width;
+    prevTranslate.current = currentTranslate.current;
+    setSliderPosition();
   };
 
   return (
@@ -114,13 +116,6 @@ export function Slider({ imageList }: SliderProps) {
           </div>
         ))}
       </Wrapper>
-      {/* <PageNav
-        fontColor="neutralTextWeak"
-        badgeColor="neutralBackgroundBlur"
-        text={`${currentIndex.current} / ${imageList.length}`}
-        size="M"
-        type="container"
-      /> */}
     </Container>
   );
 }
@@ -141,9 +136,3 @@ const Wrapper = styled.div`
   // For mobile touch event
   touch-action: none;
 `;
-
-// const PageNav = styled(Badge)`
-//   position: absolute;
-//   bottom: 16px;
-//   right: 16px;
-// `;

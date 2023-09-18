@@ -9,6 +9,7 @@ import {
 } from '../api/queries/useItemDetailsQuery';
 import { useDeleteItem } from '../api/queries/useItemQuery';
 import { Alert } from '../components/Alert';
+import { Badge } from '../components/Badge';
 import { Error } from '../components/Error';
 import { Header } from '../components/Header';
 import { Loader } from '../components/Loader';
@@ -43,25 +44,37 @@ export type ItemDetailsData = {
 
 export function ItemDetails() {
   const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [activeSlidePage, setActiveSlidePage] = useState(1);
+
   const { itemId } = useParams();
+  const navigate = useNavigate();
+  const openEditorPanel = useProductEditorStore(state => state.openPanel);
+  const showToast = useToastStore(state => state.showToast);
+
   const {
     data: itemDetailsEditData,
     isError: isErrorEdit,
     isLoading: isLoadingEdit,
     refetch: refetchEdit,
   } = useGetItemDetailsEdit(Number(itemId));
-  const openEditorPanel = useProductEditorStore(state => state.openPanel);
-  const showToast = useToastStore(state => state.showToast);
 
   const {
     data: itemDetailsData,
     isLoading,
     isError,
   } = useGetItemDetails(Number(itemId));
+
   const favoriteMutation = usePatchFavorite();
   const statusMutation = usePatchStatus();
   const deleteMutation = useDeleteItem();
-  const navigate = useNavigate();
+
+  const plusPageNum = () => {
+    setActiveSlidePage(prev => prev + 1);
+  };
+
+  const minusPageNum = () => {
+    setActiveSlidePage(prev => prev - 1);
+  };
 
   const openEditPanel = () => {
     if (!itemDetailsEditData || isLoadingEdit) {
@@ -169,9 +182,18 @@ export function ItemDetails() {
       />
 
       <Main>
-        {/* <ImageSlider imageList={itemDetailsData.images} /> */}
         <SliderWrapper>
-          <Slider imageList={itemDetailsData.images} />
+          <Slider
+            imageList={itemDetailsData.images}
+            pagination={{ plusPageNum, minusPageNum }}
+          />
+          <PageNav
+            fontColor="neutralTextWeak"
+            badgeColor="neutralBackgroundBlur"
+            text={`${activeSlidePage} / ${itemDetailsData.images.length}`}
+            size="M"
+            type="container"
+          />
         </SliderWrapper>
         <Body>
           <SellerInfo>
@@ -288,7 +310,15 @@ const Main = styled.div`
 `;
 
 const SliderWrapper = styled.div`
+  width: 100%;
   height: 62%;
+  position: relative;
+`;
+
+const PageNav = styled(Badge)`
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
 `;
 
 const Body = styled.div`
