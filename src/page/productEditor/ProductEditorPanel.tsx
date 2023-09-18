@@ -257,13 +257,11 @@ export function ProductEditorPanel() {
 
   const submit = async () => {
     const formData = new FormData();
+    const convertedPrice = Number(price.value?.toString().replaceAll(',', ''));
     const item = {
       title: title.value,
       categoryId: selectedCategoryId,
-      price:
-        price.value === ''
-          ? null
-          : Number(price.value?.toString().replaceAll(',', '')),
+      price: price.value === '' ? null : convertedPrice,
       content: content.value,
       myLocationId: selectedLocationData?.id,
     };
