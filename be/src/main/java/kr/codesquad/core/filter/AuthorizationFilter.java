@@ -20,6 +20,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.MalformedJwtException;
 import kr.codesquad.jwt.service.JwtProvider;
 import kr.codesquad.util.Constants;
+import kr.codesquad.util.RedisUtil;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -28,6 +29,7 @@ public class AuthorizationFilter implements Filter {
 		"/api/reissue-access-token", "/api/oauth/**", "/api/redirect/**", "/redirect/**", "/api/locations**"};
 
 	private final JwtProvider jwtProvider;
+	private final RedisUtil redisUtil;
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -44,7 +46,11 @@ public class AuthorizationFilter implements Filter {
 		}
 
 		if (!isContainToken(httpServletRequest)) {
-			throw new MalformedJwtException("");
+			throw new MalformedJwtException("토큰이 없습니다" + httpServletRequest.getRequestURI());
+		}
+
+		if (isBlackListed(httpServletRequest)) {
+			throw new MalformedJwtException("로그아웃된 토큰입니다" + httpServletRequest.getRequestURI());
 		}
 
 		try {
@@ -56,8 +62,13 @@ public class AuthorizationFilter implements Filter {
 					new UsernamePasswordAuthenticationToken(claims.getSubject(), null, new ArrayList<>()));
 			chain.doFilter(request, response);
 		} catch (RuntimeException e) {
-			throw new MalformedJwtException("");
+			throw new MalformedJwtException("올바르지 않은 토큰입니다." + httpServletRequest.getRequestURI());
 		}
+	}
+
+	private boolean isBlackListed(HttpServletRequest httpServletRequest) {
+		String accessToken = getToken(httpServletRequest);
+		return redisUtil.hasKey(accessToken);
 	}
 
 	private boolean whiteListCheck(String uri) {
