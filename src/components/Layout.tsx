@@ -4,7 +4,7 @@ import { ProductEditorPanel } from '../page/productEditor/ProductEditorPanel';
 import { useProductEditorStore } from '../stores/useProductEditorStore';
 import { useScreenConfigStore } from '../stores/useScreenConfigStore';
 import { Footer } from './Footer';
-import { ToastContainer } from './Toast';
+import { ToastContainer } from './toast/ToastContainer';
 
 export function Layout() {
   const { screenWidth, screenHeight } = useScreenConfigStore();

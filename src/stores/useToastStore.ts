@@ -1,21 +1,44 @@
 import { create } from 'zustand';
 
-type ToastType = {
+export type ToastMode = 'success' | 'error' | 'warning';
+
+export type ToastType = {
+  id: number;
   message: string;
-  type: 'success' | 'error' | 'warning';
+  mode: ToastMode;
   duration?: number;
 };
 
 type ToastState = {
-  toast: ToastType | null;
+  toasts: ToastType[];
+  toastIdCounter: number;
   baseDuration: number;
-  showToast: (toast: ToastType) => void;
-  hideToast: () => void;
+  showToast: ({
+    message,
+    mode,
+    duration,
+  }: {
+    message: string;
+    mode: ToastMode;
+    duration?: number;
+  }) => void;
+  hideToast: (id: number) => void;
 };
 
 export const useToastStore = create<ToastState>(set => ({
   baseDuration: 3000,
-  toast: null,
-  showToast: toast => set(() => ({ toast })),
-  hideToast: () => set({ toast: null }),
+  toastIdCounter: 0,
+  toasts: [],
+  showToast: ({ message, mode, duration = 3000 }) =>
+    set(state => ({
+      toasts: [
+        ...state.toasts,
+        { message, mode, duration, id: state.toastIdCounter },
+      ],
+      toastIdCounter: state.toastIdCounter + 1,
+    })),
+  hideToast: id =>
+    set(state => ({
+      toasts: state.toasts.filter(toast => toast.id !== id),
+    })),
 }));

@@ -135,7 +135,7 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
     console.log(res);
     // TODO : 에러 예외 처리
     if (res.status === 201) {
-      showToast({ type: 'success', message: '회원가입 성공!' });
+      showToast({ mode: 'success', message: '회원가입 성공!' });
       closePanel();
     }
   };
