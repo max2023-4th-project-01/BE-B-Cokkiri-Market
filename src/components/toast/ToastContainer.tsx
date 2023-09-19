@@ -13,7 +13,12 @@ export function ToastContainer({
   return (
     <Container>
       {toasts.map((toast, index) => (
-        <Toast key={toast.id} toast={toast} index={index} position={position} />
+        <Toast
+          key={toast.id}
+          toast={toast}
+          index={toasts.length - index - 1}
+          position={position}
+        />
       ))}
     </Container>
   );
