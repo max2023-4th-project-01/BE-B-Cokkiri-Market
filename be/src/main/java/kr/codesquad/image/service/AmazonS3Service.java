@@ -3,6 +3,7 @@ package kr.codesquad.image.service;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -63,7 +64,7 @@ public class AmazonS3Service {
 	public void deleteImage(String fileUrl) {
 		String dirPath = S3ImageDirectory.findDirectory(fileUrl) + "/";
 		String fileName = fileUrl.substring(fileUrl.indexOf(dirPath) + dirPath.length());
-		String key = dirPath + fileName;
+		String key = dirPath + URLDecoder.decode(fileName);
 
 		if (!DEFAULT_PROFILE_IMAGE.equals(key)) { // 기본 프로필 이미지가 아닌 경우에만 S3에서 삭제
 			amazonS3.deleteObject(new DeleteObjectRequest(bucketName, key));
