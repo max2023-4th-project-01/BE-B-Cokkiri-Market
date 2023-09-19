@@ -51,11 +51,6 @@ public class JwtProvider {
 		return new Jwt(accessToken, refreshToken);
 	}
 
-	public Jwt reissueAccessToken(Map<String, Object> claims, String refreshToken) {
-		String accessToken = createToken(claims, getExpireDateAccessToken());
-		return new Jwt(accessToken, refreshToken);
-	}
-
 	public Date getExpireDateAccessToken() {
 		return new Date(System.currentTimeMillis() + jwtProperties.getAccessTokenExpirationTime());
 	}

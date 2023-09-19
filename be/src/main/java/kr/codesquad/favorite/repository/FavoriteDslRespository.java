@@ -21,7 +21,7 @@ public class FavoriteDslRespository {
 
 	public List<Category> readFavoriteCategories(Long userId) {
 		return queryFactory
-			.select(Projections.fields(Category.class,
+			.selectDistinct(Projections.fields(Category.class,
 				category.id,
 				category.name))
 			.from(category)
