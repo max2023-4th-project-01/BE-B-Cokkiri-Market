@@ -82,10 +82,14 @@ export const useGetFavoritesCategoryData = () => {
   );
 };
 
-export const useGetRecommendCategoryData = () => {
-  return useQuery<CategoryData>([RECOMMEND_CATEGORY], getRecommendCategories, {
-    enabled: false,
-  });
+export const useGetRecommendCategoryData = (title: string) => {
+  return useQuery<CategoryData>(
+    [RECOMMEND_CATEGORY],
+    () => getRecommendCategories(title),
+    {
+      enabled: false,
+    }
+  );
 };
 
 export const useResetRecommendCategory = () => {

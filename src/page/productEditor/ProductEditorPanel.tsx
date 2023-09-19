@@ -42,8 +42,6 @@ export function ProductEditorPanel() {
 
   const { data: userLocationData } = useGetUserLocation();
   const resetRecommendCategory = useResetRecommendCategory();
-  const { data: recommendCategoryData, refetch } =
-    useGetRecommendCategoryData();
 
   const isEdit = editorMode === 'edit';
   const isError = isEdit && (!productData || !productId);
@@ -79,6 +77,10 @@ export function ProductEditorPanel() {
   const title = useInput(isEdit ? productData!.title : '');
   const price = useInput(isEdit ? productData!.price : '');
   const content = useInput(isEdit ? productData!.content : '');
+
+  const { data: recommendCategoryData, refetch } = useGetRecommendCategoryData(
+    title.value ?? ''
+  );
 
   const selectedLocationData = locationData?.filter(
     data => data.isSelected === true
