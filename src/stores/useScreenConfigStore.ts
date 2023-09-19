@@ -15,7 +15,9 @@ export const useScreenConfigStore = create<screenConfigState>(set => ({
   updateConfig: () => {
     const userAgent = navigator.userAgent;
     const isMobile =
-      /Mobile|Android/i.test(userAgent) || window.innerWidth <= 768;
+      /Mobile|Android/i.test(userAgent) ||
+      window.innerWidth <= 768 ||
+      window.innerHeight <= BASE_HEIGHT;
     const screenWidth = isMobile ? window.innerWidth : BASE_WIDTH;
     const screenHeight = isMobile ? window.innerHeight : BASE_HEIGHT;
 

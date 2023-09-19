@@ -186,6 +186,7 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
           onChangeId={onChangeId}
           onChangePassword={onChangePassword}
           onChangeNickname={onChangeNickname}
+          onSubmit={submit}
         />
         {location ? (
           <Button
