@@ -3,19 +3,19 @@ package kr.codesquad.item.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import kr.codesquad.item.dto.request.ItemStatusDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import kr.codesquad.category.repository.CategoryRepository;
-import kr.codesquad.chat.repository.ChatRepository;
+import kr.codesquad.chat.repository.ChatRoomRepository;
 import kr.codesquad.favorite.repository.FavoriteRepository;
 import kr.codesquad.image.entity.Image;
 import kr.codesquad.image.repository.ImageRepository;
 import kr.codesquad.image.service.AmazonS3Service;
 import kr.codesquad.item.dto.ItemMapper;
 import kr.codesquad.item.dto.request.ItemSaveRequest;
+import kr.codesquad.item.dto.request.ItemStatusDto;
 import kr.codesquad.item.dto.request.ItemUpdateRequest;
 import kr.codesquad.item.dto.response.ItemCountDataResponse;
 import kr.codesquad.item.dto.response.ItemDetailResponse;
@@ -47,7 +47,7 @@ public class ItemService {
 	private final CategoryRepository categoryRepository;
 	private final FavoriteRepository favoriteRepository;
 	private final LocationRepository locationRepository;
-	private final ChatRepository chatRepository;
+	private final ChatRoomRepository chatRoomRepository;
 	private final UserRepository userRepository;
 	private final ItemPaginationRepository itemPaginationRepository;
 	private final AmazonS3Service amazonS3Service;
@@ -97,7 +97,7 @@ public class ItemService {
 
 		List<ItemImageResponse> images = imageRepository.findByItemId(item.getId());
 		String categoryName = categoryRepository.findNameById(item.getCategoryId());
-		int chatCount = chatRepository.countByItemId(item.getId());
+		int chatCount = chatRoomRepository.countByItemId(item.getId());
 		int favoriteCount = favoriteRepository.countByItemId(item.getId());
 
 		return ItemDetailResponse.builder()

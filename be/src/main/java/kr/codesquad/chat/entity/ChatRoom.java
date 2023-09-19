@@ -13,19 +13,19 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor
-public class Chat {
+public class ChatRoom {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	@Column(nullable = false)
 	private Long itemId;
-	@Column(nullable = false, length = 45)
+	@Column(length = 45)
 	private String lastMessageId;
 	@Column(nullable = false)
 	private Long senderId;
 
 	@Builder
-	public Chat(Long id, Long itemId, String lastMessageId, Long senderId) {
+	public ChatRoom(Long id, Long itemId, String lastMessageId, Long senderId) {
 		this.id = id;
 		this.itemId = itemId;
 		this.lastMessageId = lastMessageId;
