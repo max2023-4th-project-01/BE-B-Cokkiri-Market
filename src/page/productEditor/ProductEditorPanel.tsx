@@ -1,4 +1,5 @@
 import { ChangeEvent, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { addItems, editItems } from '../../api/fetchers/itemFetcher';
 import {
@@ -30,6 +31,7 @@ type CategoryItem = {
 };
 
 export function ProductEditorPanel() {
+  const navigate = useNavigate();
   const { screenWidth } = useScreenConfigStore();
   const { isOpen, productId, editorMode, productData, closePanel } =
     useProductEditorStore(state => ({
@@ -289,15 +291,15 @@ export function ProductEditorPanel() {
       const res = await editItems(formData, productId!);
 
       if (res.status === 201) {
-        // 해당 상품 상세 페이지로 이동
         onClosePanel();
+        navigate(`/items/${productId}`);
       }
     } else {
       const res = await addItems(formData);
 
       if (res.status === 201) {
-        // 해당 상품 상세 페이지로 이동
         onClosePanel();
+        navigate(`/items/${res.data.itemId}`);
       }
     }
   };
