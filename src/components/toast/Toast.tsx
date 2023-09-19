@@ -20,7 +20,7 @@ export function Toast({
   index: number;
   position: PositionType;
 }) {
-  const { toasts, baseDuration, hideToast } = useToastStore();
+  const { baseDuration, hideToast } = useToastStore();
   const [toastState, setToastState] = useState<ToastState>('appearing');
 
   const onAnimationEnd = () => {
@@ -45,7 +45,7 @@ export function Toast({
       $mode={toast.mode}
       $toastState={toastState}
       onAnimationEnd={onAnimationEnd}
-      $index={toasts.length - 1 - index}
+      $index={index}
     >
       <Icon name={toast.mode} />
       {toast.message}
