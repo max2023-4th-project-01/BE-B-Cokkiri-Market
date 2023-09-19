@@ -17,7 +17,7 @@ export function ProtectedRoute() {
 
   useEffect(() => {
     if (!isLogin) {
-      showToast({ type: 'warning', message: '로그인 후 이용해 주세요' });
+      showToast({ mode: 'warning', message: '로그인 후 이용해 주세요' });
     }
   });
 
