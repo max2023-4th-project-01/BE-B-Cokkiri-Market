@@ -37,8 +37,7 @@ export function AuthInput({
       onSubmit &&
       isValidId &&
       isValidPassword &&
-      isValidNickname &&
-      nickname
+      (!nickname || (nickname && isValidNickname))
     ) {
       onSubmit();
     }
