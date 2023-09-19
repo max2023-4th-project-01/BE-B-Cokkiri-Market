@@ -68,7 +68,7 @@ export const useAddUserLocation = () => {
       const statueCode = error?.response?.status;
       if (statueCode === 500) {
         showToast({
-          type: 'error',
+          mode: 'error',
           message: '서버에서 요청이 제대로 처리되지 못했습니다.',
         });
       }

@@ -64,13 +64,13 @@ export function ProductItem({
     edit: () => {
       if (!data || isLoading) {
         showToast({
-          type: 'warning',
+          mode: 'warning',
           message: '문제 발생! 다시 시도해 주세요!',
         });
         return;
       } else if (isError) {
         showToast({
-          type: 'error',
+          mode: 'error',
           message: '에러 발생!',
         });
         return;
