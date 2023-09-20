@@ -1,4 +1,4 @@
-package kr.codesquad.chat.dto;
+package kr.codesquad.chat.dto.request;
 
 import lombok.Getter;
 

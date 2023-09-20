@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import kr.codesquad.chat.dto.ChatRoomCreateRequest;
+import kr.codesquad.chat.dto.request.ChatRoomCreateRequest;
+import kr.codesquad.chat.dto.response.ChatRoomCreateResponse;
 import kr.codesquad.chat.service.ChatService;
 import kr.codesquad.util.Constants;
 import lombok.RequiredArgsConstructor;
@@ -19,12 +20,13 @@ public class ChatController {
 
 	private final ChatService chatService;
 
-	@PostMapping("/")
-	public ResponseEntity<Void> createChatRoom(@RequestBody ChatRoomCreateRequest chatRoomCreateRequest,
+	@PostMapping("/api/chat")
+	public ResponseEntity<ChatRoomCreateResponse> createChatRoom(
+		@RequestBody ChatRoomCreateRequest chatRoomCreateRequest,
 		HttpServletRequest request) {
 		String loginId = (String)request.getAttribute(Constants.LOGIN_ID);
-		chatService.createRoom(chatRoomCreateRequest, loginId);
-		return ResponseEntity.status(HttpStatus.CREATED).build();
+		return ResponseEntity.status(HttpStatus.CREATED)
+			.body(chatService.createRoom(chatRoomCreateRequest, loginId));
 	}
 
 }

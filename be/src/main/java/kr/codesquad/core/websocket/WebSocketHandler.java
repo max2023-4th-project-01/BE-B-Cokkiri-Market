@@ -7,6 +7,8 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import kr.codesquad.chat.dto.request.SendMessageRequest;
+import kr.codesquad.chat.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -15,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class WebSocketHandler extends TextWebSocketHandler {
 
-	private final MsgService msgService;
+	private final ChatService chatService;
 	private final ObjectMapper objectMapper;
 
 	@Override
@@ -23,8 +25,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 		String payload = message.getPayload();
 		log.info("payload:{}", payload);
 
-		Message msg = objectMapper.readValue(payload, Message.class);
-		MsgRoom room = msgService.findById(msg.getRoomId());
-		room.handleActions(session, msg, msgService);
+		SendMessageRequest msg = objectMapper.readValue(payload, SendMessageRequest.class);
+		chatService.sendMessage(msg.getChatRoomId(), session, msg);
 	}
 }
