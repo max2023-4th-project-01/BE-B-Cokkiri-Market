@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { useGetItemDetailsEdit } from '../api/queries/useItemDetailsQuery';
@@ -6,6 +7,7 @@ import { useProductEditorStore } from '../stores/useProductEditorStore';
 import { useToastStore } from '../stores/useToastStore';
 import { addCommasToNumber } from '../utils/addCommasToNumber';
 import { getElapsedSince } from '../utils/getElapsedSince';
+import { Alert } from './Alert';
 import { Badge } from './Badge';
 import { Dropdown } from './dropdown/Dropdown';
 import { MenuItem } from './dropdown/MenuItem';
@@ -38,6 +40,7 @@ export function ProductItem({
   isSeller,
   renderingPosition,
 }: ItemProps & { renderingPosition: 'home' | 'favorites' | 'salesList' }) {
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
   const navigate = useNavigate();
   const showToast = useToastStore(state => state.showToast);
   const openEditorPanel = useProductEditorStore(state => state.openPanel);
@@ -95,8 +98,12 @@ export function ProductItem({
       });
     },
     delete: () => {
-      deleteMutation.mutate(id);
+      setIsAlertOpen(true);
     },
+  };
+
+  const deleteItem = () => {
+    deleteMutation.mutate(id);
   };
 
   const showItemDetails = (itemid: number) => {
@@ -163,6 +170,17 @@ export function ProductItem({
           )}
         </History>
       </Information>
+      {isAlertOpen && (
+        <Alert
+          isOpen={isAlertOpen}
+          onClose={() => {
+            setIsAlertOpen(false);
+          }}
+          onAction={deleteItem}
+        >
+          상품을 삭제하시겠습니까?
+        </Alert>
+      )}
     </Div>
   );
 }
