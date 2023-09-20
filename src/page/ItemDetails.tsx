@@ -66,7 +66,7 @@ export function ItemDetails() {
 
   const favoriteMutation = usePatchFavorite();
   const statusMutation = usePatchStatus();
-  const deleteMutation = useDeleteItem();
+  const deleteMutation = useDeleteItem('home');
 
   const plusPageNum = () => {
     setActiveSlidePage(prev => prev + 1);
@@ -79,13 +79,13 @@ export function ItemDetails() {
   const openEditPanel = () => {
     if (!itemDetailsEditData || isLoadingEdit) {
       showToast({
-        type: 'warning',
+        mode: 'warning',
         message: '문제가 생겼습니다. 다시 시도해 주세요!',
       });
       return;
     } else if (isErrorEdit || !itemId) {
       showToast({
-        type: 'error',
+        mode: 'error',
         message: '에러 발생!',
       });
       return;

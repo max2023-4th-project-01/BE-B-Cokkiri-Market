@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { useGetItemDetailsEdit } from '../api/queries/useItemDetailsQuery';
+import { useDeleteItem, usePatchItemStatus } from '../api/queries/useItemQuery';
 import { useProductEditorStore } from '../stores/useProductEditorStore';
 import { useToastStore } from '../stores/useToastStore';
 import { addCommasToNumber } from '../utils/addCommasToNumber';
@@ -35,10 +36,14 @@ export function ProductItem({
   countData,
   thumbnailUrl,
   isSeller,
-}: ItemProps) {
+  renderingPosition,
+}: ItemProps & { renderingPosition: 'home' | 'favorites' | 'salesList' }) {
   const navigate = useNavigate();
   const showToast = useToastStore(state => state.showToast);
   const openEditorPanel = useProductEditorStore(state => state.openPanel);
+  const statusMutation = usePatchItemStatus(renderingPosition);
+  const deleteMutation = useDeleteItem(renderingPosition);
+
   const { data, isError, isLoading, refetch } = useGetItemDetailsEdit(id);
   const { chat, favorite } = countData;
 
@@ -59,18 +64,17 @@ export function ProductItem({
     }
   };
 
-  // TODO: 각 드롭다운 메뉴 아이템들에 맞는 액션 추가하기
   const dropdownActions = {
     edit: () => {
       if (!data || isLoading) {
         showToast({
-          type: 'warning',
+          mode: 'warning',
           message: '문제 발생! 다시 시도해 주세요!',
         });
         return;
       } else if (isError) {
         showToast({
-          type: 'error',
+          mode: 'error',
           message: '에러 발생!',
         });
         return;
@@ -78,13 +82,19 @@ export function ProductItem({
       openEditorPanel({ mode: 'edit', data: data, id: id });
     },
     reserved: () => {
-      console.log('예약중');
+      statusMutation.mutate({
+        itemId: id,
+        statusName: '예약중',
+      });
     },
-    sold: () => {
-      console.log('판매완료');
+    sold: async () => {
+      statusMutation.mutate({
+        itemId: id,
+        statusName: '판매완료',
+      });
     },
     delete: () => {
-      console.log('삭제');
+      deleteMutation.mutate(id);
     },
   };
 

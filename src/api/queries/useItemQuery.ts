@@ -6,6 +6,7 @@ import {
 } from '@tanstack/react-query';
 import { SalesListData } from '../../page/SalesList';
 import { CategoryData, FavoritesCategoryDataType, ItemData } from '../../types';
+import { patchStatus } from '../fetchers/itemDetailsFetcher';
 import {
   deleteItem,
   getCategories,
@@ -33,12 +34,19 @@ export const useGetItemData = (categoryId?: number) => {
   );
 };
 
-export const useDeleteItem = () => {
+export const useDeleteItem = (
+  refetchTarget: 'home' | 'favorites' | 'salesList'
+) => {
   const queryClient = useQueryClient();
+  const key = {
+    home: ITEMS_QUERY_KEY,
+    favorites: FAVORITES_QUERY_KEY,
+    salesList: SALES_LIST_QUERY_KEY,
+  };
 
   return useMutation(deleteItem, {
     onSuccess: () => {
-      queryClient.invalidateQueries([ITEMS_QUERY_KEY]);
+      queryClient.invalidateQueries([key[refetchTarget]]);
     },
   });
 };
@@ -82,10 +90,14 @@ export const useGetFavoritesCategoryData = () => {
   );
 };
 
-export const useGetRecommendCategoryData = () => {
-  return useQuery<CategoryData>([RECOMMEND_CATEGORY], getRecommendCategories, {
-    enabled: false,
-  });
+export const useGetRecommendCategoryData = (title: string) => {
+  return useQuery<CategoryData>(
+    [RECOMMEND_CATEGORY],
+    () => getRecommendCategories(title),
+    {
+      enabled: false,
+    }
+  );
 };
 
 export const useResetRecommendCategory = () => {
@@ -94,4 +106,21 @@ export const useResetRecommendCategory = () => {
     queryClient.resetQueries({
       queryKey: [RECOMMEND_CATEGORY],
     });
+};
+
+export const usePatchItemStatus = (
+  refetchTarget: 'home' | 'favorites' | 'salesList'
+) => {
+  const queryClient = useQueryClient();
+  const key = {
+    home: ITEMS_QUERY_KEY,
+    favorites: FAVORITES_QUERY_KEY,
+    salesList: SALES_LIST_QUERY_KEY,
+  };
+
+  return useMutation(patchStatus, {
+    onSuccess: () => {
+      queryClient.invalidateQueries([key[refetchTarget]]);
+    },
+  });
 };

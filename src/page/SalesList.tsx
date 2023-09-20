@@ -37,7 +37,7 @@ export function SalesList() {
     }
   }, [inView, hasNextPage, fetchNextPage]);
 
-  const setBadgeOption = (text: string, status: boolean | undefined) => {
+  const getBadgeOption = (text: string, status: boolean | undefined) => {
     const isSelected = isSold === status;
 
     const options: BadgeProps = {
@@ -57,9 +57,9 @@ export function SalesList() {
       <TopBar>
         <Header title="판매 내역" />
         <Tabs>
-          <Badge {...setBadgeOption('전체', undefined)} />
-          <Badge {...setBadgeOption('판매 중', false)} />
-          <Badge {...setBadgeOption('판매 완료', true)} />
+          <Badge {...getBadgeOption('전체', undefined)} />
+          <Badge {...getBadgeOption('판매 중', false)} />
+          <Badge {...getBadgeOption('판매 완료', true)} />
         </Tabs>
       </TopBar>
 
@@ -70,7 +70,14 @@ export function SalesList() {
           <>
             {salesListData?.pages.map(page =>
               page.items.map(item => {
-                return <ProductItem key={item.id} {...item} isSeller={true} />;
+                return (
+                  <ProductItem
+                    key={item.id}
+                    {...item}
+                    isSeller={true}
+                    renderingPosition="salesList"
+                  />
+                );
               })
             )}
             <ObservingTarget ref={observingTargetRef} />

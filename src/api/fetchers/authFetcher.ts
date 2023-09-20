@@ -40,7 +40,7 @@ export const useLogin = () => {
       const accessToken = res.headers['authorization'];
       const refreshToken = res.headers['refresh-token'];
       const userInfo = res.data;
-      // headers의 refresh_token은 을 못 읽어오는 문제 해결 필요
+
       setStateAccessToken(accessToken);
       setStateRefreshToken(refreshToken);
       setStateUserInfo(userInfo);
