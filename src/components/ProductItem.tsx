@@ -64,7 +64,6 @@ export function ProductItem({
     }
   };
 
-  // TODO: 각 드롭다운 메뉴 아이템들에 맞는 액션 추가하기
   const dropdownActions = {
     edit: () => {
       if (!data || isLoading) {
