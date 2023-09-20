@@ -147,7 +147,7 @@ export function ProductEditorPanel() {
         : title.value !== productData?.title;
 
     const handler = setTimeout(() => {
-      if (changedTitle) {
+      if (changedTitle && title.value !== '') {
         refetch();
       }
     }, 400);
