@@ -16,6 +16,7 @@ import { Dropdown } from '../../components/dropdown/Dropdown';
 import { MenuItem } from '../../components/dropdown/MenuItem';
 import { Icon } from '../../components/icon/Icon';
 import { HomeLocationModal } from '../../components/locations/HomeLocationModal';
+import { useAuthStore } from '../../stores/useAuthStore';
 import { useProductEditorStore } from '../../stores/useProductEditorStore';
 import { CategoryFilterPanel } from './CategoryFilterPanel';
 
@@ -36,6 +37,7 @@ export function Home() {
   const { data: userLocationData, isLoading, isError } = useGetUserLocation();
   const selectMutation = useSelectUserLocation();
   const resetLocationResult = useResetLocationResult();
+  const { isLogin } = useAuthStore();
 
   useEffect(() => {
     if (categoryId) {
@@ -171,13 +173,15 @@ export function Home() {
       {isModalOpen && (
         <HomeLocationModal isOpen={isModalOpen} onClose={closeModal} />
       )}
-      <FAB
-        styledType="circle"
-        color="accentPrimary"
-        onClick={() => openEditorPanel({ mode: 'add' })}
-      >
-        <Icon name="plus" color="accentText" />
-      </FAB>
+      {isLogin && (
+        <FAB
+          styledType="circle"
+          color="accentPrimary"
+          onClick={() => openEditorPanel({ mode: 'add' })}
+        >
+          <Icon name="plus" color="accentText" />
+        </FAB>
+      )}
     </Div>
   );
 }
