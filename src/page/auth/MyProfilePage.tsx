@@ -17,8 +17,8 @@ export function MyProfilePage() {
   );
 
   const inputRef = useRef<HTMLInputElement>(null);
-  const changedProfile =
-    file !== undefined || backgroundImage !== profileImageUrl;
+  const changedProfile = file !== undefined || backgroundImage === undefined;
+
   const logout = () => {
     clearUserState();
   };
@@ -56,11 +56,18 @@ export function MyProfilePage() {
   };
 
   const onSaveProfile = async () => {
-    const res = await changeProfileImage(file ? file : null);
+    const formData = new FormData();
+
+    if (file) {
+      formData.append('profileImageFile', file);
+    }
+
+    const res = await changeProfileImage(formData);
 
     if (res.status === 200) {
       showToast({ mode: 'success', message: '프로필 이미지 변경 성공!' });
-      onCancelChangedProfile();
+      setBackgroundImage(res.data.profileImageUrl);
+      setFile(undefined);
     } else {
       showToast({ mode: 'error', message: '프로필 이미지 변경 실패' });
     }
