@@ -51,7 +51,6 @@ export const useChangeProfileImage = () => {
     });
 
     if (res.status === 200) {
-      console.log(res.data.profileImageUrl);
       setStateUserInfo({ nickname, profileImageUrl: res.data.profileImageUrl });
     }
 
