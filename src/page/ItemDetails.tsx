@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { styled } from 'styled-components';
 import {
   useGetItemDetails,
@@ -48,6 +48,8 @@ export function ItemDetails() {
 
   const { itemId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location?.state?.redirectedFrom.pathname || '/';
   const openEditorPanel = useProductEditorStore(state => state.openPanel);
   const showToast = useToastStore(state => state.showToast);
 
@@ -155,7 +157,7 @@ export function ItemDetails() {
 
   const deleteItem = () => {
     deleteMutation.mutate(Number(itemId));
-    navigate('/');
+    navigate(from);
   };
 
   return (

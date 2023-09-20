@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { useGetItemDetailsEdit } from '../api/queries/useItemDetailsQuery';
 import { useDeleteItem, usePatchItemStatus } from '../api/queries/useItemQuery';
@@ -43,6 +43,7 @@ export function ProductItem({
   const openEditorPanel = useProductEditorStore(state => state.openPanel);
   const statusMutation = usePatchItemStatus(renderingPosition);
   const deleteMutation = useDeleteItem(renderingPosition);
+  const currentLocation = useLocation();
 
   const { data, isError, isLoading, refetch } = useGetItemDetailsEdit(id);
   const { chat, favorite } = countData;
@@ -99,7 +100,9 @@ export function ProductItem({
   };
 
   const showItemDetails = (itemid: number) => {
-    navigate(`/items/${itemid}`);
+    navigate(`/items/${itemid}`, {
+      state: { redirectedFrom: currentLocation },
+    });
   };
 
   return (
