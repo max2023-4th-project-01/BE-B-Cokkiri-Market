@@ -17,8 +17,8 @@ export function MyProfilePage() {
   );
 
   const inputRef = useRef<HTMLInputElement>(null);
-  const changedProfile = file || backgroundImage !== profileImageUrl;
-
+  const changedProfile =
+    file !== undefined || backgroundImage !== profileImageUrl;
   const logout = () => {
     clearUserState();
   };
@@ -51,6 +51,7 @@ export function MyProfilePage() {
   };
 
   const onCancelChangedProfile = () => {
+    setFile(undefined);
     setBackgroundImage(profileImageUrl);
   };
 
@@ -59,8 +60,7 @@ export function MyProfilePage() {
 
     if (res.status === 200) {
       showToast({ mode: 'success', message: '프로필 이미지 변경 성공!' });
-      setBackgroundImage(profileImageUrl);
-      setFile(undefined);
+      onCancelChangedProfile();
     } else {
       showToast({ mode: 'error', message: '프로필 이미지 변경 실패' });
     }
