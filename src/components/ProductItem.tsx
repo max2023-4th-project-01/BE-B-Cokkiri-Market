@@ -144,13 +144,17 @@ export function ProductItem({
           {locationName}・{getElapsedSince(createdAt)}
         </LocationAndTimestamp>
         <StateAndPrice>
-          {statusName !== '' && (
+          {statusName !== '' && statusName !== '판매중' && (
             <Badge
               type="container"
               size="S"
               text={statusName}
-              fontColor="accentText"
-              badgeColor="accentSecondary"
+              fontColor={
+                statusName === '예약중' ? 'accentText' : 'accentTextWeak'
+              }
+              badgeColor={
+                statusName === '예약중' ? 'accentSecondary' : 'neutralBorder'
+              }
             />
           )}
           <Price>{setPrice(price)}</Price>
