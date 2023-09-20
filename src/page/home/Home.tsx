@@ -16,6 +16,7 @@ import { Dropdown } from '../../components/dropdown/Dropdown';
 import { MenuItem } from '../../components/dropdown/MenuItem';
 import { Icon } from '../../components/icon/Icon';
 import { HomeLocationModal } from '../../components/locations/HomeLocationModal';
+import { useAuthStore } from '../../stores/useAuthStore';
 import { useProductEditorStore } from '../../stores/useProductEditorStore';
 import { CategoryFilterPanel } from './CategoryFilterPanel';
 
@@ -25,7 +26,9 @@ export function Home() {
   const [categoryId, setCategoryId] = useState<number>();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isOpenPanel, setIsOpenPanel] = useState(false);
+
   const { ref: observingTargetRef, inView } = useInView();
+  const authenticated = useAuthStore(state => state.authenticated);
 
   const {
     data: itemData,

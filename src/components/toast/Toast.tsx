@@ -115,6 +115,7 @@ const ToastWrapper = styled.div<{
   border-radius: 8px;
   border: none;
   background: ${({ $mode }) => typeToBackGroundColor($mode)};
+  font: ${({ theme }) => theme.font.displayStrong16};
 
   animation: ${({ $toastState, $position, $index }) =>
       generateAnimationSlide($toastState, $position, $index)}
