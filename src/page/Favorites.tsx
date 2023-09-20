@@ -76,7 +76,13 @@ export function Favorites() {
           <>
             {favoritesData?.pages.map(page =>
               page.items.map(item => {
-                return <ProductItem key={item.id} {...item} />;
+                return (
+                  <ProductItem
+                    key={item.id}
+                    {...item}
+                    renderingPosition="favorites"
+                  />
+                );
               })
             )}
             <ObservingTarget ref={observingTargetRef} />

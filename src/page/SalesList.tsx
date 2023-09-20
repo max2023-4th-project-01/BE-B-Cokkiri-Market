@@ -70,7 +70,14 @@ export function SalesList() {
           <>
             {salesListData?.pages.map(page =>
               page.items.map(item => {
-                return <ProductItem key={item.id} {...item} isSeller={true} />;
+                return (
+                  <ProductItem
+                    key={item.id}
+                    {...item}
+                    isSeller={true}
+                    renderingPosition="salesList"
+                  />
+                );
               })
             )}
             <ObservingTarget ref={observingTargetRef} />
