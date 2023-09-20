@@ -134,7 +134,13 @@ export function Home() {
           <>
             {itemData?.pages.map(page =>
               page.items.map(item => {
-                return <ProductItem key={item.id} {...item} />;
+                return (
+                  <ProductItem
+                    key={item.id}
+                    {...item}
+                    renderingPosition="home"
+                  />
+                );
               })
             )}
             <ObservingTarget ref={observingTargetRef} />

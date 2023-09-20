@@ -7,7 +7,6 @@ const thumbnailList = [
   'https://www.ikea.com/kr/ko/images/products/idanaes-high-cabinet-w-gls-drs-and-1-drawer-dark-brown-stained__1008948_pe827389_s5.jpg?f=xl',
 ];
 
-// 무한 스크롤 목 데이터 구현 필요
 export const fakeItems = () => {
   const items = [];
   for (let i = 2; i <= 20; i++) {

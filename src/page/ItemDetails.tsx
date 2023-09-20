@@ -66,7 +66,7 @@ export function ItemDetails() {
 
   const favoriteMutation = usePatchFavorite();
   const statusMutation = usePatchStatus();
-  const deleteMutation = useDeleteItem();
+  const deleteMutation = useDeleteItem('home');
 
   const plusPageNum = () => {
     setActiveSlidePage(prev => prev + 1);

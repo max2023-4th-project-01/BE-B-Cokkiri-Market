@@ -132,7 +132,6 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
     }
 
     const res = await singup(formData);
-    console.log(res);
     // TODO : 에러 예외 처리
     if (res.status === 201) {
       showToast({ mode: 'success', message: '회원가입 성공!' });
@@ -196,13 +195,7 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
             align="space-between"
           >
             {location.name}
-            <Icon
-              name="pencil"
-              color="accentText"
-              onClick={() => {
-                console.log('삭제할까요?');
-              }}
-            />
+            <Icon name="pencil" color="accentText" />
           </Button>
         ) : (
           <Button

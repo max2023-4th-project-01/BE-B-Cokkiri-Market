@@ -44,7 +44,7 @@ export function Favorites() {
     element.scrollLeft += event.deltaY;
   };
 
-  const setBadgeOption = (categoryTab: FavoritesCategoryTabsType) => {
+  const getBadgeOption = (categoryTab: FavoritesCategoryTabsType) => {
     const isSelected = categoryTab.id === selectedCategory;
 
     const options: BadgeProps = {
@@ -65,7 +65,7 @@ export function Favorites() {
         <Header title="관심 목록" />
         <Tabs onWheel={handleWheelEvent}>
           {categoryTabs.map((categoryTab: FavoritesCategoryTabsType, index) => {
-            return <Badge key={index} {...setBadgeOption(categoryTab)} />;
+            return <Badge key={index} {...getBadgeOption(categoryTab)} />;
           })}
         </Tabs>
       </TopBar>
@@ -76,7 +76,13 @@ export function Favorites() {
           <>
             {favoritesData?.pages.map(page =>
               page.items.map(item => {
-                return <ProductItem key={item.id} {...item} />;
+                return (
+                  <ProductItem
+                    key={item.id}
+                    {...item}
+                    renderingPosition="favorites"
+                  />
+                );
               })
             )}
             <ObservingTarget ref={observingTargetRef} />
