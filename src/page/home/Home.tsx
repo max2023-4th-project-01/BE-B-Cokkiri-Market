@@ -83,6 +83,10 @@ export function Home() {
     return keyName;
   };
 
+  const clearCategory = () => {
+    setCategoryId(undefined);
+  };
+
   return (
     <Div>
       <CategoryFilterPanel
@@ -125,6 +129,19 @@ export function Home() {
               onClick={openPanel}
             />
           </RightAccessory>
+        }
+        title={
+          itemData?.pages[0].categoryName ? (
+            <>
+              {itemData?.pages[0].categoryName}
+              <Icon
+                size={18}
+                name="x"
+                color="neutralBorderStrong"
+                onClick={() => clearCategory()}
+              />
+            </>
+          ) : undefined
         }
       />
       <Body ref={bodyRef} id="home--body__items">
