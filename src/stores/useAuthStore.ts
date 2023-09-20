@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { devtools, persist } from 'zustand/middleware';
 
 export type UserInfo = {
   nickname: string;
@@ -7,10 +7,12 @@ export type UserInfo = {
 };
 
 type AuthState = {
+  authenticated: boolean;
   accessToken: string;
   refreshToken: string;
   nickname: string;
   profileImageUrl: string;
+  setAuthentication: (val: boolean) => void;
   setStateAccessToken: (accessToken: string) => void;
   setStateRefreshToken: (refreshToken: string) => void;
   setStateUserInfo: (userInfo: UserInfo) => void;
@@ -18,36 +20,42 @@ type AuthState = {
 };
 
 export const useAuthStore = create(
-  persist<AuthState>(
-    set => ({
-      accessToken: '',
-      refreshToken: '',
-      nickname: '',
-      profileImageUrl: '',
-      setStateAccessToken: (accessToken: string) => {
-        set(() => ({ accessToken }));
-      },
-      setStateRefreshToken: (refreshToken: string) => {
-        set(() => ({ refreshToken }));
-      },
-      setStateUserInfo: (userInfo: UserInfo) => {
-        set(state => ({
-          ...state,
-          ...userInfo,
-        }));
-      },
-      clearUserState: () => {
-        set({
-          accessToken: '',
-          refreshToken: '',
-          nickname: '',
-          profileImageUrl: '',
-        });
-      },
-    }),
-    {
-      name: 'auth-storage',
-      getStorage: () => localStorage,
-    }
+  devtools(
+    persist<AuthState>(
+      set => ({
+        authenticated: false,
+        accessToken: '',
+        refreshToken: '',
+        nickname: '',
+        profileImageUrl: '',
+        setAuthentication: (val: boolean) => {
+          set(() => ({ authenticated: val }));
+        },
+        setStateAccessToken: (accessToken: string) => {
+          set(() => ({ accessToken }));
+        },
+        setStateRefreshToken: (refreshToken: string) => {
+          set(() => ({ refreshToken }));
+        },
+        setStateUserInfo: (userInfo: UserInfo) => {
+          set(state => ({
+            ...state,
+            ...userInfo,
+          }));
+        },
+        clearUserState: () => {
+          set({
+            accessToken: '',
+            refreshToken: '',
+            nickname: '',
+            profileImageUrl: '',
+          });
+        },
+      }),
+      {
+        name: 'auth-storage',
+        getStorage: () => localStorage,
+      }
+    )
   )
 );

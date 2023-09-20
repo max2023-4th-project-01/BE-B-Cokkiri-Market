@@ -1,3 +1,4 @@
+import { shallow } from 'zustand/shallow';
 import { useAuthStore } from '../../stores/useAuthStore';
 import { fetcher } from '../axios';
 import { API_ENDPOINT } from '../endPoint';
@@ -19,13 +20,23 @@ export const singup = async (formData: FormData) => {
 };
 
 export const useLogin = () => {
-  const { setStateAccessToken, setStateRefreshToken, setStateUserInfo } =
-    useAuthStore();
+  const {
+    setAuthentication,
+    setStateAccessToken,
+    setStateRefreshToken,
+    setStateUserInfo,
+  } = useAuthStore(state => ({
+    setAuthentication: state.setAuthentication,
+    setStateAccessToken: state.setStateAccessToken,
+    setStateRefreshToken: state.setStateRefreshToken,
+    setStateUserInfo: state.setStateUserInfo,
+  }));
 
   const login = async (loginInfo: loginInfo) => {
     const res = await fetcher.post(API_ENDPOINT.LOGIN, loginInfo);
 
     if (res.status === 200) {
+      setAuthentication(true);
       const accessToken = res.headers['authorization'];
       const refreshToken = res.headers['refresh-token'];
       const userInfo = res.data;

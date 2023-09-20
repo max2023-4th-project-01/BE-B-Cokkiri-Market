@@ -16,7 +16,7 @@ export type SalesListData = {
 };
 
 export function SalesList() {
-  const { nickname } = useAuthStore();
+  const nickname = useAuthStore(state => state.nickname);
   const [isSold, setIsSold] = useState<boolean>();
   const { ref: observingTargetRef, inView } = useInView();
 

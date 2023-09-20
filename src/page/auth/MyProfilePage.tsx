@@ -5,7 +5,13 @@ import { useAuthStore } from '../../stores/useAuthStore';
 import { ProfileButton } from './ProfileButton';
 
 export function MyProfilePage() {
-  const { nickname, profileImageUrl, clearUserState } = useAuthStore();
+  const { nickname, profileImageUrl, setAuthentication, clearUserState } =
+    useAuthStore(state => ({
+      nickname: state.nickname,
+      profileImageUrl: state.profileImageUrl,
+      setAuthentication: state.setAuthentication,
+      clearUserState: state.clearUserState,
+    }));
 
   const [file, setFile] = useState<File>();
   const [backgroundImage, setBackgroundImage] = useState<string | undefined>(
@@ -15,6 +21,7 @@ export function MyProfilePage() {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const logout = () => {
+    setAuthentication(false);
     clearUserState();
   };
 
