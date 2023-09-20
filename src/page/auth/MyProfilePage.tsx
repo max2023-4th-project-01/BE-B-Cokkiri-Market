@@ -68,6 +68,9 @@ export function MyProfilePage() {
       showToast({ mode: 'success', message: '프로필 이미지 변경 성공!' });
       setBackgroundImage(res.data.profileImageUrl);
       setFile(undefined);
+      if (inputRef.current) {
+        inputRef.current.value = '';
+      }
     } else {
       showToast({ mode: 'error', message: '프로필 이미지 변경 실패' });
     }
