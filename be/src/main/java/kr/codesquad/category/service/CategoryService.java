@@ -53,7 +53,7 @@ public class CategoryService {
 		});
 
 		Map<String, Object> request = new HashMap<>();
-		request.put("model", "gpt-3.5-turbo");
+		request.put("model", "gpt-3.5-turbo"); // gpt-3.5-turbo or gpt-4
 		request.put("temperature", 0.1);
 		List<Message> messages = new ArrayList<>();
 		messages.add(new Message("user", prompt));
