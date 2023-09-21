@@ -64,7 +64,7 @@ public class SecurityConfig {
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 			.and()
 			.authorizeRequests()
-			.antMatchers("/h2-console/**", "/api/locations**", "/ws/chat").permitAll()
+			.antMatchers("/h2-console/**", "/api/locations**", "/api/ws/**").permitAll()
 			.antMatchers(HttpMethod.POST, "/api/users").permitAll()
 			.anyRequest()
 			.authenticated()  //다른 요청은 인증 필요함

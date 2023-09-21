@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kr.codesquad.chat.dto.ChatMapper;
+import kr.codesquad.chat.dto.request.ChatMessageRequest;
 import kr.codesquad.chat.dto.request.ChatRoomCreateRequest;
 import kr.codesquad.chat.dto.request.SendMessageRequest;
 import kr.codesquad.chat.dto.response.ChatRoomCreateResponse;
@@ -38,13 +39,12 @@ public class ChatService {
 	}
 
 	@Transactional
-	public void sendMessage(SendMessageRequest chatMessageRequest) {
+	public void sendMessage(ChatMessageRequest chatMessageRequest, Long chatRoomId) {
 
 		//채팅 생성 및 저장
-		ChatMessage chatMessage = chatMessageRepository.save(ChatMapper.INSTANCE.toChatMessage(chatMessageRequest));
+		ChatMessage chatMessage = chatMessageRepository.save(ChatMapper.INSTANCE.toChatMessage(chatMessageRequest, chatRoomId));
 		String topic = channelTopic.getTopic();
 
-		redisTemplate.convertAndSend(topic, chatMessageRequest);
+		redisTemplate.convertAndSend(topic, ChatMapper.INSTANCE.toSendMessageRequest(chatMessage, chatMessageRequest.getSenderId()));
 	}
-
 }
