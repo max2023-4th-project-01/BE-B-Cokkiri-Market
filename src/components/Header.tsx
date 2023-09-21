@@ -5,7 +5,7 @@ type HeaderProps = {
   type?: 'default' | 'transparent';
   leftButton?: ReactElement;
   rightButton?: ReactElement;
-  title?: string;
+  title?: string | ReactElement;
 };
 
 export function Header({
@@ -87,6 +87,7 @@ const Title = styled.div`
   justify-content: center;
   align-items: center;
   text-align: center;
+  gap: 4px;
   flex: 1;
   font: ${({ theme }) => theme.font.displayStrong16};
   color: ${({ theme }) => theme.color.neutralTextStrong};

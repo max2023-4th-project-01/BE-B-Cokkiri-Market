@@ -6,15 +6,15 @@ import { useToastStore } from '../stores/useToastStore';
 export function ProtectedRoute() {
   const currentLocation = useLocation();
   const showToast = useToastStore(state => state.showToast);
-  const authenticated = useAuthStore(state => state.authenticated);
+  const isLogin = useAuthStore(state => state.isLogin);
 
   useEffect(() => {
-    if (!authenticated) {
+    if (!isLogin) {
       showToast({ mode: 'warning', message: '로그인 후 이용해 주세요' });
     }
   });
 
-  return authenticated ? (
+  return isLogin ? (
     <Outlet />
   ) : (
     <>

@@ -24,7 +24,7 @@ export function Home() {
   const [isOpenPanel, setIsOpenPanel] = useState(false);
 
   const { ref: observingTargetRef, inView } = useInView();
-  const authenticated = useAuthStore(state => state.authenticated);
+  const isLogin = useAuthStore(state => state.isLogin);
   const showToast = useToastStore(state => state.showToast);
 
   const {
@@ -80,6 +80,10 @@ export function Home() {
     return;
   };
 
+  const clearCategory = () => {
+    setCategoryId(undefined);
+  };
+
   return (
     <Div>
       <CategoryFilterPanel
@@ -90,7 +94,7 @@ export function Home() {
       <Header
         leftButton={
           <LeftAccessory>
-            {!authenticated ? (
+            {!isLogin ? (
               <Button
                 styledType="text"
                 color="neutralText"
@@ -115,6 +119,19 @@ export function Home() {
               onClick={openPanel}
             />
           </RightAccessory>
+        }
+        title={
+          itemData?.pages[0].categoryName ? (
+            <>
+              {itemData?.pages[0].categoryName}
+              <Icon
+                size={18}
+                name="x"
+                color="neutralBorderStrong"
+                onClick={() => clearCategory()}
+              />
+            </>
+          ) : undefined
         }
       />
       <Body ref={bodyRef} id="home--body__items">
@@ -144,13 +161,15 @@ export function Home() {
       {isModalOpen && (
         <HomeLocationModal isOpen={isModalOpen} onClose={closeModal} />
       )}
-      <FAB
-        styledType="circle"
-        color="accentPrimary"
-        onClick={() => openEditorPanel({ mode: 'add' })}
-      >
-        <Icon name="plus" color="accentText" />
-      </FAB>
+      {isLogin && (
+        <FAB
+          styledType="circle"
+          color="accentPrimary"
+          onClick={() => openEditorPanel({ mode: 'add' })}
+        >
+          <Icon name="plus" color="accentText" />
+        </FAB>
+      )}
     </Div>
   );
 }
