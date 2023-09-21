@@ -4,7 +4,7 @@ import { LoginPage } from './LoginPage';
 import { MyProfilePage } from './MyProfilePage';
 
 export function MyAccount() {
-  const { isLogin } = useAuthStore();
+  const isLogin = useAuthStore(state => state.isLogin);
 
   return (
     <>

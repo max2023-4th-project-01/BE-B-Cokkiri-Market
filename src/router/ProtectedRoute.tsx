@@ -6,7 +6,7 @@ import { useToastStore } from '../stores/useToastStore';
 export function ProtectedRoute() {
   const currentLocation = useLocation();
   const showToast = useToastStore(state => state.showToast);
-  const { isLogin } = useAuthStore();
+  const isLogin = useAuthStore(state => state.isLogin);
 
   useEffect(() => {
     if (!isLogin) {

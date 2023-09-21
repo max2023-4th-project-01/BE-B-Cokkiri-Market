@@ -20,6 +20,7 @@ export function Alert({ isOpen, onClose, onAction, children }: AlertProps) {
   const rootElement = document.getElementById('modal-root');
 
   const onAlertClose = (event: BaseSyntheticEvent) => {
+    event.stopPropagation();
     const modal = alertRef.current;
     if (event.target === modal) onClose();
   };

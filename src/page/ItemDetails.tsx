@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { styled } from 'styled-components';
 import {
   useGetItemDetails,
@@ -45,9 +45,31 @@ export type ItemDetailsData = {
 export function ItemDetails() {
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [activeSlidePage, setActiveSlidePage] = useState(1);
+  const [isScrollTop, setIsScrollTop] = useState(true);
+  const mainRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const isMobile = /Mobile|Android/i.test(navigator.userAgent);
+
+    if (isMobile) {
+      window.addEventListener('touchmove', onScroll);
+      return;
+    }
+    window.addEventListener('wheel', onScroll);
+
+    return () => {
+      if (isMobile) {
+        window.removeEventListener('touchmove', onScroll);
+        return;
+      }
+      window.removeEventListener('wheel', onScroll);
+    };
+  }, []);
 
   const { itemId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location?.state?.redirectedFrom.pathname || '/';
   const openEditorPanel = useProductEditorStore(state => state.openPanel);
   const showToast = useToastStore(state => state.showToast);
 
@@ -67,6 +89,11 @@ export function ItemDetails() {
   const favoriteMutation = usePatchFavorite();
   const statusMutation = usePatchStatus();
   const deleteMutation = useDeleteItem('home');
+
+  const onScroll = () => {
+    const scrollTop = mainRef.current?.scrollTop === 0;
+    setIsScrollTop(scrollTop);
+  };
 
   const plusPageNum = () => {
     setActiveSlidePage(prev => prev + 1);
@@ -114,7 +141,6 @@ export function ItemDetails() {
     }
   };
 
-  // TODO: 페이지 로딩 시 스켈레톤 UI 추가 예정
   if (isLoading) {
     return (
       <Wrapper>
@@ -155,12 +181,13 @@ export function ItemDetails() {
 
   const deleteItem = () => {
     deleteMutation.mutate(Number(itemId));
-    navigate('/');
+    navigate(from);
   };
 
   return (
     <Container>
-      <StyledHeader
+      <Header
+        type={isScrollTop ? 'transparent' : 'default'}
         leftButton={
           <Button styledType="text" onClick={() => navigate('/')}>
             <Icon name="chevronLeft" color="neutralText" />
@@ -181,19 +208,21 @@ export function ItemDetails() {
         }
       />
 
-      <Main>
+      <Main ref={mainRef}>
         <SliderWrapper>
           <Slider
             imageList={itemDetailsData.images}
             pagination={{ plusPageNum, minusPageNum }}
           />
-          <PageNav
-            fontColor="neutralTextWeak"
-            badgeColor="neutralBackgroundBlur"
-            text={`${activeSlidePage} / ${itemDetailsData.images.length}`}
-            size="M"
-            type="container"
-          />
+          <PageNav>
+            <Badge
+              fontColor="neutralTextWeak"
+              badgeColor="neutralBackgroundBlur"
+              text={`${activeSlidePage} / ${itemDetailsData.images.length}`}
+              size="M"
+              type="container"
+            />
+          </PageNav>
         </SliderWrapper>
         <Body>
           <SellerInfo>
@@ -289,15 +318,6 @@ const Container = styled.div`
   background-color: ${({ theme }) => theme.color.neutralBackground};
 `;
 
-const StyledHeader = styled(Header)`
-  background-color: transparent;
-  border-bottom: none;
-
-  &::before {
-    backdrop-filter: none;
-  }
-`;
-
 const Main = styled.div`
   height: calc(100% - 64px);
   overflow-y: auto;
@@ -315,7 +335,7 @@ const SliderWrapper = styled.div`
   position: relative;
 `;
 
-const PageNav = styled(Badge)`
+const PageNav = styled.div`
   position: absolute;
   bottom: 16px;
   right: 16px;

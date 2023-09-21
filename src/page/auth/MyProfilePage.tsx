@@ -7,8 +7,13 @@ import { useToastStore } from '../../stores/useToastStore';
 import { ProfileButton } from './ProfileButton';
 
 export function MyProfilePage() {
-  const { nickname, profileImageUrl, clearUserState } = useAuthStore();
-  const { showToast } = useToastStore();
+  const { nickname, profileImageUrl, clearUserState } = useAuthStore(state => ({
+    nickname: state.nickname,
+    profileImageUrl: state.profileImageUrl,
+    clearUserState: state.clearUserState,
+  }));
+
+  const showToast = useToastStore(state => state.showToast);
   const { changeProfileImage } = useChangeProfileImage();
 
   const [file, setFile] = useState<File>();

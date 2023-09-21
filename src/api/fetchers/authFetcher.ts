@@ -20,7 +20,11 @@ export const singup = async (formData: FormData) => {
 
 export const useLogin = () => {
   const { setStateAccessToken, setStateRefreshToken, setStateUserInfo } =
-    useAuthStore();
+    useAuthStore(state => ({
+      setStateAccessToken: state.setStateAccessToken,
+      setStateRefreshToken: state.setStateRefreshToken,
+      setStateUserInfo: state.setStateUserInfo,
+    }));
 
   const login = async (loginInfo: loginInfo) => {
     const res = await fetcher.post(API_ENDPOINT.LOGIN, loginInfo);
