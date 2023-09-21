@@ -162,7 +162,8 @@ export function ItemDetails() {
 
   return (
     <Container>
-      <StyledHeader
+      <Header
+        type="dynamic"
         leftButton={
           <Button styledType="text" onClick={() => navigate('/')}>
             <Icon name="chevronLeft" color="neutralText" />
@@ -291,14 +292,14 @@ const Container = styled.div`
   background-color: ${({ theme }) => theme.color.neutralBackground};
 `;
 
-const StyledHeader = styled(Header)`
-  background-color: transparent;
-  border-bottom: none;
+// const StyledHeader = styled(Header)`
+//   background-color: transparent;
+//   border-bottom: none;
 
-  &::before {
-    backdrop-filter: none;
-  }
-`;
+//   &::before {
+//     backdrop-filter: none;
+//   }
+// `;
 
 const Main = styled.div`
   height: calc(100% - 64px);

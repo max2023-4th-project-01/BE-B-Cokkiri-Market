@@ -6,7 +6,7 @@ type Size = 'S' | 'M';
 export type BadgeType = 'container' | 'outline';
 
 export type BadgeProps = {
-  className: string;
+  className?: string;
   fontColor: ColorType;
   badgeColor: ColorType;
   text: string;
