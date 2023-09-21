@@ -1,7 +1,10 @@
 package kr.codesquad.item.service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
+
+import javax.servlet.http.Cookie;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -88,8 +91,7 @@ public class ItemService {
 		return item.getId();
 	}
 
-	@Transactional(readOnly = true)
-	public ItemDetailResponse getItem(Long id, String userLoginId) {
+	public ItemDetailResponse getItem(Long id, String userLoginId, Cookie[] cookies) {
 		Long userId = userRepository.findIdByLoginId(userLoginId);
 		Item item = itemRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 아이템이 없습니다."));
 		User seller = userRepository.findById(item.getUserId())
@@ -99,6 +101,11 @@ public class ItemService {
 		String categoryName = categoryRepository.findNameById(item.getCategoryId());
 		int chatCount = chatRoomRepository.countByItemId(item.getId());
 		int favoriteCount = favoriteRepository.countByItemId(item.getId());
+
+		Cookie cookie = null;
+		if (!Objects.equals(item.getUserId(), userId)) {
+			cookie = setViewCount(item.getId(), cookies);
+		}
 
 		return ItemDetailResponse.builder()
 			.isSeller(seller.getId().equals(userId))
@@ -112,7 +119,37 @@ public class ItemService {
 			.countData(item.countData(chatCount, favoriteCount))
 			.isFavorite(favoriteRepository.existsByUserIdAndItemId(userId, item.getId()))
 			.price(item.getPrice())
+			.cookie(cookie)
 			.build();
+	}
+
+	@Transactional
+	public Cookie setViewCount(Long itemId, Cookie[] cookies) {
+		Cookie oldCookie = null;
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if (cookie.getName().equals("postView")) {
+					oldCookie = cookie;
+					break;
+				}
+			}
+		}
+
+		if (oldCookie == null) {
+			int view = itemRepository.updateView(itemId);
+			Cookie cookie = new Cookie("postView", itemId.toString());
+			cookie.setMaxAge(60 * 60 * 24);
+			cookie.setPath("/");
+			return cookie;
+		} else {
+			if (!oldCookie.getValue().contains(itemId.toString())) {
+				int view = itemRepository.updateView(itemId);
+				oldCookie.setValue(oldCookie.getValue() + "_" + itemId);
+				oldCookie.setMaxAge(60 * 60 * 24);
+				oldCookie.setPath("/");
+			}
+		}
+		return oldCookie;
 	}
 
 	@Transactional
@@ -217,6 +254,7 @@ public class ItemService {
 				ItemCountDataResponse.builder()
 					.chat(itemListVo.getChat().intValue())
 					.favorite(itemListVo.getFavorite().intValue())
+					.view(itemListVo.getView())
 					.build(),
 				itemListVo.getStatus().name(), user.getId().equals(itemListVo.getUserId())))
 			.collect(Collectors.toList());
@@ -272,6 +310,7 @@ public class ItemService {
 				ItemCountDataResponse.builder()
 					.chat(itemListVo.getChat().intValue())
 					.favorite(itemListVo.getFavorite().intValue())
+					.view(itemListVo.getView())
 					.build(),
 				itemListVo.getStatus().name()))
 			.collect(Collectors.toList());

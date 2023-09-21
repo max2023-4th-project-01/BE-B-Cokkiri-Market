@@ -35,6 +35,7 @@ public class ItemPaginationRepository {
 				item.status,
 				chatRoom.countDistinct().as("chat"),
 				favorite.countDistinct().as("favorite"),
+				item.viewCount.as("view"),
 				item.userId
 			))
 			.from(item)
@@ -44,7 +45,7 @@ public class ItemPaginationRepository {
 				, equalCategoryId(itemConditions.getCategoryId()), checkStatus(itemConditions.getIsSold())
 				, checkFavoriteOrUserItem(itemConditions.getIsFavorite(), itemConditions.getUserId())
 			)
-			.groupBy(item.id, item.thumbnailUrl, item.title, item.locationName, item.createdAt, item.price, item.status,
+			.groupBy(item.id, item.thumbnailUrl, item.title, item.locationName, item.createdAt, item.price, item.status, item.viewCount,
 				item.userId)
 			.orderBy(item.id.desc())
 			.limit(itemConditions.getPageSize() + 1)    // 다음 요소가 있는지 확인하기 위해 +1개 만큼 더 가져온다.

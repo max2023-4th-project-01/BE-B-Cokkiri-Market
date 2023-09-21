@@ -20,10 +20,11 @@ public class ItemListVo {
 	private String thumbnailUrl;
 	private Long chat;
 	private Long favorite;
+	private int view;
 
 	@Builder
 	public ItemListVo(Long id, String title, Long userId, String locationName, ZonedDateTime createdAt,
-		ItemStatus status, Integer price, String thumbnailUrl, Long chat, Long favorite) {
+		ItemStatus status, Integer price, String thumbnailUrl, Long chat, Long favorite, int view) {
 		this.id = id;
 		this.title = title;
 		this.userId = userId;
@@ -34,5 +35,6 @@ public class ItemListVo {
 		this.thumbnailUrl = thumbnailUrl;
 		this.chat = chat;
 		this.favorite = favorite;
+		this.view = view;
 	}
 }

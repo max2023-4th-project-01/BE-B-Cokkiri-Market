@@ -3,6 +3,10 @@ package kr.codesquad.item.dto.response;
 import java.time.ZonedDateTime;
 import java.util.List;
 
+import javax.servlet.http.Cookie;
+
+import net.minidev.json.annotate.JsonIgnore;
+
 import lombok.Builder;
 import lombok.Getter;
 
@@ -21,4 +25,6 @@ public class ItemDetailResponse {
 	private Boolean isFavorite;
 	private Integer price;
 
+	@JsonIgnore
+	private Cookie cookie;
 }
