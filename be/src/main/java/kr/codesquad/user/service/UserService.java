@@ -69,7 +69,10 @@ public class UserService implements UserDetailsService {
 		User user = userRepository.findByLoginId(userLoginId);
 		amazonS3Service.deleteImage(user.getProfileImageUrl()); // 기존 프로필 이미지 삭제
 
-		String newProfileImageUrl = amazonS3Service.upload(profileImageFile, S3ImageDirectory.PROFILE_IMAGE);
+		String newProfileImageUrl = Constants.DEFAULT_PROFILE_IMAGE_URL;
+		if (profileImageFile != null) {
+			newProfileImageUrl = amazonS3Service.upload(profileImageFile, S3ImageDirectory.PROFILE_IMAGE);
+		}
 		user.updateProfileImage(newProfileImageUrl);
 
 		return new UpdateProfileImageResponse(newProfileImageUrl);
