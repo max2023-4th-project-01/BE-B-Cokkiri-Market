@@ -1,11 +1,15 @@
 import { ChangeEvent, useRef, useState } from 'react';
 import { styled } from 'styled-components';
+import { useChangeProfileImage } from '../../api/fetchers/authFetcher';
 import { Button } from '../../components/button/Button';
 import { useAuthStore } from '../../stores/useAuthStore';
+import { useToastStore } from '../../stores/useToastStore';
 import { ProfileButton } from './ProfileButton';
 
 export function MyProfilePage() {
   const { nickname, profileImageUrl, clearUserState } = useAuthStore();
+  const { showToast } = useToastStore();
+  const { changeProfileImage } = useChangeProfileImage();
 
   const [file, setFile] = useState<File>();
   const [backgroundImage, setBackgroundImage] = useState<string | undefined>(
@@ -13,6 +17,7 @@ export function MyProfilePage() {
   );
 
   const inputRef = useRef<HTMLInputElement>(null);
+  const changedProfile = file !== undefined || backgroundImage === undefined;
 
   const logout = () => {
     clearUserState();
@@ -45,6 +50,32 @@ export function MyProfilePage() {
     }
   };
 
+  const onCancelChangedProfile = () => {
+    setFile(undefined);
+    setBackgroundImage(profileImageUrl);
+  };
+
+  const onSaveProfile = async () => {
+    const formData = new FormData();
+
+    if (file) {
+      formData.append('profileImageFile', file);
+    }
+
+    const res = await changeProfileImage(formData);
+
+    if (res.status === 200) {
+      showToast({ mode: 'success', message: '프로필 이미지 변경 성공!' });
+      setBackgroundImage(res.data.profileImageUrl);
+      setFile(undefined);
+      if (inputRef.current) {
+        inputRef.current.value = '';
+      }
+    } else {
+      showToast({ mode: 'error', message: '프로필 이미지 변경 실패' });
+    }
+  };
+
   return (
     <Div>
       <ProfileWrapper>
@@ -55,8 +86,28 @@ export function MyProfilePage() {
           onChangeFile={onChangeFile}
           onRemoveProfile={onRemoveProfile}
         />
+        {changedProfile && (
+          <ProfileEditButtons>
+            <Button
+              styledType="outline"
+              color="neutralBorderStrong"
+              size="S"
+              onClick={onCancelChangedProfile}
+            >
+              취소
+            </Button>
+            <Button
+              styledType="container"
+              color="accentPrimary"
+              fontColor="accentText"
+              size="S"
+              onClick={onSaveProfile}
+            >
+              저장
+            </Button>
+          </ProfileEditButtons>
+        )}
         <UserName>{nickname}</UserName>
-        {/* TODO : 이미지 변경 시 저장 취소 버튼이 나오게한다. 취소하면 원래 이미지로, 저장하면 api 요청 */}
       </ProfileWrapper>
       <Button
         styledType="container"
@@ -93,6 +144,12 @@ const ProfileWrapper = styled.div`
   & input {
     display: none;
   }
+`;
+
+const ProfileEditButtons = styled.div`
+  width: 100%;
+  display: flex;
+  gap: 8px;
 `;
 
 const UserName = styled.div`

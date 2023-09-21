@@ -41,3 +41,27 @@ export const useLogin = () => {
 
   return { login };
 };
+
+export const useChangeProfileImage = () => {
+  const { nickname, setStateUserInfo } = useAuthStore();
+
+  const changeProfileImage = async (formData: FormData) => {
+    const res = await fetcher.patch(
+      API_ENDPOINT.CHANGE_PROFILE_IMAGE,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+
+    if (res.status === 200) {
+      setStateUserInfo({ nickname, profileImageUrl: res.data.profileImageUrl });
+    }
+
+    return res;
+  };
+
+  return { changeProfileImage };
+};
