@@ -20,7 +20,11 @@ export const singup = async (formData: FormData) => {
 
 export const useLogin = () => {
   const { setStateAccessToken, setStateRefreshToken, setStateUserInfo } =
-    useAuthStore();
+    useAuthStore(state => ({
+      setStateAccessToken: state.setStateAccessToken,
+      setStateRefreshToken: state.setStateRefreshToken,
+      setStateUserInfo: state.setStateUserInfo,
+    }));
 
   const login = async (loginInfo: loginInfo) => {
     const res = await fetcher.post(API_ENDPOINT.LOGIN, loginInfo);
@@ -29,7 +33,7 @@ export const useLogin = () => {
       const accessToken = res.headers['authorization'];
       const refreshToken = res.headers['refresh-token'];
       const userInfo = res.data;
-      // headers의 refresh_token은 을 못 읽어오는 문제 해결 필요
+
       setStateAccessToken(accessToken);
       setStateRefreshToken(refreshToken);
       setStateUserInfo(userInfo);
@@ -40,4 +44,28 @@ export const useLogin = () => {
   };
 
   return { login };
+};
+
+export const useChangeProfileImage = () => {
+  const { nickname, setStateUserInfo } = useAuthStore();
+
+  const changeProfileImage = async (formData: FormData) => {
+    const res = await fetcher.patch(
+      API_ENDPOINT.CHANGE_PROFILE_IMAGE,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+
+    if (res.status === 200) {
+      setStateUserInfo({ nickname, profileImageUrl: res.data.profileImageUrl });
+    }
+
+    return res;
+  };
+
+  return { changeProfileImage };
 };

@@ -2,21 +2,18 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { styled } from 'styled-components';
 import { useGetItemData } from '../../api/queries/useItemQuery';
-import {
-  useGetUserLocation,
-  useResetLocationResult,
-  useSelectUserLocation,
-} from '../../api/queries/useLocationQuery';
+import { useResetLocationResult } from '../../api/queries/useLocationQuery';
 import { Error } from '../../components/Error';
 import { Header } from '../../components/Header';
 import { Loader } from '../../components/Loader';
 import { ProductItem } from '../../components/ProductItem';
 import { Button } from '../../components/button/Button';
-import { Dropdown } from '../../components/dropdown/Dropdown';
-import { MenuItem } from '../../components/dropdown/MenuItem';
+import { UserLocationDropdown } from '../../components/dropdown/UserLocationDropdown';
 import { Icon } from '../../components/icon/Icon';
 import { HomeLocationModal } from '../../components/locations/HomeLocationModal';
+import { useAuthStore } from '../../stores/useAuthStore';
 import { useProductEditorStore } from '../../stores/useProductEditorStore';
+import { useToastStore } from '../../stores/useToastStore';
 import { CategoryFilterPanel } from './CategoryFilterPanel';
 
 export function Home() {
@@ -25,16 +22,19 @@ export function Home() {
   const [categoryId, setCategoryId] = useState<number>();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isOpenPanel, setIsOpenPanel] = useState(false);
+
   const { ref: observingTargetRef, inView } = useInView();
+  const isLogin = useAuthStore(state => state.isLogin);
+  const showToast = useToastStore(state => state.showToast);
 
   const {
     data: itemData,
     refetch: refetchItems,
     fetchNextPage,
     hasNextPage,
+    isLoading,
+    isError,
   } = useGetItemData(categoryId);
-  const { data: userLocationData, isLoading, isError } = useGetUserLocation();
-  const selectMutation = useSelectUserLocation();
   const resetLocationResult = useResetLocationResult();
 
   useEffect(() => {
@@ -72,15 +72,16 @@ export function Home() {
     setCategoryId(id);
   }, []);
 
-  const selectLocation = (locationId: number, isSelected: boolean) => {
-    if (isSelected) return;
-    selectMutation.mutate(locationId);
+  const onLocationClick = () => {
+    showToast({
+      mode: 'warning',
+      message: '동네설정은 로그인 후 가능합니다.',
+    });
+    return;
   };
 
-  const extractKeyName = (locationName: string | undefined) => {
-    if (!locationName) return;
-    const keyName = locationName.split(' ').at(-1);
-    return keyName;
+  const clearCategory = () => {
+    setCategoryId(undefined);
   };
 
   return (
@@ -93,28 +94,21 @@ export function Home() {
       <Header
         leftButton={
           <LeftAccessory>
-            <Dropdown
-              btnText={
-                extractKeyName(itemData?.pages[0]?.userLocation) || '역삼1동'
-              }
-              iconName="chevronDown"
-              align="left"
-            >
-              {userLocationData?.locations?.map(location => {
-                return (
-                  <MenuItem
-                    key={location.id}
-                    isSelected={location.isSelected}
-                    onAction={() => {
-                      selectLocation(location.id, location.isSelected);
-                    }}
-                  >
-                    {location.name}
-                  </MenuItem>
-                );
-              })}
-              <MenuItem onAction={openModal}>내 동네 설정하기</MenuItem>
-            </Dropdown>
+            {!isLogin ? (
+              <Button
+                styledType="text"
+                color="neutralText"
+                onClick={onLocationClick}
+              >
+                역삼1동
+                <Icon name="chevronDown" color="neutralTextStrong" />
+              </Button>
+            ) : (
+              <UserLocationDropdown
+                currentLocation={itemData?.pages[0]?.userLocation}
+                openModal={openModal}
+              />
+            )}
           </LeftAccessory>
         }
         rightButton={
@@ -126,6 +120,19 @@ export function Home() {
             />
           </RightAccessory>
         }
+        title={
+          itemData?.pages[0].categoryName ? (
+            <>
+              {itemData?.pages[0].categoryName}
+              <Icon
+                size={18}
+                name="x"
+                color="neutralBorderStrong"
+                onClick={() => clearCategory()}
+              />
+            </>
+          ) : undefined
+        }
       />
       <Body ref={bodyRef} id="home--body__items">
         {isLoading ? (
@@ -134,7 +141,13 @@ export function Home() {
           <>
             {itemData?.pages.map(page =>
               page.items.map(item => {
-                return <ProductItem key={item.id} {...item} />;
+                return (
+                  <ProductItem
+                    key={item.id}
+                    {...item}
+                    renderingPosition="home"
+                  />
+                );
               })
             )}
             <ObservingTarget ref={observingTargetRef} />
@@ -148,13 +161,15 @@ export function Home() {
       {isModalOpen && (
         <HomeLocationModal isOpen={isModalOpen} onClose={closeModal} />
       )}
-      <FAB
-        styledType="circle"
-        color="accentPrimary"
-        onClick={() => openEditorPanel({ mode: 'add' })}
-      >
-        <Icon name="plus" color="accentText" />
-      </FAB>
+      {isLogin && (
+        <FAB
+          styledType="circle"
+          color="accentPrimary"
+          onClick={() => openEditorPanel({ mode: 'add' })}
+        >
+          <Icon name="plus" color="accentText" />
+        </FAB>
+      )}
     </Div>
   );
 }

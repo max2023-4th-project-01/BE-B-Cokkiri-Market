@@ -1,16 +1,18 @@
 import { ChangeEvent, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
-import { useLogin } from '../../api/fetchers/authFetcher';
 import { BASE_URL } from '../../api/axios';
+import { useLogin } from '../../api/fetchers/authFetcher';
 import { Button } from '../../components/button/Button';
 import { Icon } from '../../components/icon/Icon';
 import { AuthInput } from './AuthInput';
 import { SignUpPanel } from './SignUpPanel';
 
 export function LoginPage() {
-  const navigate = useNavigate();
   const { login } = useLogin();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location?.state?.redirectedFrom.pathname || '/';
 
   const [isOpenPanel, setIsOpenPanel] = useState(false);
   const [id, setId] = useState('');
@@ -44,7 +46,7 @@ export function LoginPage() {
     });
 
     if (res.status === 200) {
-      navigate('/');
+      navigate(from);
     }
   };
 
@@ -76,6 +78,7 @@ export function LoginPage() {
             password={password}
             onChangeId={onChangeId}
             onChangePassword={onChangePassword}
+            onSubmit={submit}
           />
           <ButtonWrapper>
             <Button

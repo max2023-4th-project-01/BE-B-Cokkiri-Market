@@ -1,5 +1,6 @@
 import { Dropdown } from '../../components/dropdown/Dropdown';
 import { MenuItem } from '../../components/dropdown/MenuItem';
+import { extractKeyName } from '../../utils/extractKeyName';
 
 export function LocationDropdown({
   myLocation,
@@ -11,12 +12,6 @@ export function LocationDropdown({
   const selectedLocationData = myLocation.filter(
     data => data.isSelected === true
   )[0];
-
-  const extractKeyName = (locationName: string | undefined) => {
-    if (!locationName) return;
-    const keyName = locationName.split(' ').at(-1);
-    return keyName;
-  };
 
   return (
     <div>

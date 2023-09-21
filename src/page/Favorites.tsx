@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { styled } from 'styled-components';
 import {
@@ -17,7 +17,6 @@ export function Favorites() {
     [{ name: '전체' }]
   );
   const [selectedCategory, setSelectedCategory] = useState<number>();
-  const tabsRef = useRef<HTMLDivElement>(null);
   const { ref: observingTargetRef, inView } = useInView();
 
   const { data: categoryData } = useGetFavoritesCategoryData();
@@ -40,23 +39,12 @@ export function Favorites() {
       setCategoryTabs([{ name: '전체' }, ...categoryData.categories]);
   }, [categoryData]);
 
-  useEffect(() => {
-    const element = tabsRef.current;
-    const scrollHandler = (event: WheelEvent) => {
-      event.preventDefault();
+  const handleWheelEvent = (event: React.WheelEvent<HTMLDivElement>) => {
+    const element = event.currentTarget;
+    element.scrollLeft += event.deltaY;
+  };
 
-      if (element) {
-        element.scrollLeft += event.deltaY;
-      }
-    };
-    element?.addEventListener('wheel', scrollHandler);
-
-    return () => {
-      element?.removeEventListener('wheel', scrollHandler);
-    };
-  }, []);
-
-  const setBadgeOption = (categoryTab: FavoritesCategoryTabsType) => {
+  const getBadgeOption = (categoryTab: FavoritesCategoryTabsType) => {
     const isSelected = categoryTab.id === selectedCategory;
 
     const options: BadgeProps = {
@@ -75,9 +63,9 @@ export function Favorites() {
     <Div>
       <TopBar>
         <Header title="관심 목록" />
-        <Tabs ref={tabsRef}>
+        <Tabs onWheel={handleWheelEvent}>
           {categoryTabs.map((categoryTab: FavoritesCategoryTabsType, index) => {
-            return <Badge key={index} {...setBadgeOption(categoryTab)} />;
+            return <Badge key={index} {...getBadgeOption(categoryTab)} />;
           })}
         </Tabs>
       </TopBar>
@@ -88,7 +76,13 @@ export function Favorites() {
           <>
             {favoritesData?.pages.map(page =>
               page.items.map(item => {
-                return <ProductItem key={item.id} {...item} />;
+                return (
+                  <ProductItem
+                    key={item.id}
+                    {...item}
+                    renderingPosition="favorites"
+                  />
+                );
               })
             )}
             <ObservingTarget ref={observingTargetRef} />

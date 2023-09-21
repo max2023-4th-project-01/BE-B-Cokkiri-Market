@@ -1,4 +1,5 @@
 import { ChangeEvent, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { addItems, editItems } from '../../api/fetchers/itemFetcher';
 import {
@@ -30,6 +31,7 @@ type CategoryItem = {
 };
 
 export function ProductEditorPanel() {
+  const navigate = useNavigate();
   const { screenWidth } = useScreenConfigStore();
   const { isOpen, productId, editorMode, productData, closePanel } =
     useProductEditorStore(state => ({
@@ -42,8 +44,6 @@ export function ProductEditorPanel() {
 
   const { data: userLocationData } = useGetUserLocation();
   const resetRecommendCategory = useResetRecommendCategory();
-  const { data: recommendCategoryData, refetch } =
-    useGetRecommendCategoryData();
 
   const isEdit = editorMode === 'edit';
   const isError = isEdit && (!productData || !productId);
@@ -79,6 +79,10 @@ export function ProductEditorPanel() {
   const title = useInput(isEdit ? productData!.title : '');
   const price = useInput(isEdit ? productData!.price : '');
   const content = useInput(isEdit ? productData!.content : '');
+
+  const { data: recommendCategoryData, refetch } = useGetRecommendCategoryData(
+    title.value ?? ''
+  );
 
   const selectedLocationData = locationData?.filter(
     data => data.isSelected === true
@@ -143,7 +147,7 @@ export function ProductEditorPanel() {
         : title.value !== productData?.title;
 
     const handler = setTimeout(() => {
-      if (changedTitle) {
+      if (changedTitle && title.value !== '') {
         refetch();
       }
     }, 400);
@@ -257,10 +261,11 @@ export function ProductEditorPanel() {
 
   const submit = async () => {
     const formData = new FormData();
+    const convertedPrice = Number(price.value?.toString().replaceAll(',', ''));
     const item = {
       title: title.value,
       categoryId: selectedCategoryId,
-      price: price.value === '' ? null : Number(price.value),
+      price: price.value === '' ? null : convertedPrice,
       content: content.value,
       myLocationId: selectedLocationData?.id,
     };
@@ -286,15 +291,15 @@ export function ProductEditorPanel() {
       const res = await editItems(formData, productId!);
 
       if (res.status === 201) {
-        // 해당 상품 상세 페이지로 이동
         onClosePanel();
+        navigate(`/items/${productId}`);
       }
     } else {
       const res = await addItems(formData);
 
       if (res.status === 201) {
-        // 해당 상품 상세 페이지로 이동
         onClosePanel();
+        navigate(`/items/${res.data.itemId}`);
       }
     }
   };

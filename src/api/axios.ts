@@ -10,7 +10,6 @@ export const fetcher = axios.create({
   baseURL: BASE_URL,
   headers: {
     'Content-Type': 'application/json',
-    'Refresh-Token': 'your-refresh-token-value',
   },
 });
 

@@ -1,10 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { styled } from 'styled-components';
-import {
-  useAddUserLocation,
-  useGetLocationResult,
-} from '../../api/queries/useLocationQuery';
+import { useGetLocationResult } from '../../api/queries/useLocationQuery';
 import { useDebounceValue } from '../../hooks/useDebounceValue';
 import { Error } from '../Error';
 import { Loader } from '../Loader';
@@ -12,17 +9,15 @@ import { Loader } from '../Loader';
 type AddLocationProps = {
   rightPosition?: number;
   showSearchPanel?: () => void;
-  closeSearchPanel?: () => void;
-  hideSearchPanel?: () => void;
-  addLocation?: (locationId: number, locationName: string) => void;
+  onTransitionEndHandler?: () => void;
+  clickLocationItem: (locationId: number, locationName: string) => void;
 };
 
 export function AddLocation({
   rightPosition,
   showSearchPanel,
-  closeSearchPanel,
-  hideSearchPanel,
-  addLocation,
+  onTransitionEndHandler,
+  clickLocationItem,
 }: AddLocationProps) {
   const [inputValue, setInputValue] = useState('');
   const query = useDebounceValue(inputValue, 500);
@@ -36,7 +31,6 @@ export function AddLocation({
     fetchNextPage,
   } = useGetLocationResult(query);
 
-  const addMutation = useAddUserLocation();
   const { ref: observingTargetRef, inView } = useInView();
 
   useEffect(() => {
@@ -48,21 +42,6 @@ export function AddLocation({
   useEffect(() => {
     showSearchPanel && showSearchPanel();
   }, [showSearchPanel]);
-
-  const onClickLocationItem = (locationId: number, locationName: string) => {
-    // SignUpPanel에서 사용하는 경우
-    if (addLocation) {
-      addLocation(locationId, locationName);
-      return;
-    }
-    // Home에서 사용하는 경우
-    addMutation.mutate({ locationId, locationName });
-    hideSearchPanel && hideSearchPanel();
-  };
-
-  const onTransitionEndHandler = () => {
-    rightPosition !== 0 && closeSearchPanel && closeSearchPanel();
-  };
 
   const onChangeInputValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
@@ -90,7 +69,7 @@ export function AddLocation({
                   <LocationItem
                     key={location.id}
                     onClick={() =>
-                      onClickLocationItem(location.id, location.name)
+                      clickLocationItem(location.id, location.name)
                     }
                   >
                     {location.name}

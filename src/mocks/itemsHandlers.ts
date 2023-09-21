@@ -4,8 +4,16 @@ import { ItemData } from '../types';
 import { fakeItems, fakeSellItems } from './faker';
 
 export const itemsHandlers = [
-  rest.get(API_ENDPOINT.ITEMS, (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json(homeData));
+  rest.get(API_ENDPOINT.ITEMS, (req, res, ctx) => {
+    const categoryId = req.url.searchParams.get('categoryId');
+    const selectedCategory = categoryData.categories.find(
+      category => category.id === Number(categoryId)
+    );
+    const result = selectedCategory
+      ? { ...homeData, categoryName: selectedCategory.name }
+      : homeData;
+
+    return res(ctx.status(200), ctx.json(result));
   }),
 
   rest.get(API_ENDPOINT.CATEGORIES, (_, res, ctx) => {

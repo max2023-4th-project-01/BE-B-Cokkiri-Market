@@ -11,4 +11,5 @@ export const API_ENDPOINT = {
   FAVORITES: '/api/users/favorites',
   FAVORITES_CATEGORY: '/api/users/favorites/categories',
   RECOMMENDED_CATEGORIES: '/api/categories/recommend',
+  CHANGE_PROFILE_IMAGE: '/api/users/profile-image',
 };
