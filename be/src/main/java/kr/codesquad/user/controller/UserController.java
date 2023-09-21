@@ -67,9 +67,10 @@ public class UserController {
 		return ResponseEntity.ok()
 			.body(favoriteService.getFavoriteCategories(loginId));
 	}
-  
+
 	@PatchMapping("/profile-image")
-	public ResponseEntity<UpdateProfileImageResponse> updateProfileImage(@RequestParam MultipartFile profileImageFile,
+	public ResponseEntity<UpdateProfileImageResponse> updateProfileImage(
+		@RequestParam(required = false) MultipartFile profileImageFile,
 		HttpServletRequest request) {
 		String userLoginId = (String)request.getAttribute(Constants.LOGIN_ID);
 		return ResponseEntity.ok().body(userService.updateProfileImage(profileImageFile, userLoginId));
