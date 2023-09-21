@@ -12,15 +12,16 @@ import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.MalformedJwtException;
 import kr.codesquad.jwt.service.JwtProvider;
-import kr.codesquad.util.Constants;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
 @RequiredArgsConstructor
+@Component
 public class WebSocketInterceptor implements ChannelInterceptor {
 
 	private final JwtProvider jwtProvider;
