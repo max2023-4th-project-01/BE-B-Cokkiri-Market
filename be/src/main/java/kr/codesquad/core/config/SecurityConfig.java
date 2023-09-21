@@ -27,6 +27,7 @@ import kr.codesquad.jwt.service.JwtAuthenticationSuccessHandler;
 import kr.codesquad.jwt.service.JwtProvider;
 import kr.codesquad.user.service.UserService;
 import kr.codesquad.util.Constants;
+import kr.codesquad.util.RedisUtil;
 import lombok.RequiredArgsConstructor;
 
 @EnableWebSecurity
@@ -34,6 +35,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 	private final UserService userService;
+	private final RedisUtil redisUtil;
 	private final PasswordEncoder passwordEncoder;
 	private final OAuthService oAuthService;
 	private final JwtAuthenticationSuccessHandler jwtAuthenticationSuccessHandler;
@@ -51,7 +53,7 @@ public class SecurityConfig {
 		authenticationFilter.setAuthenticationSuccessHandler(jwtAuthenticationSuccessHandler);
 		authenticationFilter.setFilterProcessesUrl("/api/login");
 
-		AuthorizationFilter authorizationFilter = new AuthorizationFilter(jwtProvider);
+		AuthorizationFilter authorizationFilter = new AuthorizationFilter(jwtProvider, redisUtil);
 
 		http.csrf()
 			.disable()

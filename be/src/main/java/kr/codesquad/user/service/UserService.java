@@ -1,7 +1,6 @@
 package kr.codesquad.user.service;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,8 +15,11 @@ import kr.codesquad.location.entity.Location;
 import kr.codesquad.location.repository.LocationRepository;
 import kr.codesquad.user.dto.UserMapper;
 import kr.codesquad.user.dto.request.UserSignUpRequest;
+import kr.codesquad.user.dto.response.UpdateProfileImageResponse;
 import kr.codesquad.user.entity.User;
 import kr.codesquad.user.repository.UserRepository;
+import kr.codesquad.util.Constants;
+import kr.codesquad.util.S3ImageDirectory;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -30,12 +32,6 @@ public class UserService implements UserDetailsService {
 
 	@Transactional
 	public void signUp(UserSignUpRequest userSignUpRequest, MultipartFile profileImageFile) {
-		String url;
-		if (profileImageFile == null) {
-			url = "https://cokkiri-s3.s3.ap-northeast-2.amazonaws.com/profileImage/%EC%BD%94%EB%81%BC%EB%A6%AC.png";
-		} else {
-			url = amazonS3Service.upload(profileImageFile, "profileImage");
-		}
 		if (userRepository.existsByLoginId(userSignUpRequest.getUsername())) {
 			// TODO: 커스텀 예외 처리 필요
 			throw new RuntimeException("이미 존재하는 회원입니다");
@@ -43,6 +39,12 @@ public class UserService implements UserDetailsService {
 		if (userRepository.existsByNickname(userSignUpRequest.getNickname())) {
 			// TODO: 커스텀 예외 처리 필요
 			throw new RuntimeException("이미 존재하는 닉네임입니다");
+		}
+		String url;
+		if (profileImageFile == null) {
+			url = Constants.DEFAULT_PROFILE_IMAGE_URL;
+		} else {
+			url = amazonS3Service.upload(profileImageFile, S3ImageDirectory.PROFILE_IMAGE);
 		}
 
 		String encodedPassword = bCryptPasswordEncoder.encode(userSignUpRequest.getPassword());
@@ -60,5 +62,16 @@ public class UserService implements UserDetailsService {
 		User user = userRepository.findByLoginId(username);
 		return new org.springframework.security.core.userdetails.User(username, user.getPassword(),
 			new ArrayList<>());
+	}
+
+	@Transactional
+	public UpdateProfileImageResponse updateProfileImage(MultipartFile profileImageFile, String userLoginId) {
+		User user = userRepository.findByLoginId(userLoginId);
+		amazonS3Service.deleteImage(user.getProfileImageUrl()); // 기존 프로필 이미지 삭제
+
+		String newProfileImageUrl = amazonS3Service.upload(profileImageFile, S3ImageDirectory.PROFILE_IMAGE);
+		user.updateProfileImage(newProfileImageUrl);
+
+		return new UpdateProfileImageResponse(newProfileImageUrl);
 	}
 }

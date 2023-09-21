@@ -1,12 +1,11 @@
 package kr.codesquad.user.controller;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,11 +14,12 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import kr.codesquad.category.dto.response.FavoriteCategoryResponse;
+import kr.codesquad.category.dto.response.FavoriteCategoryResponseList;
 import kr.codesquad.favorite.service.FavoriteService;
 import kr.codesquad.item.dto.slice.UserItemListSlice;
 import kr.codesquad.item.service.ItemService;
 import kr.codesquad.user.dto.request.UserSignUpRequest;
+import kr.codesquad.user.dto.response.UpdateProfileImageResponse;
 import kr.codesquad.user.service.UserService;
 import kr.codesquad.util.Constants;
 import lombok.RequiredArgsConstructor;
@@ -62,9 +62,16 @@ public class UserController {
 	}
 
 	@GetMapping("/favorites/categories")
-	public ResponseEntity<List<FavoriteCategoryResponse>> favoriteCategories(HttpServletRequest request) {
+	public ResponseEntity<FavoriteCategoryResponseList> favoriteCategories(HttpServletRequest request) {
 		String loginId = (String)request.getAttribute(Constants.LOGIN_ID);
 		return ResponseEntity.ok()
 			.body(favoriteService.getFavoriteCategories(loginId));
+	}
+  
+	@PatchMapping("/profile-image")
+	public ResponseEntity<UpdateProfileImageResponse> updateProfileImage(@RequestParam MultipartFile profileImageFile,
+		HttpServletRequest request) {
+		String userLoginId = (String)request.getAttribute(Constants.LOGIN_ID);
+		return ResponseEntity.ok().body(userService.updateProfileImage(profileImageFile, userLoginId));
 	}
 }

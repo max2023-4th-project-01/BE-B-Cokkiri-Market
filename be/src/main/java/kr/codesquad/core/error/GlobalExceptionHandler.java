@@ -2,6 +2,7 @@ package kr.codesquad.core.error;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.NestedExceptionUtils;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -24,7 +25,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(CustomException.class)
 	protected ResponseEntity<ErrorResponse> handleCustomException(CustomException ex) {
 		StatusCode statusCode = ex.getStatusCode();
-		log.warn("CustomException handling: {}", ex.toString());
+		log.info("CustomException handling: {}", ex.toString());
 		return ResponseEntity.status(statusCode.getHttpStatus()).body(ErrorResponse.builder()
 			.statusCode(statusCode.getHttpStatus())
 			.message(statusCode.getMessage()).build());
@@ -35,12 +36,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers,
 		HttpStatus status, WebRequest request) {
 		ErrorCode errorCode = ErrorCode.PAGE_NOT_FOUND;
-		log.warn("NoHandlerFoundException handling: {}", ex.toString());
+		log.info("NoHandlerFoundException handling: {}", ex.toString());
 		return ResponseEntity.status(errorCode.getHttpStatus())
 			.body(ErrorResponse.builder()
 				.statusCode(errorCode.getHttpStatus())
 				.message(errorCode.getMessage())
-				.detail(ex.getMessage()).build());
+				.detail(ex.getMessage() + ", " + NestedExceptionUtils.getMostSpecificCause(ex)).build());
 	}
 
 	// 500 에러
@@ -54,7 +55,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 			.body(ErrorResponse.builder()
 				.statusCode(errorCode.getHttpStatus())
 				.message(errorCode.getMessage())
-				.detail(ex.toString()).build());
+				.detail(ex.getMessage() + ", " + ex.getMostSpecificCause()).build());
 	}
 
 	// 서버 오류
@@ -67,7 +68,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 			.body(ErrorResponse.builder()
 				.statusCode(errorCode.getHttpStatus())
 				.message(errorCode.getMessage())
-				.detail(ex.toString()).build());
+				.detail(ex.getMessage() + ", " + NestedExceptionUtils.getMostSpecificCause(ex)).build());
 	}
 
 	// @Valid 예외 처리
@@ -75,11 +76,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 		HttpHeaders headers, HttpStatus status, WebRequest request) {
 		ErrorCode errorCode = ErrorCode.VALIDATION_FAILED;
-		log.warn("MethodArgumentNotValidException handling: {}", ex.getMessage());
+		log.info("MethodArgumentNotValidException handling: {}", ex.getMessage());
 		return ResponseEntity.status(errorCode.getHttpStatus())
 			.body(ErrorResponse.builder()
 				.statusCode(errorCode.getHttpStatus())
 				.message(errorCode.getMessage())
-				.detail(ex.getMessage()).build());
+				.detail(ex.getMessage() + ", " + NestedExceptionUtils.getMostSpecificCause(ex)).build());
 	}
 }

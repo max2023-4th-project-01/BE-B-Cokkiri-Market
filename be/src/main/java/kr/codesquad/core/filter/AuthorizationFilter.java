@@ -2,8 +2,6 @@ package kr.codesquad.core.filter;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -11,31 +9,29 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.PatternMatchUtils;
 import org.springframework.web.cors.CorsUtils;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.MalformedJwtException;
 import kr.codesquad.jwt.service.JwtProvider;
 import kr.codesquad.util.Constants;
+import kr.codesquad.util.RedisUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 public class AuthorizationFilter implements Filter {
 	private static final String[] whiteListUris = {"/h2-console/**", "/api/users", "/api/login",
-		"/api/reissue-access-token", "/api/oauth/**", "/api/redirect/**", "/login/oauth2/code/github**",
-		"/api/locations**", "/favicon**"};
+		"/api/reissue-access-token", "/api/oauth/**", "/api/redirect/**", "/redirect/**", "/api/locations**"};
 
 	private final JwtProvider jwtProvider;
+	private final RedisUtil redisUtil;
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -47,36 +43,23 @@ public class AuthorizationFilter implements Filter {
 			return;
 		}
 		if (whiteListCheck(httpServletRequest.getRequestURI())) {
+			log.debug(httpServletRequest.getRequestURI() + "화이트 리스트");
 			chain.doFilter(request, response);
 			return;
 		}
 
 		if (!isContainToken(httpServletRequest)) {
-			response.setCharacterEncoding("UTF-8");
-			response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-			((HttpServletResponse)response).setStatus(HttpStatus.BAD_REQUEST.value());
+			log.debug(httpServletRequest.getRequestURI() + "토큰 없음");
+			throw new MalformedJwtException("토큰이 없습니다" + httpServletRequest.getRequestURI());
+		}
 
-			// Get the request URL
-			String requestURL = httpServletRequest.getRequestURL().toString();
-
-			// Create a JSON response object that includes the request URL
-			Map<String, Object> jsonResponse = new HashMap<>();
-			jsonResponse.put("error", "MalformedJwtException");
-			jsonResponse.put("message", "");
-			jsonResponse.put("requestUrl", requestURL);
-			jsonResponse.put("/login/oauth2/code/github**",
-				PatternMatchUtils.simpleMatch("/login/oauth2/code/github**", requestURL));
-
-			// Convert the JSON response to a string
-			String jsonResponseString = new ObjectMapper().writeValueAsString(jsonResponse);
-
-			// Write the JSON response to the output stream
-			response.getWriter().write(jsonResponseString);
-			throw new MalformedJwtException("");
-
+		if (isBlackListed(httpServletRequest)) {
+			log.debug(httpServletRequest.getRequestURI() + "로그아웃");
+			throw new MalformedJwtException("로그아웃된 토큰입니다" + httpServletRequest.getRequestURI());
 		}
 
 		try {
+			log.debug(httpServletRequest.getRequestURI() + "잘통과함 검증해야함");
 			String token = getToken(httpServletRequest);
 			Claims claims = jwtProvider.getClaims(token);
 			request.setAttribute(Constants.LOGIN_ID, claims.get(Constants.LOGIN_ID));
@@ -85,11 +68,14 @@ public class AuthorizationFilter implements Filter {
 					new UsernamePasswordAuthenticationToken(claims.getSubject(), null, new ArrayList<>()));
 			chain.doFilter(request, response);
 		} catch (RuntimeException e) {
-			response.setCharacterEncoding("UTF-8");
-			response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-			((HttpServletResponse)response).setStatus(HttpStatus.UNAUTHORIZED.value());
-			throw new MalformedJwtException("");
+			log.debug(httpServletRequest.getRequestURI() + "올바르지 않음");
+			throw new MalformedJwtException("올바르지 않은 토큰입니다." + httpServletRequest.getRequestURI());
 		}
+	}
+
+	private boolean isBlackListed(HttpServletRequest httpServletRequest) {
+		String accessToken = getToken(httpServletRequest);
+		return redisUtil.hasKey(accessToken);
 	}
 
 	private boolean whiteListCheck(String uri) {
@@ -103,6 +89,6 @@ public class AuthorizationFilter implements Filter {
 
 	private String getToken(HttpServletRequest request) {
 		String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
-		return authorization.substring(7).replace("\"", "");
+		return authorization.substring(Constants.TOKEN_PREFIX.length()).replace("\"", "");
 	}
 }
