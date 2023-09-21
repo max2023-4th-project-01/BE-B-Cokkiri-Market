@@ -1,12 +1,13 @@
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { useGetItemDetailsEdit } from '../api/queries/useItemDetailsQuery';
-import { useProductEditorStore } from '../stores/useProductEditorStore';
+import { useDeleteItem } from '../api/queries/useItemQuery';
 import { addCommasToNumber } from '../utils/addCommasToNumber';
 import { getElapsedSince } from '../utils/getElapsedSince';
+import { Alert } from './Alert';
 import { Badge } from './Badge';
-import { Dropdown } from './dropdown/Dropdown';
-import { MenuItem } from './dropdown/MenuItem';
+import { ProductItemDropdown } from './dropdown/ProductItemDropdown';
 import { Icon } from './icon/Icon';
 
 type ItemProps = {
@@ -34,11 +35,15 @@ export function ProductItem({
   countData,
   thumbnailUrl,
   isSeller,
-}: ItemProps) {
-  const { chat, favorite } = countData;
+  renderingPosition,
+}: ItemProps & { renderingPosition: 'home' | 'favorites' | 'salesList' }) {
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
   const navigate = useNavigate();
+  const currentLocation = useLocation();
+
+  const { chat, favorite } = countData;
   const { data, isError, isLoading, refetch } = useGetItemDetailsEdit(id);
-  const openEditorPanel = useProductEditorStore(state => state.openPanel);
+  const deleteMutation = useDeleteItem(renderingPosition);
 
   const setPrice = (price: number | null) => {
     switch (price) {
@@ -57,32 +62,18 @@ export function ProductItem({
     }
   };
 
-  // TODO: 각 드롭다운 메뉴 아이템들에 맞는 액션 추가하기
-  const dropdownActions = {
-    edit: () => {
-      if (!data || isLoading) {
-        // '문제가 생겼습니다 다시 시도해 주세요' 같은 toast
-        // 또는 잠깐 로딩 보여주고 data, isLoading을 useEffect로 체크 후 panel 열어 주기
-        return;
-      } else if (isError) {
-        // 에러 toast
-        return;
-      }
-      openEditorPanel({ mode: 'edit', data: data, id: id });
-    },
-    reserved: () => {
-      console.log('예약중');
-    },
-    sold: () => {
-      console.log('판매완료');
-    },
-    delete: () => {
-      console.log('삭제');
-    },
+  const openAlert = () => {
+    setIsAlertOpen(true);
+  };
+
+  const deleteItem = () => {
+    deleteMutation.mutate(id);
   };
 
   const showItemDetails = (itemid: number) => {
-    navigate(`/items/${itemid}`);
+    navigate(`/items/${itemid}`, {
+      state: { redirectedFrom: currentLocation },
+    });
   };
 
   return (
@@ -93,23 +84,15 @@ export function ProductItem({
           <span>{title}</span>
           {isSeller && (
             <div onMouseOver={hoverToFetch}>
-              <Dropdown iconName="dots" align="right">
-                <MenuItem onAction={dropdownActions['edit']}>
-                  <div>게시글 수정</div>
-                </MenuItem>
-                <MenuItem onAction={dropdownActions['reserved']}>
-                  예약중 상태로 전환
-                </MenuItem>
-                <MenuItem onAction={dropdownActions['sold']}>
-                  판매완료 상태로 전환
-                </MenuItem>
-                <MenuItem
-                  color="systemWarning"
-                  onAction={dropdownActions['delete']}
-                >
-                  삭제
-                </MenuItem>
-              </Dropdown>
+              <ProductItemDropdown
+                data={data}
+                itemId={id}
+                isError={isError}
+                isLoading={isLoading}
+                status={statusName}
+                openAlert={openAlert}
+                renderingPosition={renderingPosition}
+              />
             </div>
           )}
         </Title>
@@ -117,13 +100,17 @@ export function ProductItem({
           {locationName}・{getElapsedSince(createdAt)}
         </LocationAndTimestamp>
         <StateAndPrice>
-          {statusName !== '' && (
+          {statusName !== '' && statusName !== '판매중' && (
             <Badge
               type="container"
               size="S"
               text={statusName}
-              fontColor="accentText"
-              badgeColor="accentSecondary"
+              fontColor={
+                statusName === '예약중' ? 'accentText' : 'accentTextWeak'
+              }
+              badgeColor={
+                statusName === '예약중' ? 'accentSecondary' : 'neutralBorder'
+              }
             />
           )}
           <Price>{setPrice(price)}</Price>
@@ -138,11 +125,22 @@ export function ProductItem({
           {favorite > 0 && (
             <CountWrapper>
               <Icon name="heart" color="neutralTextWeak" />
-              {chat}
+              {favorite}
             </CountWrapper>
           )}
         </History>
       </Information>
+      {isAlertOpen && (
+        <Alert
+          isOpen={isAlertOpen}
+          onClose={() => {
+            setIsAlertOpen(false);
+          }}
+          onAction={deleteItem}
+        >
+          상품을 삭제하시겠습니까?
+        </Alert>
+      )}
     </Div>
   );
 }

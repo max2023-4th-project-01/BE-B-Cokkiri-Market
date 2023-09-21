@@ -18,7 +18,7 @@ export function CategoryContainer({
   openModal,
   setCategoryId,
 }: CategoryContainerProps) {
-  const setBadgeOption = (category: FavoritesCategoryTabsType) => {
+  const getBadgeOption = (category: FavoritesCategoryTabsType) => {
     const isSelected = category.id === selectedCategoryId;
     const options: BadgeProps = {
       size: 'M',
@@ -36,7 +36,7 @@ export function CategoryContainer({
     <CategoryWrapper>
       <BadgeWrapper>
         {recommendCategory?.categories.map(category => (
-          <Badge key={category.id} {...setBadgeOption(category)} />
+          <Badge key={category.id} {...getBadgeOption(category)} />
         ))}
       </BadgeWrapper>
       <Button style={{ padding: 0 }} styledType="text" onClick={openModal}>

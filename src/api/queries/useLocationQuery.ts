@@ -5,6 +5,7 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
+import { useToastStore } from '../../stores/useToastStore';
 import { LocationResultData, UserLocationData } from '../../types';
 import {
   addUserLocation,
@@ -48,6 +49,7 @@ export const useGetUserLocation = () => {
 // 홈: 동네설정 내 동네 추가하기
 export const useAddUserLocation = () => {
   const queryClient = useQueryClient();
+  const showToast = useToastStore(state => state.showToast);
 
   return useMutation(addUserLocation, {
     onSuccess: data => {
@@ -65,8 +67,10 @@ export const useAddUserLocation = () => {
     onError: (error: AxiosError) => {
       const statueCode = error?.response?.status;
       if (statueCode === 500) {
-        // TODO: 토스트 메세지로 에러 표시
-        console.log('서버에서 요청이 제대로 처리되지 못했습니다.');
+        showToast({
+          mode: 'error',
+          message: '서버에서 요청이 제대로 처리되지 못했습니다.',
+        });
       }
     },
   });

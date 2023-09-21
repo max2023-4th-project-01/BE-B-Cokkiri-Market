@@ -7,6 +7,7 @@ import { Button } from '../../components/button/Button';
 import { Icon } from '../../components/icon/Icon';
 import { SignUpLocationModal } from '../../components/locations/SignUpLocationModal';
 import { useScreenConfigStore } from '../../stores/useScreenConfigStore';
+import { useToastStore } from '../../stores/useToastStore';
 import { AuthInput } from './AuthInput';
 import { ProfileButton } from './ProfileButton';
 import { isValid } from './authConstant';
@@ -22,6 +23,7 @@ type LocationState = {
 
 export function SignUpPanel({ closePanel }: SignUpPanelProps) {
   const { screenWidth } = useScreenConfigStore();
+  const showToast = useToastStore(state => state.showToast);
 
   const [rightPosition, setRightPosition] = useState(-screenWidth);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -48,11 +50,6 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
     isValidNickname &&
     !isNullLocation
   );
-
-  const addSignUpLocation = (locationId: number, locationName: string) => {
-    setLocation({ id: locationId, name: locationName });
-    setIsModalOpen(false);
-  };
 
   useEffect(() => {
     setRightPosition(0);
@@ -135,12 +132,16 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
     }
 
     const res = await singup(formData);
-
     // TODO : 에러 예외 처리
     if (res.status === 201) {
-      console.log('Response:', res.data);
+      showToast({ mode: 'success', message: '회원가입 성공!' });
       closePanel();
     }
+  };
+
+  const setSignUpLocation = (locationId: number, locationName: string) => {
+    setLocation({ id: locationId, name: locationName });
+    setIsModalOpen(false);
   };
 
   return (
@@ -184,6 +185,7 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
           onChangeId={onChangeId}
           onChangePassword={onChangePassword}
           onChangeNickname={onChangeNickname}
+          onSubmit={submit}
         />
         {location ? (
           <Button
@@ -193,13 +195,7 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
             align="space-between"
           >
             {location.name}
-            <Icon
-              name="pencil"
-              color="accentText"
-              onClick={() => {
-                console.log('삭제할까요?');
-              }}
-            />
+            <Icon name="pencil" color="accentText" />
           </Button>
         ) : (
           <Button
@@ -217,7 +213,7 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
         <SignUpLocationModal
           isOpen={isModalOpen}
           onClose={closeModal}
-          addLocation={addSignUpLocation}
+          setSignUpLocation={setSignUpLocation}
         />
       )}
     </Div>

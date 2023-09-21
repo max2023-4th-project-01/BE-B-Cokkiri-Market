@@ -22,6 +22,11 @@ export function PictureContainer({
     return uploadPictureList.map(picture => URL.createObjectURL(picture));
   }, [uploadPictureList]);
 
+  const handleWheelEvent = (event: React.WheelEvent<HTMLDivElement>) => {
+    const element = event.currentTarget;
+    element.scrollLeft += event.deltaY / 2;
+  };
+
   return (
     <>
       <PictureAddButton
@@ -42,7 +47,7 @@ export function PictureContainer({
           onChange={addPicture}
         />
       </PictureAddButton>
-      <PictureList>
+      <PictureList onWheel={handleWheelEvent}>
         {pictureList.map((picture, index) => {
           return (
             <Picture key={index} $backgroundImage={picture.url}>

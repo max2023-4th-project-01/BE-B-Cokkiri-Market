@@ -1,4 +1,4 @@
-import { ChangeEvent } from 'react';
+import { ChangeEvent, KeyboardEvent } from 'react';
 import { styled } from 'styled-components';
 import { isValid } from './authConstant';
 
@@ -9,6 +9,7 @@ type AuthInputProps = {
   onChangeId: (event: ChangeEvent<HTMLInputElement>) => void;
   onChangePassword: (event: ChangeEvent<HTMLInputElement>) => void;
   onChangeNickname?: (event: ChangeEvent<HTMLInputElement>) => void;
+  onSubmit?: () => void;
 };
 
 export function AuthInput({
@@ -18,6 +19,7 @@ export function AuthInput({
   onChangeId,
   onChangePassword,
   onChangeNickname,
+  onSubmit,
 }: AuthInputProps) {
   const COMMON_LABEL = '영어와 숫자로 6~20자 입력해 주세요';
   const NICKNAME_LABEL = '한글, 영어, 숫자로 2~16자 입력해 주세요.';
@@ -30,6 +32,23 @@ export function AuthInput({
   const shouldShowPasswordWarning = !isValidPassword && password !== '';
   const shouldShowNicknameWarning = !isValidNickname && nickname !== '';
 
+  const submit = () => {
+    if (
+      onSubmit &&
+      isValidId &&
+      isValidPassword &&
+      (!nickname || (nickname && isValidNickname))
+    ) {
+      onSubmit();
+    }
+  };
+
+  const onKeydownEnter = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      submit();
+    }
+  };
+
   return (
     <>
       <InputWrapper>
@@ -39,6 +58,7 @@ export function AuthInput({
           placeholder="내용을 입력해 주세요."
           value={id}
           onChange={onChangeId}
+          onKeyDown={onKeydownEnter}
           $shouldShowWarring={shouldShowIdWarning}
         />
         {shouldShowIdWarning && <WarningLabel>{COMMON_LABEL}</WarningLabel>}
@@ -51,6 +71,7 @@ export function AuthInput({
           value={password}
           type="password"
           onChange={onChangePassword}
+          onKeyDown={onKeydownEnter}
           $shouldShowWarring={shouldShowPasswordWarning}
         />
         {shouldShowPasswordWarning && (
@@ -65,6 +86,7 @@ export function AuthInput({
             placeholder="내용을 입력해 주세요."
             value={nickname}
             onChange={onChangeNickname}
+            onKeyDown={onKeydownEnter}
             $shouldShowWarring={shouldShowNicknameWarning}
           />
           {shouldShowNicknameWarning && (

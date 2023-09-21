@@ -11,7 +11,15 @@ export const authHandlers = [
     );
   }),
   rest.post(API_ENDPOINT.SIGNUP, (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json('201'));
+    return res(ctx.status(201), ctx.json('201'));
+  }),
+  rest.patch(API_ENDPOINT.CHANGE_PROFILE_IMAGE, (_, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json({
+        profileImageUrl: 'https://avatars.githubusercontent.com/u/97204689?v=4',
+      })
+    );
   }),
 ];
 
