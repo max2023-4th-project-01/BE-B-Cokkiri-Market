@@ -16,7 +16,9 @@ import { Dropdown } from '../../components/dropdown/Dropdown';
 import { MenuItem } from '../../components/dropdown/MenuItem';
 import { Icon } from '../../components/icon/Icon';
 import { HomeLocationModal } from '../../components/locations/HomeLocationModal';
+import { useAuthStore } from '../../stores/useAuthStore';
 import { useProductEditorStore } from '../../stores/useProductEditorStore';
+import { useToastStore } from '../../stores/useToastStore';
 import { CategoryFilterPanel } from './CategoryFilterPanel';
 
 export function Home() {
@@ -27,6 +29,8 @@ export function Home() {
   const [isOpenPanel, setIsOpenPanel] = useState(false);
 
   const { ref: observingTargetRef, inView } = useInView();
+  const authenticated = useAuthStore(state => state.authenticated);
+  const showToast = useToastStore(state => state.showToast);
 
   const {
     data: itemData,
@@ -84,6 +88,14 @@ export function Home() {
     return keyName;
   };
 
+  const onLocationClick = () => {
+    showToast({
+      mode: 'warning',
+      message: '동네설정은 로그인 후 가능합니다.',
+    });
+    return;
+  };
+
   return (
     <Div>
       <CategoryFilterPanel
@@ -94,28 +106,39 @@ export function Home() {
       <Header
         leftButton={
           <LeftAccessory>
-            <Dropdown
-              btnText={
-                extractKeyName(itemData?.pages[0]?.userLocation) || '역삼1동'
-              }
-              iconName="chevronDown"
-              align="left"
-            >
-              {userLocationData?.locations?.map(location => {
-                return (
-                  <MenuItem
-                    key={location.id}
-                    isSelected={location.isSelected}
-                    onAction={() => {
-                      selectLocation(location.id, location.isSelected);
-                    }}
-                  >
-                    {location.name}
-                  </MenuItem>
-                );
-              })}
-              <MenuItem onAction={openModal}>내 동네 설정하기</MenuItem>
-            </Dropdown>
+            {!authenticated ? (
+              <Button
+                styledType="text"
+                color="neutralText"
+                onClick={onLocationClick}
+              >
+                역삼1동
+                <Icon name="chevronDown" color="neutralTextStrong" />
+              </Button>
+            ) : (
+              <Dropdown
+                btnText={
+                  extractKeyName(itemData?.pages[0]?.userLocation) || '역삼1동'
+                }
+                iconName="chevronDown"
+                align="left"
+              >
+                {userLocationData?.locations?.map(location => {
+                  return (
+                    <MenuItem
+                      key={location.id}
+                      isSelected={location.isSelected}
+                      onAction={() => {
+                        selectLocation(location.id, location.isSelected);
+                      }}
+                    >
+                      {location.name}
+                    </MenuItem>
+                  );
+                })}
+                <MenuItem onAction={openModal}>내 동네 설정하기</MenuItem>
+              </Dropdown>
+            )}
           </LeftAccessory>
         }
         rightButton={

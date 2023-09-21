@@ -1,8 +1,6 @@
 import { MouseEvent, ReactNode, useEffect, useState } from 'react';
 import { css, styled } from 'styled-components';
 import { useScrollLock } from '../../hooks/useScrollLock';
-import { useAuthStore } from '../../stores/useAuthStore';
-import { useToastStore } from '../../stores/useToastStore';
 import { Button } from '../button/Button';
 import { Icon } from '../icon/Icon';
 import { IconsType } from '../icon/icons';
@@ -22,8 +20,6 @@ export function Dropdown({
 }: DropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [lockScroll, unlockScroll] = useScrollLock('home--body__items');
-  const showToast = useToastStore(state => state.showToast);
-  const authenticated = useAuthStore(state => state.authenticated);
 
   useEffect(() => {
     if (isOpen) {
@@ -36,13 +32,6 @@ export function Dropdown({
 
   const onToggle = (event: MouseEvent) => {
     event.stopPropagation();
-    if (!authenticated) {
-      showToast({
-        mode: 'warning',
-        message: '동네설정은 로그인 후 가능합니다.',
-      });
-      return;
-    }
     setIsOpen(!isOpen);
   };
 
