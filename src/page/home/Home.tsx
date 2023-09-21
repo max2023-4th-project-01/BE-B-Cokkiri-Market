@@ -2,18 +2,13 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { styled } from 'styled-components';
 import { useGetItemData } from '../../api/queries/useItemQuery';
-import {
-  useGetUserLocation,
-  useResetLocationResult,
-  useSelectUserLocation,
-} from '../../api/queries/useLocationQuery';
+import { useResetLocationResult } from '../../api/queries/useLocationQuery';
 import { Error } from '../../components/Error';
 import { Header } from '../../components/Header';
 import { Loader } from '../../components/Loader';
 import { ProductItem } from '../../components/ProductItem';
 import { Button } from '../../components/button/Button';
-import { Dropdown } from '../../components/dropdown/Dropdown';
-import { MenuItem } from '../../components/dropdown/MenuItem';
+import { UserLocationDropdown } from '../../components/dropdown/UserLocationDropdown';
 import { Icon } from '../../components/icon/Icon';
 import { HomeLocationModal } from '../../components/locations/HomeLocationModal';
 import { useAuthStore } from '../../stores/useAuthStore';
@@ -37,9 +32,9 @@ export function Home() {
     refetch: refetchItems,
     fetchNextPage,
     hasNextPage,
+    isLoading,
+    isError,
   } = useGetItemData(categoryId);
-  const { data: userLocationData, isLoading, isError } = useGetUserLocation();
-  const selectMutation = useSelectUserLocation();
   const resetLocationResult = useResetLocationResult();
 
   useEffect(() => {
@@ -77,17 +72,6 @@ export function Home() {
     setCategoryId(id);
   }, []);
 
-  const selectLocation = (locationId: number, isSelected: boolean) => {
-    if (isSelected) return;
-    selectMutation.mutate(locationId);
-  };
-
-  const extractKeyName = (locationName: string | undefined) => {
-    if (!locationName) return;
-    const keyName = locationName.split(' ').at(-1);
-    return keyName;
-  };
-
   const onLocationClick = () => {
     showToast({
       mode: 'warning',
@@ -116,28 +100,10 @@ export function Home() {
                 <Icon name="chevronDown" color="neutralTextStrong" />
               </Button>
             ) : (
-              <Dropdown
-                btnText={
-                  extractKeyName(itemData?.pages[0]?.userLocation) || '역삼1동'
-                }
-                iconName="chevronDown"
-                align="left"
-              >
-                {userLocationData?.locations?.map(location => {
-                  return (
-                    <MenuItem
-                      key={location.id}
-                      isSelected={location.isSelected}
-                      onAction={() => {
-                        selectLocation(location.id, location.isSelected);
-                      }}
-                    >
-                      {location.name}
-                    </MenuItem>
-                  );
-                })}
-                <MenuItem onAction={openModal}>내 동네 설정하기</MenuItem>
-              </Dropdown>
+              <UserLocationDropdown
+                currentLocation={itemData?.pages[0]?.userLocation}
+                openModal={openModal}
+              />
             )}
           </LeftAccessory>
         }
