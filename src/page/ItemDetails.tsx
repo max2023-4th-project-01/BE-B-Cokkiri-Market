@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { styled } from 'styled-components';
 import {
@@ -45,6 +45,17 @@ export type ItemDetailsData = {
 export function ItemDetails() {
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [activeSlidePage, setActiveSlidePage] = useState(1);
+  const [isScrollTop, setIsScrollTop] = useState(true);
+  const mainRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    window.addEventListener('wheel', onScroll);
+    window.addEventListener('touchmove', onScroll);
+    return () => {
+      window.removeEventListener('wheel', onScroll);
+      window.removeEventListener('touchmove', onScroll);
+    };
+  }, []);
 
   const { itemId } = useParams();
   const navigate = useNavigate();
@@ -69,6 +80,14 @@ export function ItemDetails() {
   const favoriteMutation = usePatchFavorite();
   const statusMutation = usePatchStatus();
   const deleteMutation = useDeleteItem('home');
+
+  const onScroll = () => {
+    if (mainRef.current?.scrollTop === 0) {
+      setIsScrollTop(true);
+    } else {
+      setIsScrollTop(false);
+    }
+  };
 
   const plusPageNum = () => {
     setActiveSlidePage(prev => prev + 1);
@@ -116,7 +135,6 @@ export function ItemDetails() {
     }
   };
 
-  // TODO: 페이지 로딩 시 스켈레톤 UI 추가 예정
   if (isLoading) {
     return (
       <Wrapper>
@@ -164,6 +182,7 @@ export function ItemDetails() {
     <Container>
       <Header
         type="dynamic"
+        isScrollTop={isScrollTop}
         leftButton={
           <Button styledType="text" onClick={() => navigate('/')}>
             <Icon name="chevronLeft" color="neutralText" />
@@ -184,7 +203,7 @@ export function ItemDetails() {
         }
       />
 
-      <Main>
+      <Main ref={mainRef}>
         <SliderWrapper>
           <Slider
             imageList={itemDetailsData.images}
@@ -291,15 +310,6 @@ const Container = styled.div`
   z-index: 1;
   background-color: ${({ theme }) => theme.color.neutralBackground};
 `;
-
-// const StyledHeader = styled(Header)`
-//   background-color: transparent;
-//   border-bottom: none;
-
-//   &::before {
-//     backdrop-filter: none;
-//   }
-// `;
 
 const Main = styled.div`
   height: calc(100% - 64px);
