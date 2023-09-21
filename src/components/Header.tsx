@@ -2,19 +2,20 @@ import { ReactElement } from 'react';
 import { styled } from 'styled-components';
 
 type HeaderProps = {
+  className: string;
   leftButton?: ReactElement;
   rightButton?: ReactElement;
   title?: string;
 };
 
 export function Header({
+  className,
   leftButton,
   rightButton,
   title,
-  ...rest
 }: HeaderProps) {
   return (
-    <Div {...rest}>
+    <Div className={className}>
       <Left>{leftButton}</Left>
       <Title>{title}</Title>
       <Right>{rightButton}</Right>

@@ -6,6 +6,7 @@ type Size = 'S' | 'M';
 export type BadgeType = 'container' | 'outline';
 
 export type BadgeProps = {
+  className: string;
   fontColor: ColorType;
   badgeColor: ColorType;
   text: string;
@@ -15,25 +16,25 @@ export type BadgeProps = {
 };
 
 export function Badge({
+  className,
   fontColor,
   badgeColor,
   text,
   size,
   type,
   onClick,
-  ...rest
 }: BadgeProps) {
   const isClickable = !!onClick;
 
   return (
     <Div
+      className={className}
       $fontColor={fontColor}
       $BadgeColor={badgeColor}
       $size={size}
       $type={type}
       $isClickable={isClickable}
       onClick={onClick}
-      {...rest}
     >
       {text}
     </Div>
