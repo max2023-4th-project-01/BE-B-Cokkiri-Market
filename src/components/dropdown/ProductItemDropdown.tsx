@@ -69,19 +69,34 @@ export function ProductItemDropdown({
     });
   };
 
+  const statusMenuItemList = [
+    {
+      status: '판매중',
+      action: changeStatusToOnSale,
+      label: '판매중 상태로 전환',
+    },
+    {
+      status: '예약중',
+      action: changeStatusToReserved,
+      label: '예약중 상태로 전환',
+    },
+    {
+      status: '판매완료',
+      action: changeStatusToSold,
+      label: '판매완료 상태로 전환',
+    },
+  ];
+
   return (
     <Dropdown iconName="dots" align="right">
       <MenuItem onAction={editItem}>게시글 수정</MenuItem>
-      {status !== '판매중' && (
-        <MenuItem onAction={changeStatusToOnSale}>판매중 상태로 전환</MenuItem>
-      )}
-      {status !== '예약중' && (
-        <MenuItem onAction={changeStatusToReserved}>
-          예약중 상태로 전환
-        </MenuItem>
-      )}
-      {status !== '판매완료' && (
-        <MenuItem onAction={changeStatusToSold}>판매완료 상태로 전환</MenuItem>
+      {statusMenuItemList.map(
+        ({ status: itemStatus, action, label }) =>
+          status !== itemStatus && (
+            <MenuItem key={itemStatus} onAction={action}>
+              {label}
+            </MenuItem>
+          )
       )}
       <MenuItem color="systemWarning" onAction={openAlert}>
         삭제

@@ -2,8 +2,7 @@ import { ReactElement } from 'react';
 import { css, styled } from 'styled-components';
 
 type HeaderProps = {
-  type?: 'default' | 'dynamic';
-  isScrollTop?: boolean;
+  type?: 'default' | 'transparent';
   leftButton?: ReactElement;
   rightButton?: ReactElement;
   title?: string;
@@ -11,13 +10,12 @@ type HeaderProps = {
 
 export function Header({
   type = 'default',
-  isScrollTop,
   leftButton,
   rightButton,
   title,
 }: HeaderProps) {
   return (
-    <Div $type={type} $isScrollTop={isScrollTop}>
+    <Div $type={type}>
       <Left>{leftButton}</Left>
       <Title>{title}</Title>
       <Right>{rightButton}</Right>
@@ -26,7 +24,7 @@ export function Header({
 }
 
 const Div = styled.div<{
-  $type: 'default' | 'dynamic';
+  $type: 'default' | 'transparent';
   $isScrollTop?: boolean;
 }>`
   width: 100%;
@@ -37,21 +35,21 @@ const Div = styled.div<{
   justify-content: center;
   align-items: center;
   border-bottom: ${({ theme, $type }) =>
-    $type === 'dynamic' ? 'none' : `0.8px solid ${theme.color.neutralBorder}`};
+    $type === 'transparent'
+      ? 'none'
+      : `0.8px solid ${theme.color.neutralBorder}`};
   font: ${({ theme }) => theme.font.displayStrong16};
   color: ${({ theme }) => theme.color.neutralTextStrong};
-  background-color: ${({ theme, $type, $isScrollTop }) =>
-    $type === 'dynamic'
-      ? $isScrollTop
-        ? 'transparent'
-        : theme.color.neutralBackground
+  background-color: ${({ theme, $type }) =>
+    $type === 'transparent'
+      ? 'transparent'
       : theme.color.neutralBackgroundBlur};
   z-index: 1;
 
   ${({ $type }) => backdropFilterToCss($type)};
 `;
 
-const backdropFilterToCss = ($type: 'default' | 'dynamic') => {
+const backdropFilterToCss = ($type: 'default' | 'transparent') => {
   if ($type === 'default') {
     return css`
       &::before {
@@ -63,9 +61,8 @@ const backdropFilterToCss = ($type: 'default' | 'dynamic') => {
         backdrop-filter: ${({ theme }) => theme.backdropFilter.blur};
       }
     `;
-  } else {
-    return css``;
   }
+  return css``;
 };
 
 const Side = styled.div`

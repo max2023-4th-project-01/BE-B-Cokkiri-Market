@@ -1,4 +1,3 @@
-import { shallow } from 'zustand/shallow';
 import { useAuthStore } from '../../stores/useAuthStore';
 import { fetcher } from '../axios';
 import { API_ENDPOINT } from '../endPoint';

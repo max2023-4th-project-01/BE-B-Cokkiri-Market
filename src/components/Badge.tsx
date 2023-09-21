@@ -6,7 +6,6 @@ type Size = 'S' | 'M';
 export type BadgeType = 'container' | 'outline';
 
 export type BadgeProps = {
-  className?: string;
   fontColor: ColorType;
   badgeColor: ColorType;
   text: string;
@@ -16,7 +15,6 @@ export type BadgeProps = {
 };
 
 export function Badge({
-  className,
   fontColor,
   badgeColor,
   text,
@@ -28,7 +26,6 @@ export function Badge({
 
   return (
     <Div
-      className={className}
       $fontColor={fontColor}
       $BadgeColor={badgeColor}
       $size={size}

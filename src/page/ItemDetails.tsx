@@ -49,11 +49,20 @@ export function ItemDetails() {
   const mainRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const isMobile = /Mobile|Android/i.test(navigator.userAgent);
+
+    if (isMobile) {
+      window.addEventListener('touchmove', onScroll);
+      return;
+    }
     window.addEventListener('wheel', onScroll);
-    window.addEventListener('touchmove', onScroll);
+
     return () => {
+      if (isMobile) {
+        window.removeEventListener('touchmove', onScroll);
+        return;
+      }
       window.removeEventListener('wheel', onScroll);
-      window.removeEventListener('touchmove', onScroll);
     };
   }, []);
 
@@ -82,11 +91,8 @@ export function ItemDetails() {
   const deleteMutation = useDeleteItem('home');
 
   const onScroll = () => {
-    if (mainRef.current?.scrollTop === 0) {
-      setIsScrollTop(true);
-    } else {
-      setIsScrollTop(false);
-    }
+    const scrollTop = mainRef.current?.scrollTop === 0;
+    setIsScrollTop(scrollTop);
   };
 
   const plusPageNum = () => {
@@ -181,8 +187,7 @@ export function ItemDetails() {
   return (
     <Container>
       <Header
-        type="dynamic"
-        isScrollTop={isScrollTop}
+        type={isScrollTop ? 'transparent' : 'default'}
         leftButton={
           <Button styledType="text" onClick={() => navigate('/')}>
             <Icon name="chevronLeft" color="neutralText" />
@@ -209,13 +214,15 @@ export function ItemDetails() {
             imageList={itemDetailsData.images}
             pagination={{ plusPageNum, minusPageNum }}
           />
-          <PageNav
-            fontColor="neutralTextWeak"
-            badgeColor="neutralBackgroundBlur"
-            text={`${activeSlidePage} / ${itemDetailsData.images.length}`}
-            size="M"
-            type="container"
-          />
+          <PageNav>
+            <Badge
+              fontColor="neutralTextWeak"
+              badgeColor="neutralBackgroundBlur"
+              text={`${activeSlidePage} / ${itemDetailsData.images.length}`}
+              size="M"
+              type="container"
+            />
+          </PageNav>
         </SliderWrapper>
         <Body>
           <SellerInfo>
@@ -328,7 +335,7 @@ const SliderWrapper = styled.div`
   position: relative;
 `;
 
-const PageNav = styled(Badge)`
+const PageNav = styled.div`
   position: absolute;
   bottom: 16px;
   right: 16px;
