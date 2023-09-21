@@ -5,7 +5,9 @@ import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import kr.codesquad.chat.dto.request.ChatRoomCreateRequest;
+import kr.codesquad.chat.dto.request.SendMessageRequest;
 import kr.codesquad.chat.dto.response.ChatRoomCreateResponse;
+import kr.codesquad.chat.entity.ChatMessage;
 import kr.codesquad.chat.entity.ChatRoom;
 
 @Mapper
@@ -17,4 +19,6 @@ public interface ChatMapper {
 
 	@Mapping(target = "chatRoomId", source = "id")
 	ChatRoomCreateResponse toChatRoomCreateResponse(ChatRoom chatRoom);
+
+	ChatMessage toChatMessage(SendMessageRequest sendMessageRequest);
 }

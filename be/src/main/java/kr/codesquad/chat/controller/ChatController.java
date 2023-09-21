@@ -4,11 +4,13 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import kr.codesquad.chat.dto.request.ChatRoomCreateRequest;
+import kr.codesquad.chat.dto.request.SendMessageRequest;
 import kr.codesquad.chat.dto.response.ChatRoomCreateResponse;
 import kr.codesquad.chat.service.ChatService;
 import kr.codesquad.util.Constants;
@@ -29,4 +31,8 @@ public class ChatController {
 			.body(chatService.createRoom(chatRoomCreateRequest, loginId));
 	}
 
+	@MessageMapping("/comm/message")
+	public void message(SendMessageRequest message) {
+		chatService.sendMessage(message);
+	}
 }

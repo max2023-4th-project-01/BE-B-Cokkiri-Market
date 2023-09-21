@@ -1,14 +1,9 @@
 package kr.codesquad.chat.service;
 
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Service;
-import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketSession;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -16,6 +11,7 @@ import kr.codesquad.chat.dto.ChatMapper;
 import kr.codesquad.chat.dto.request.ChatRoomCreateRequest;
 import kr.codesquad.chat.dto.request.SendMessageRequest;
 import kr.codesquad.chat.dto.response.ChatRoomCreateResponse;
+import kr.codesquad.chat.entity.ChatMessage;
 import kr.codesquad.chat.repository.ChatMessageRepository;
 import kr.codesquad.chat.repository.ChatRoomRepository;
 import kr.codesquad.user.entity.User;
@@ -32,7 +28,8 @@ public class ChatService {
 	private final ChatMessageRepository chatMessageRepository;
 	private final UserRepository userRepository;
 	private final ObjectMapper objectMapper;
-	private final ConcurrentMap<Long, Set<WebSocketSession>> sessionMap = new ConcurrentHashMap<>();
+	private final ChannelTopic channelTopic;
+	private final RedisTemplate redisTemplate;
 
 	public ChatRoomCreateResponse createRoom(ChatRoomCreateRequest chatRoomCreateRequest, String loginId) {
 		User user = userRepository.findByLoginId(loginId);
@@ -40,22 +37,14 @@ public class ChatService {
 			chatRoomRepository.save(ChatMapper.INSTANCE.toChatRoom(chatRoomCreateRequest, user.getId())));
 	}
 
-	public void sendMessage(Long chatRoomId, WebSocketSession session, SendMessageRequest message) {
-		if (!sessionMap.containsKey(chatRoomId)) {
-			sessionMap.put(chatRoomId, new HashSet<>());
-		}
-		Set<WebSocketSession> sessions = sessionMap.get(chatRoomId);
-		sessions.add(session);
-		sessionMap.put(chatRoomId, sessions);
-		sessions.parallelStream().forEach(s -> sendMessage(s, message));
-	}
+	@Transactional
+	public void sendMessage(SendMessageRequest chatMessageRequest) {
 
-	private <T> void sendMessage(WebSocketSession session, T message) {
-		try {
-			session.sendMessage(new TextMessage(objectMapper.writeValueAsString(message)));
-		} catch (IOException e) {
-			log.error(e.getMessage(), e);
-		}
+		//채팅 생성 및 저장
+		ChatMessage chatMessage = chatMessageRepository.save(ChatMapper.INSTANCE.toChatMessage(chatMessageRequest));
+		String topic = channelTopic.getTopic();
+
+		redisTemplate.convertAndSend(topic, chatMessageRequest);
 	}
 
 }
