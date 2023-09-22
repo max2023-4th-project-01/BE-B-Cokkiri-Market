@@ -13,10 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import kr.codesquad.IntegrationTestSupport;
 import kr.codesquad.category.entity.Category;
 import kr.codesquad.category.repository.CategoryRepository;
-import kr.codesquad.chat.entity.Chat;
-import kr.codesquad.chat.entity.Message;
-import kr.codesquad.chat.repository.ChatRepository;
-import kr.codesquad.chat.repository.MessageRepository;
+import kr.codesquad.chat.entity.ChatMessage;
+import kr.codesquad.chat.entity.ChatRoom;
+import kr.codesquad.chat.repository.ChatMessageRepository;
+import kr.codesquad.chat.repository.ChatRoomRepository;
 import kr.codesquad.favorite.entity.Favorite;
 import kr.codesquad.favorite.repository.FavoriteRepository;
 import kr.codesquad.item.dto.slice.ItemListSlice;
@@ -45,19 +45,19 @@ public class ItemServiceTest extends IntegrationTestSupport {
 	@Autowired
 	CategoryRepository categoryRepository;
 	@Autowired
-	ChatRepository chatRepository;
+	ChatRoomRepository chatRoomRepository;
 	@Autowired
 	FavoriteRepository favoriteRepository;
 	@Autowired
-	MessageRepository messageRepository;
+	ChatMessageRepository chatMessageRepository;
 
 	@AfterEach
 	void dbClean() {
 		userRepository.deleteAllInBatch();
 		locationRepository.deleteAllInBatch();
-		chatRepository.deleteAllInBatch();
+		chatRoomRepository.deleteAllInBatch();
 		favoriteRepository.deleteAllInBatch();
-		messageRepository.deleteAllInBatch();
+		chatMessageRepository.deleteAllInBatch();
 		itemRepository.deleteAllInBatch();
 		categoryRepository.deleteAllInBatch();
 	}
@@ -102,10 +102,10 @@ public class ItemServiceTest extends IntegrationTestSupport {
 			location.getLocationName());
 		int pageSize = 10;
 		List<Favorite> favorites = new ArrayList<>();
-		List<Chat> chats = new ArrayList<>();
+		List<ChatRoom> chatRooms = new ArrayList<>();
 		for (int i = 0; i < 2; i++) {
 			favorites.add(createAndSaveFavorite(item.getId(), user.getId()));
-			chats.add(createAndSaveChat(user.getId(), item.getId()));
+			chatRooms.add(createAndSaveChat(user.getId(), item.getId()));
 		}
 
 		// when
@@ -116,7 +116,7 @@ public class ItemServiceTest extends IntegrationTestSupport {
 		assertThat(itemListSlice.getCategoryName()).isEqualTo(category.getName());
 		assertThat(itemListSlice.getUserLocation()).isEqualTo(location.getLocationName());
 		assertThat(itemListSlice.getItems().get(0).getCountData().getFavorite()).isEqualTo(favorites.size());
-		assertThat(itemListSlice.getItems().get(0).getCountData().getChat()).isEqualTo(chats.size());
+		assertThat(itemListSlice.getItems().get(0).getCountData().getChat()).isEqualTo(chatRooms.size());
 		assertThat(itemListSlice.getNextCursor()).isEqualTo(null);
 	}
 
@@ -252,17 +252,18 @@ public class ItemServiceTest extends IntegrationTestSupport {
 			.build());
 	}
 
-	Message createAndSaveMessage(Long chatId) {
+	ChatMessage createAndSaveMessage(Long chatId) {
 		String content = "This is a sample message.";
-		return messageRepository.save(Message.builder()
-			.chatId(chatId)
+		return chatMessageRepository.save(ChatMessage.builder()
+			.chatRoomId(chatId)
 			.content(content)
 			.build());
 	}
 
-	Chat createAndSaveChat(Long senderId, Long itemId) {
+	ChatRoom createAndSaveChat(Long senderId, Long itemId) {
 		String lastMessage = "This is a sample message.";
-		return chatRepository.save(Chat.builder().itemId(itemId).senderId(senderId).lastMessageId(lastMessage).build());
+		return chatRoomRepository.save(
+			ChatRoom.builder().itemId(itemId).senderId(senderId).lastMessageId(lastMessage).build());
 	}
 
 	Category createAndSaveCategory() {
