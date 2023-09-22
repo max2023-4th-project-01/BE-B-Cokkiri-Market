@@ -7,6 +7,8 @@ services:
       - 8080:8080
     volumes:
       - cokkiri-market-app:/app
+    environment:
+      - TZ=Asia/Seoul
 
   # web:
   #   container_name: cokkiri-market-web
