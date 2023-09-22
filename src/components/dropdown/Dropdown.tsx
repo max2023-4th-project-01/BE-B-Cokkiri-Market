@@ -95,7 +95,7 @@ const Container = styled.div<{
   border-radius: 12px;
   position: absolute;
   right: ${({ $align }) => ($align === 'right' ? '8px' : 'auto')};
-  bottom: ${({ $direction }) => ($direction === 'up' ? '40px' : 'auto')};
+  bottom: ${({ $direction }) => ($direction === 'up' ? '50px' : 'auto')};
   z-index: 10;
   background-color: ${({ theme }) => theme.color.neutralBackground};
 `;

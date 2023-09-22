@@ -1,8 +1,8 @@
 import { useState, useRef } from 'react';
 import { useScreenConfigStore } from '../stores/useScreenConfigStore';
 
-const FooterHeight = 64;
-const DropdownMaxHeight = 230;
+const FOOTER_HEIGHT = 64;
+const DROPDOWN_MAX_HEIGHT = 230;
 
 export const useGetDropdownDirection = () => {
   const [direction, setDirection] = useState<'up' | 'down'>('down');
@@ -16,8 +16,8 @@ export const useGetDropdownDirection = () => {
       dropdownRef.current.getBoundingClientRect();
 
     if (
-      screenRect.bottom - FooterHeight <
-      dropdownRectBottom + DropdownMaxHeight
+      screenRect.bottom - FOOTER_HEIGHT <
+      dropdownRectBottom + DROPDOWN_MAX_HEIGHT
     ) {
       setDirection('up');
       return;
