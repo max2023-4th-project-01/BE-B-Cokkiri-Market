@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { Outlet } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { ProductEditorPanel } from '../page/productEditor/ProductEditorPanel';
@@ -9,9 +10,28 @@ import { ToastContainer } from './toast/ToastContainer';
 export function Layout() {
   const { screenWidth, screenHeight } = useScreenConfigStore();
   const isOpenEditor = useProductEditorStore(state => state.isOpen);
+  const layoutRef = useRef<HTMLDivElement>(null);
+  const setScreenRect = useScreenConfigStore(state => state.setScreenRect);
+
+  useEffect(() => {
+    const updateScreenRect = () => {
+      if (layoutRef.current) {
+        const layoutRect = layoutRef.current.getBoundingClientRect();
+        setScreenRect(layoutRect);
+      }
+    };
+
+    updateScreenRect();
+
+    window.addEventListener('resize', updateScreenRect);
+
+    return () => {
+      window.removeEventListener('resize', updateScreenRect);
+    };
+  }, [setScreenRect]);
 
   return (
-    <Wrapper $width={screenWidth} $height={screenHeight}>
+    <Wrapper ref={layoutRef} $width={screenWidth} $height={screenHeight}>
       <Outlet />
       <Footer />
       <ToastContainer />
