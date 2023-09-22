@@ -1,5 +1,6 @@
 import { MouseEvent, ReactNode, useEffect, useState } from 'react';
 import { css, styled } from 'styled-components';
+import { useGetDropdownDirection } from '../../hooks/useGetDropdownDirection';
 import { useScrollLock } from '../../hooks/useScrollLock';
 import { Button } from '../button/Button';
 import { Icon } from '../icon/Icon';
@@ -20,6 +21,7 @@ export function Dropdown({
 }: DropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [lockScroll, unlockScroll] = useScrollLock('home--body__items');
+  const { dropdownRef, direction, getDirection } = useGetDropdownDirection();
 
   useEffect(() => {
     if (isOpen) {
@@ -32,6 +34,9 @@ export function Dropdown({
 
   const onToggle = (event: MouseEvent) => {
     event.stopPropagation();
+    if (!isOpen) {
+      getDirection();
+    }
     setIsOpen(!isOpen);
   };
 
@@ -42,13 +47,13 @@ export function Dropdown({
   };
 
   return (
-    <div>
+    <div ref={dropdownRef}>
       <DropdownButton styledType="text" onClick={onToggle} $isOpen={isOpen}>
         {btnText && <Text>{btnText}</Text>}
         <Icon name={iconName} color="neutralTextStrong" />
       </DropdownButton>
       {isOpen && (
-        <Container $isOpen={isOpen} $align={align}>
+        <Container $isOpen={isOpen} $align={align} $direction={direction}>
           <Menus onClick={onClose}>{children}</Menus>
         </Container>
       )}
@@ -85,10 +90,12 @@ const Text = styled.span`
 const Container = styled.div<{
   $isOpen: boolean;
   $align: string;
+  $direction: string;
 }>`
   border-radius: 12px;
   position: absolute;
   right: ${({ $align }) => ($align === 'right' ? '8px' : 'auto')};
+  bottom: ${({ $direction }) => ($direction === 'up' ? '50px' : 'auto')};
   z-index: 10;
   background-color: ${({ theme }) => theme.color.neutralBackground};
 `;

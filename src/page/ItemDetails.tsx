@@ -50,19 +50,12 @@ export function ItemDetails() {
 
   useEffect(() => {
     const isMobile = /Mobile|Android/i.test(navigator.userAgent);
+    const eventName = isMobile ? 'touchmove' : 'wheel';
 
-    if (isMobile) {
-      window.addEventListener('touchmove', onScroll);
-      return;
-    }
-    window.addEventListener('wheel', onScroll);
+    window.addEventListener(eventName, onScroll);
 
     return () => {
-      if (isMobile) {
-        window.removeEventListener('touchmove', onScroll);
-        return;
-      }
-      window.removeEventListener('wheel', onScroll);
+      window.removeEventListener(eventName, onScroll);
     };
   }, []);
 

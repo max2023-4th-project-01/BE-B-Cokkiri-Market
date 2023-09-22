@@ -466,8 +466,4 @@ const Footer = styled.div`
   background: ${({ theme }) => theme.color.neutralBackgroundWeak};
   color: ${({ theme }) => theme.color.neutralTextStrong};
   font: ${({ theme }) => theme.font.availableDefault16};
-
-  & div {
-    bottom: 65px;
-  }
 `;
