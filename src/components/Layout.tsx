@@ -15,10 +15,10 @@ export function Layout() {
 
   useEffect(() => {
     const updateScreenRect = () => {
-      if (layoutRef.current) {
-        const layoutRect = layoutRef.current.getBoundingClientRect();
-        setScreenRect(layoutRect);
-      }
+      if (!layoutRef.current) return;
+
+      const layoutRect = layoutRef.current.getBoundingClientRect();
+      setScreenRect(layoutRect);
     };
 
     updateScreenRect();
