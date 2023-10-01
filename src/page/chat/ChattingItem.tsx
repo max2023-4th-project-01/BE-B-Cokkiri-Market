@@ -1,5 +1,7 @@
 import { styled } from 'styled-components';
+import { usePanelStore } from '../../stores/usePanelStore';
 import { getElapsedSince } from '../../utils/getElapsedSince';
+import { ChatRoom } from './ChatRoom';
 
 export type ChattingItemType = {
   id: number;
@@ -16,6 +18,7 @@ export type ChattingItemType = {
     itemImgUri: string;
   };
 };
+
 export function ChattingItem({
   id,
   chattingMember,
@@ -24,8 +27,16 @@ export function ChattingItem({
   updateTime,
   item,
 }: ChattingItemType) {
+  const { openPanel } = usePanelStore(state => ({
+    openPanel: state.openPanel,
+  }));
+
+  const onClick = () => {
+    openPanel(<ChatRoom chatRoomId={id} />);
+  };
+
   return (
-    <Container onClick={() => console.log(id)}>
+    <Container onClick={onClick}>
       <ImageWrapper>
         <ProfileImage src={chattingMember.profileImgUrl} />
       </ImageWrapper>
