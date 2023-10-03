@@ -1,11 +1,14 @@
 package kr.codesquad.item.service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.Cookie;
 
+import kr.codesquad.category.dto.response.CategoryEditResponse;
+import kr.codesquad.location.dto.response.LocationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -221,14 +224,19 @@ public class ItemService {
 
 		// 추후 작은 사이즈로 변경
 		List<ItemImageResponse> images = imageRepository.findByItemId(item.getId());
+		List<CategoryEditResponse> categories = List.of(CategoryEditResponse.builder()
+			.id(item.getCategoryId())
+			.name(categoryRepository.findNameById(item.getCategoryId()))
+			.isSelected(true)
+			.build());
 
 		return ItemUpdateResponse.builder()
 			.images(images)
 			.title(item.getTitle())
-			.categoryId(item.getCategoryId())
+			.categories(categories)
 			.content(item.getContent())
 			.price(item.getPrice())
-			.locationName(item.getLocationName())
+			.myLocation(new LocationResponse(item.getLocationId(), item.getLocationName()))
 			.build();
 	}
 
