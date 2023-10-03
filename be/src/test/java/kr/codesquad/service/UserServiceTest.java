@@ -65,7 +65,7 @@ public class UserServiceTest extends IntegrationTestSupport {
 		User user = userRepository.findByLoginId(loginId);
 		assertThat(user.getLoginId()).isEqualTo(loginId);
 
-		Location location = locationRepository.findByUserId(user.getId());
+		Location location = locationRepository.findSelectedLocationByUserId(user.getId());
 		assertThat(location.getLocationName()).isEqualTo(locationName);
 	}
 
