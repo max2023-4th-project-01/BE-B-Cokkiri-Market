@@ -12,7 +12,7 @@ import kr.codesquad.location.entity.Location;
 @Repository
 public interface LocationRepository extends JpaRepository<Location, Long> {
 	@Query("SELECT l FROM Location l WHERE l.userId = :userId AND l.isSelected = true")
-	Location findByUserId(@Param("userId") Long userId);
+	Location findSelectedLocationByUserId(@Param("userId") Long userId);
 
 	List<Location> findAllByUserId(long userId);
 

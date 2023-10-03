@@ -136,14 +136,14 @@ public class ItemService {
 		}
 
 		if (oldCookie == null) {
-			int view = itemRepository.updateView(itemId);
+			itemRepository.updateView(itemId);
 			Cookie cookie = new Cookie("postView", itemId.toString());
 			cookie.setMaxAge(60 * 60 * 24);
 			cookie.setPath("/");
 			return cookie;
 		} else {
 			if (!oldCookie.getValue().contains(itemId.toString())) {
-				int view = itemRepository.updateView(itemId);
+				itemRepository.updateView(itemId);
 				oldCookie.setValue(oldCookie.getValue() + "_" + itemId);
 				oldCookie.setMaxAge(60 * 60 * 24);
 				oldCookie.setPath("/");
@@ -237,7 +237,7 @@ public class ItemService {
 			categoryName = categoryRepository.findNameById(categoryId);
 		}
 		User user = userRepository.findByLoginId(loginId);
-		String locationName = locationRepository.findByUserId(user.getId()).getLocationName();
+		String locationName = locationRepository.findSelectedLocationByUserId(user.getId()).getLocationName();
 
 		List<ItemListVo> itemListVos = itemPaginationRepository.readByConditions(ItemConditions.builder()
 			.itemId(itemId)
