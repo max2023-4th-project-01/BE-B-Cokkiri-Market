@@ -91,4 +91,8 @@ public class Item extends TimeStamped {
 		this.status = ItemStatus.valueOf(statusName);
 		return this.status.name();
 	}
+
+	public void updateViewCount() {
+		this.viewCount++;
+	}
 }

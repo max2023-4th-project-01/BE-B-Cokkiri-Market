@@ -41,6 +41,7 @@ public class ItemController {
 		String userLoginId = (String)request.getAttribute(Constants.LOGIN_ID);
 		ItemDetailResponse itemDetailResponse = itemService.getItem(id, userLoginId, request.getCookies());
 		Cookie cookie = itemDetailResponse.getCookie();
+		itemDetailResponse.setCookieNull();
 		if (cookie != null) {
 			response.addCookie(cookie);
 		}

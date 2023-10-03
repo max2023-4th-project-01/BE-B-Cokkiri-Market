@@ -5,8 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.Cookie;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import net.minidev.json.annotate.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -26,6 +25,10 @@ public class ItemDetailResponse {
 	private Boolean isFavorite;
 	private Integer price;
 
-	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private Cookie cookie;
+
+	public void setCookieNull() {
+		this.cookie = null;
+	}
 }

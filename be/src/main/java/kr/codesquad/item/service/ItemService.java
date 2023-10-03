@@ -104,7 +104,7 @@ public class ItemService {
 
 		Cookie cookie = null;
 		if (!Objects.equals(item.getUserId(), userId)) {
-			cookie = setViewCount(item.getId(), cookies);
+			cookie = setViewCount(item, cookies);
 		}
 
 		return ItemDetailResponse.builder()
@@ -124,7 +124,7 @@ public class ItemService {
 	}
 
 	@Transactional
-	public Cookie setViewCount(Long itemId, Cookie[] cookies) {
+	public Cookie setViewCount(Item item, Cookie[] cookies) {
 		Cookie oldCookie = null;
 		if (cookies != null) {
 			for (Cookie cookie : cookies) {
@@ -136,15 +136,17 @@ public class ItemService {
 		}
 
 		if (oldCookie == null) {
-			itemRepository.updateView(itemId);
-			Cookie cookie = new Cookie("postView", itemId.toString());
+			itemRepository.updateView(item.getId());
+			item.updateViewCount();
+			Cookie cookie = new Cookie("postView", item.getId().toString());
 			cookie.setMaxAge(60 * 60 * 24);
 			cookie.setPath("/");
 			return cookie;
 		} else {
-			if (!oldCookie.getValue().contains(itemId.toString())) {
-				itemRepository.updateView(itemId);
-				oldCookie.setValue(oldCookie.getValue() + "_" + itemId);
+			if (!oldCookie.getValue().contains(item.getId().toString())) {
+				itemRepository.updateView(item.getId());
+				item.updateViewCount();
+				oldCookie.setValue(oldCookie.getValue() + "_" + item.getId());
 				oldCookie.setMaxAge(60 * 60 * 24);
 				oldCookie.setPath("/");
 			}
