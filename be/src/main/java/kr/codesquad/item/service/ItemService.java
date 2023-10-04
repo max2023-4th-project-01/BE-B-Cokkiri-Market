@@ -1,6 +1,6 @@
 package kr.codesquad.item.service;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -8,7 +8,8 @@ import java.util.stream.Collectors;
 import javax.servlet.http.Cookie;
 
 import kr.codesquad.category.dto.response.CategoryEditResponse;
-import kr.codesquad.location.dto.response.LocationResponse;
+import kr.codesquad.location.dto.response.LocationListResponse;
+import kr.codesquad.location.entity.Location;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -230,13 +231,21 @@ public class ItemService {
 			.isSelected(true)
 			.build());
 
+		List<LocationListResponse> locations = new ArrayList<>();
+		locations.add(new LocationListResponse(item.getLocationId(), item.getLocationName(), true));
+		for (Location location : locationRepository.findAllByUserId(item.getUserId())) {
+			if (!Objects.equals(location.getId(), item.getLocationId())) {
+				locations.add(new LocationListResponse(location.getId(), location.getLocationName(), false));
+			}
+		}
+
 		return ItemUpdateResponse.builder()
 			.images(images)
 			.title(item.getTitle())
 			.categories(categories)
 			.content(item.getContent())
 			.price(item.getPrice())
-			.myLocation(new LocationResponse(item.getLocationId(), item.getLocationName()))
+			.locations(locations)
 			.build();
 	}
 

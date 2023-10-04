@@ -3,7 +3,7 @@ package kr.codesquad.item.dto.response;
 import java.util.List;
 
 import kr.codesquad.category.dto.response.CategoryEditResponse;
-import kr.codesquad.location.dto.response.LocationResponse;
+import kr.codesquad.location.dto.response.LocationListResponse;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -17,5 +17,5 @@ public class ItemUpdateResponse {
 	//private Long categoryId;
 	private String content;
 	private Integer price;
-	private LocationResponse myLocation;
+	private List<LocationListResponse> locations;
 }
