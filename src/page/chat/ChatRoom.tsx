@@ -7,33 +7,28 @@ import { Loader } from '../../components/Loader';
 import { Button } from '../../components/button/Button';
 import { Icon } from '../../components/icon/Icon';
 import { usePanelStore } from '../../stores/usePanelStore';
+import { priceToString } from '../../utils/priceToString';
 import { Message } from './Message';
 
 export type ChatRoomType = {
   item: {
-    itemId: number;
+    id: number;
     title: string;
-    price: string;
-    statusTag: string;
-    itemImgUri: string;
+    price: number | null;
+    status: string;
+    thumbnailUrl: string;
   };
-  chattingMember: {
-    memberId: number;
-    memberName: string;
+  chatMember: {
+    nickname: string;
   };
-  messages: [
-    {
-      messageId: number;
-      isSent: boolean;
-      content: string;
-    },
-    {
-      messageId: number;
-      isSent: boolean;
-      content: string;
-    },
-  ];
+  messages: Messages;
 };
+
+type Messages = {
+  id: number;
+  isSent: boolean;
+  content: string;
+}[];
 
 export function ChatRoom({ chatRoomId }: { chatRoomId: number }) {
   const { closePanel } = usePanelStore();
@@ -55,23 +50,23 @@ export function ChatRoom({ chatRoomId }: { chatRoomId: number }) {
             <span>뒤로</span>
           </Button>
         }
-        title={data?.chattingMember.memberName}
+        title={data?.chatMember.nickname}
       />
       {isLoading ? (
         <Loader />
       ) : (
         <Body>
           <ProductInfoBanner>
-            <ProductImage src={data?.item.itemImgUri} />
+            <ProductImage src={data?.item.thumbnailUrl} />
             <div>
               <Title>{data?.item.title}</Title>
-              <Price>{data?.item.price}</Price>
+              <Price>{priceToString(data?.item.price)}</Price>
             </div>
           </ProductInfoBanner>
           <Messages ref={messagesEndRef}>
             {data?.messages.map(message => (
               <Message
-                key={message.messageId}
+                key={message.id}
                 content={message.content}
                 isSent={message.isSent}
               />
