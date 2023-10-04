@@ -1,10 +1,10 @@
 package kr.codesquad.category.dto.response;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@Builder
+@AllArgsConstructor
 public class FavoriteCategoryResponse {
 	private final Long id;
 	private final String name;
