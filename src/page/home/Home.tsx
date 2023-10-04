@@ -93,7 +93,12 @@ export function Home() {
       <Header
         leftButton={
           <LeftAccessory>
-            {!isLogin ? (
+            {isLogin ? (
+              <UserLocationDropdown
+                currentLocation={itemData?.pages[0]?.userLocation}
+                openModal={openModal}
+              />
+            ) : (
               <Button
                 styledType="text"
                 color="neutralText"
@@ -102,11 +107,6 @@ export function Home() {
                 역삼1동
                 <Icon name="chevronDown" color="neutralTextStrong" />
               </Button>
-            ) : (
-              <UserLocationDropdown
-                currentLocation={itemData?.pages[0]?.userLocation}
-                openModal={openModal}
-              />
             )}
           </LeftAccessory>
         }
