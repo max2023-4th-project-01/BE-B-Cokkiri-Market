@@ -154,6 +154,7 @@ const Div = styled.div`
   gap: 16px;
   padding: 16px 0;
   border-bottom: ${({ theme }) => `0.8px solid ${theme.color.neutralBorder}`};
+  cursor: pointer;
 `;
 
 const Thumbnail = styled.img`
