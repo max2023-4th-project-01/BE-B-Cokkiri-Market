@@ -2,8 +2,6 @@ package kr.codesquad.core.filter;
 
 import java.util.ArrayList;
 
-import javax.security.auth.message.AuthException;
-
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -20,6 +18,7 @@ import kr.codesquad.jwt.service.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
+@Component
 @RequiredArgsConstructor
 @Component
 public class WebSocketInterceptor implements ChannelInterceptor {
