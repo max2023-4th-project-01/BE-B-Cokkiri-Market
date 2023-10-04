@@ -7,16 +7,16 @@ import { Loader } from '../../components/Loader';
 import { Button } from '../../components/button/Button';
 import { Icon } from '../../components/icon/Icon';
 import { usePanelStore } from '../../stores/usePanelStore';
-import { addCommasToNumber } from '../../utils/addCommasToNumber';
+import { priceToString } from '../../utils/priceToString';
 import { Message } from './Message';
 
 export type ChatRoomType = {
   item: {
-    itemId: number;
+    id: number;
     title: string;
     price: number | null;
-    statusTag: string;
-    itemImgUri: string;
+    status: string;
+    thumbnailUrl: string;
   };
   chatMember: {
     nickname: string;
@@ -41,19 +41,6 @@ export function ChatRoom({ chatRoomId }: { chatRoomId: number }) {
     }
   }, [data]);
 
-  const setPrice = (price: number | null | undefined) => {
-    switch (price) {
-      case undefined:
-        return;
-      case null:
-        return '가격 미정';
-      case 0:
-        return '나눔';
-      default:
-        return `${addCommasToNumber(price)}원`;
-    }
-  };
-
   return (
     <Container>
       <Header
@@ -70,10 +57,10 @@ export function ChatRoom({ chatRoomId }: { chatRoomId: number }) {
       ) : (
         <Body>
           <ProductInfoBanner>
-            <ProductImage src={data?.item.itemImgUri} />
+            <ProductImage src={data?.item.thumbnailUrl} />
             <div>
               <Title>{data?.item.title}</Title>
-              <Price>{setPrice(data?.item.price)}</Price>
+              <Price>{priceToString(data?.item.price)}</Price>
             </div>
           </ProductInfoBanner>
           <Messages ref={messagesEndRef}>

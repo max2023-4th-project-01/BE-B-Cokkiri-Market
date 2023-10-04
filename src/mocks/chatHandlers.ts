@@ -53,11 +53,11 @@ const chatRooms: ChattingItemType[] = [
 const chatRoom: ChatRoomType[] = [
   {
     item: {
-      itemId: 1,
+      id: 1,
       title: '얼마 안 쓴 가방팝니다.',
       price: 169000,
-      statusTag: '판매중',
-      itemImgUri:
+      status: '판매중',
+      thumbnailUrl:
         'https://images.unsplash.com/photo-1581605405669-fcdf81165afa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2487&q=80',
     },
     chatMember: {
@@ -74,11 +74,11 @@ const chatRoom: ChatRoomType[] = [
   },
   {
     item: {
-      itemId: 1,
+      id: 1,
       title: '얼마 안 쓴 가방팝니다.',
       price: null,
-      statusTag: '판매중',
-      itemImgUri:
+      status: '판매중',
+      thumbnailUrl:
         'https://images.unsplash.com/photo-1581605405669-fcdf81165afa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2487&q=80',
     },
     chatMember: {
@@ -119,11 +119,11 @@ const chatRoom: ChatRoomType[] = [
   },
   {
     item: {
-      itemId: 1,
+      id: 1,
       title: '얼마 안 쓴 가방팝니다.',
       price: 0,
-      statusTag: '판매중',
-      itemImgUri:
+      status: '판매중',
+      thumbnailUrl:
         'https://images.unsplash.com/photo-1581605405669-fcdf81165afa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2487&q=80',
     },
     chatMember: {
