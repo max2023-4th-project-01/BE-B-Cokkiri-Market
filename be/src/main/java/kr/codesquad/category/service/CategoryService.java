@@ -53,7 +53,7 @@ public class CategoryService {
 		});
 
 		Map<String, Object> request = new HashMap<>();
-		request.put("model", "gpt-3.5-turbo"); // gpt-3.5-turbo or gpt-4
+		request.put("model", "gpt-4"); // "gpt-3.5-turbo" : 속도 빠름, "gpt-4" : 정확도 높음
 		request.put("temperature", 0.1);
 		List<Message> messages = new ArrayList<>();
 		messages.add(new Message("user", prompt));
