@@ -14,6 +14,7 @@ import {
   getUserLocations,
   selectUserLocation,
 } from '../fetchers/locationFetcher';
+import { ITEMS_QUERY_KEY } from './useItemQuery';
 
 const USER_LOCATION_QUERY_KEY = 'userLocations';
 const LOCATION_QUERY_KEY = 'locations';
@@ -117,6 +118,7 @@ export const useSelectUserLocation = () => {
           };
         }
       );
+      queryClient.invalidateQueries([ITEMS_QUERY_KEY]);
     },
   });
 };
