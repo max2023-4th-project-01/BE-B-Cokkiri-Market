@@ -13,7 +13,7 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import kr.codesquad.chat.service.RedisSubscriber;
-import kr.codesquad.user.redis.RedisProperties;
+import kr.codesquad.redis.RedisProperties;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
