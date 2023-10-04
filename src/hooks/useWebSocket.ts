@@ -11,7 +11,7 @@ export const useWebSocket = (onMessage: (message: MessageType) => void) => {
 
   const closeWS = useCallback(() => {
     ws?.close();
-  }, []);
+  }, [ws]);
 
   const sendMessage = (message: string) => {
     ws?.send(JSON.stringify({ content: message }));
