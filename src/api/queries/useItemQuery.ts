@@ -17,7 +17,7 @@ import {
   getSalesList,
 } from '../fetchers/itemFetcher';
 
-const ITEMS_QUERY_KEY = 'items';
+export const ITEMS_QUERY_KEY = 'items';
 const CATEGORY_QUERY_KEY = 'category';
 const SALES_LIST_QUERY_KEY = 'salesList';
 const FAVORITES_QUERY_KEY = 'favorites';

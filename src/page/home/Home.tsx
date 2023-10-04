@@ -54,7 +54,6 @@ export function Home() {
   };
 
   const closeModal = () => {
-    refetchItems();
     resetLocationResult();
     setIsModalOpen(false);
   };
