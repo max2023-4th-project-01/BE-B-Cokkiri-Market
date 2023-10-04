@@ -3,8 +3,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { useGetItemDetailsEdit } from '../api/queries/useItemDetailsQuery';
 import { useDeleteItem } from '../api/queries/useItemQuery';
-import { addCommasToNumber } from '../utils/addCommasToNumber';
 import { getElapsedSince } from '../utils/getElapsedSince';
+import { priceToString } from '../utils/priceToString';
 import { Alert } from './Alert';
 import { Badge } from './Badge';
 import { ProductItemDropdown } from './dropdown/ProductItemDropdown';
@@ -44,17 +44,6 @@ export function ProductItem({
   const { chat, favorite } = countData;
   const { data, isError, isLoading, refetch } = useGetItemDetailsEdit(id);
   const deleteMutation = useDeleteItem(renderingPosition);
-
-  const setPrice = (price: number | null) => {
-    switch (price) {
-      case null:
-        return '가격 미정';
-      case 0:
-        return '나눔';
-      default:
-        return `${addCommasToNumber(price)}원`;
-    }
-  };
 
   const hoverToFetch = () => {
     if (!data && !isError) {
@@ -113,7 +102,7 @@ export function ProductItem({
               }
             />
           )}
-          <Price>{setPrice(price)}</Price>
+          <Price>{priceToString(price)}</Price>
         </StateAndPrice>
         <History>
           {chat > 0 && (
