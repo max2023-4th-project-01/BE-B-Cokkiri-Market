@@ -57,7 +57,12 @@ public class ItemPaginationRepository {
 			return equalUserId(userId);
 		}
 
-		return favorite.userId.eq(userId);
+		return item.id.in(
+			queryFactory
+				.select(favorite.itemId)
+				.from(favorite)
+				.where(favorite.userId.eq(userId))
+		);
 	}
 
 	private BooleanExpression equalUserId(Long userId) {
