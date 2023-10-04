@@ -5,26 +5,26 @@ import { ChatRoom } from './ChatRoom';
 
 export type ChattingItemType = {
   id: number;
-  chattingMember: {
-    memberId: number;
-    profileImgUrl: string;
-    memberName: string;
+  chatMember: {
+    id: number;
+    profileImageUrl: string;
+    nickname: string;
   };
-  latestMessage: string;
-  unread: number;
-  updateTime: Date;
+  recentMessage: string;
+  unreadCount: number;
+  updatedAt: Date;
   item: {
-    itemId: number;
-    itemImgUri: string;
+    id: number;
+    thumbnailUrl: string;
   };
 };
 
 export function ChattingItem({
   id,
-  chattingMember,
-  latestMessage,
-  unread,
-  updateTime,
+  chatMember,
+  recentMessage,
+  unreadCount,
+  updatedAt,
   item,
 }: ChattingItemType) {
   const { openPanel } = usePanelStore(state => ({
@@ -38,20 +38,20 @@ export function ChattingItem({
   return (
     <Container onClick={onClick}>
       <ImageWrapper>
-        <ProfileImage src={chattingMember.profileImgUrl} />
+        <ProfileImage src={chatMember.profileImageUrl} />
       </ImageWrapper>
       <ChatInfo>
         <NameAndTimestamp>
-          <Name>{chattingMember.memberName}</Name>
-          <Timestamp>{getElapsedSince(updateTime)}</Timestamp>
+          <Name>{chatMember.nickname}</Name>
+          <Timestamp>{getElapsedSince(updatedAt)}</Timestamp>
         </NameAndTimestamp>
-        <LatestMessage>{latestMessage}</LatestMessage>
+        <RecentMessage>{recentMessage}</RecentMessage>
       </ChatInfo>
-      <Unread>
-        <UnreadBadge>{unread}</UnreadBadge>
-      </Unread>
+      <UnreadCount>
+        <UnreadBadge>{unreadCount}</UnreadBadge>
+      </UnreadCount>
       <ImageWrapper>
-        <ProductImage src={item.itemImgUri} />
+        <ProductImage src={item.thumbnailUrl} />
       </ImageWrapper>
     </Container>
   );
@@ -107,7 +107,7 @@ const Timestamp = styled.div`
   font: ${({ theme }) => theme.font.displayDefault12};
 `;
 
-const LatestMessage = styled.div`
+const RecentMessage = styled.div`
   width: 90%;
   color: ${({ theme }) => theme.color.neutralText};
   font: ${({ theme }) => theme.font.displayDefault12};
@@ -116,7 +116,7 @@ const LatestMessage = styled.div`
   white-space: nowrap;
 `;
 
-const Unread = styled.div`
+const UnreadCount = styled.div`
   width: 20px;
   height: 100%;
 `;
