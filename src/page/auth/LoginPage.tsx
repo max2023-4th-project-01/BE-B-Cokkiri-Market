@@ -1,3 +1,4 @@
+import { AxiosError } from 'axios';
 import { ChangeEvent, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
@@ -5,12 +6,14 @@ import { BASE_URL } from '../../api/axios';
 import { useLogin } from '../../api/fetchers/authFetcher';
 import { Button } from '../../components/button/Button';
 import { Icon } from '../../components/icon/Icon';
+import { useToastStore } from '../../stores/useToastStore';
 import { AuthInput } from './AuthInput';
 import { SignUpPanel } from './SignUpPanel';
 
 export function LoginPage() {
   const { login } = useLogin();
   const navigate = useNavigate();
+  const { showToast } = useToastStore();
   const location = useLocation();
   const from = location?.state?.redirectedFrom.pathname || '/';
 
@@ -40,13 +43,26 @@ export function LoginPage() {
   };
 
   const submit = async () => {
-    const res = await login({
-      username: id,
-      password,
-    });
-
-    if (res.status === 200) {
-      navigate(from);
+    try {
+      const res = await login({
+        username: id,
+        password,
+      });
+      if (res.status === 200) {
+        navigate(from);
+      }
+    } catch (error) {
+      if ((error as AxiosError).response?.status === 401) {
+        showToast({
+          message: '로그인 정보가 일치하지 않습니다.',
+          mode: 'warning',
+        });
+      } else {
+        showToast({
+          message: '로그인과정에 문제가 생겼습니다.',
+          mode: 'error',
+        });
+      }
     }
   };
 
