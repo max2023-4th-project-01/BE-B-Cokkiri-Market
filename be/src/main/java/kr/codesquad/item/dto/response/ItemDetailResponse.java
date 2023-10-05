@@ -24,6 +24,7 @@ public class ItemDetailResponse {
 	private ItemCountDataResponse countData;
 	private Boolean isFavorite;
 	private Integer price;
+	private Long chatRoomId;
 
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private Cookie cookie;
