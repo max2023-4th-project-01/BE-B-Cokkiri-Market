@@ -30,16 +30,10 @@ export function NewChatRoom({
   chatroomData: NewChatRoomDataProps;
 }) {
   const [messages, setMessages] = useState<MessageType[]>([]);
-  const [chatRoomId, setChatRoomId] = useState<number>();
+  const [chatroomId, setChatroomId] = useState<number>();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { closePanel } = usePanelStore();
   const message = useInput('');
-
-  useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
-    }
-  }, []);
 
   const onMessage = useCallback((message: MessageType) => {
     setMessages(prev => [
@@ -50,35 +44,38 @@ export function NewChatRoom({
 
   const { connectWS, closeWS, sendMessage, stompClient } = useStomp(onMessage);
 
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
+    }
+  }, []);
+
   const createWebSocket = async () => {
     try {
       // 채팅방 생성 요청
       const { chatRoomId } = await createChatRoom(chatroomData.item.id);
-      setChatRoomId(chatRoomId);
-      console.log(chatRoomId);
 
-      // 생성된 채팅방 정보를 사용하여 웹소켓 연결
-      connectWS(chatRoomId);
+      await connectWS(chatRoomId);
+
+      if (message.value === undefined) return;
+
+      sendMessage(message.value, chatRoomId);
+      setChatroomId(chatRoomId);
     } catch (error) {
       console.error('채팅방 생성 요청 중 오류 발생:', error);
     }
   };
 
   const onSend = async () => {
-    console.log('onSend');
-    console.log(message.value);
     if (!message.value) return;
 
     if (!stompClient) {
       await createWebSocket();
-      if (!chatRoomId) return;
-      sendMessage(message.value, chatRoomId);
-      message.clearValue();
       return;
     }
 
-    if (!chatRoomId) return;
-    sendMessage(message.value, chatRoomId);
+    if (!chatroomId) return;
+    sendMessage(message.value, chatroomId);
     message.clearValue();
   };
 
@@ -124,7 +121,7 @@ export function NewChatRoom({
         <ChatBar>
           <StyledInput
             placeholder="내용을 입력하세요"
-            onKeyDown={onKeydownEnter}
+            onKeyUp={onKeydownEnter}
             onChange={message.onChange}
             value={message.value}
           />

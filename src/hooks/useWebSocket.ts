@@ -13,39 +13,32 @@ type ResData = {
 export const useStomp = (onMessage: (message: MessageType) => void) => {
   const [stompClient, setStompClient] = useState<Client | null>(null);
   const { accessToken, nickname } = useAuthStore();
-  console.log(accessToken);
 
   const connectWS = useCallback(
     (chatRoomId: number) => {
-      const client = new Client({
-        brokerURL: `${WS_BASE_URL}/api/ws`,
-        onConnect: () => {
-          client.subscribe(`/sub/chatrooms/${chatRoomId}`, message => {
-            const data: ResData = JSON.parse(message.body);
-            onMessage({
-              id: data.id,
-              content: data.content,
-              isSent: nickname === data.nickname,
+      return new Promise<void>((resolve, reject) => {
+        const client = new Client({
+          brokerURL: `${WS_BASE_URL}/api/ws`,
+          onConnect: () => {
+            client.subscribe(`/sub/chatrooms/${chatRoomId}`, message => {
+              const data: ResData = JSON.parse(message.body);
+              onMessage({
+                id: data.id,
+                content: data.content,
+                isSent: nickname === data.nickname,
+              });
             });
-          });
-        },
+            resolve();
+          },
 
-        debug: function (str) {
-          console.log('STOMP: ' + str);
-        },
+          connectHeaders: {
+            Authorization: accessToken,
+          },
+        });
 
-        connectHeaders: {
-          Authorization: accessToken,
-        },
-
-        onStompError: frame => {
-          console.log('Broker reported error: ' + frame.headers['message']);
-          console.log('Additional details: ' + frame.body);
-        },
+        client.activate();
+        setStompClient(client);
       });
-
-      client.activate();
-      setStompClient(client);
     },
     [onMessage, nickname, accessToken]
   );
@@ -56,14 +49,17 @@ export const useStomp = (onMessage: (message: MessageType) => void) => {
     }
   }, [stompClient]);
 
-  const sendMessage = (message: string, chatroomId: number) => {
-    if (stompClient) {
-      stompClient.publish({
-        destination: `/pub/chatrooms/${chatroomId}`,
-        body: JSON.stringify({ nickname, content: message }),
-      });
-    }
-  };
+  const sendMessage = useCallback(
+    (message: string, chatroomId: number) => {
+      if (stompClient) {
+        stompClient.publish({
+          destination: `/pub/chatrooms/${chatroomId}`,
+          body: JSON.stringify({ nickname, content: message }),
+        });
+      }
+    },
+    [nickname, stompClient]
+  );
 
   return { connectWS, closeWS, sendMessage, stompClient };
 };

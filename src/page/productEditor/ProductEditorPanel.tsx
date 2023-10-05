@@ -120,8 +120,6 @@ export function ProductEditorPanel() {
       category => category.isSelected
     )?.id;
 
-    console.log('query');
-
     setRecommendCategory(recommendCategory);
     setSelectedCategoryId(selectedCategoryId);
     setLocationData(productData?.locations);
