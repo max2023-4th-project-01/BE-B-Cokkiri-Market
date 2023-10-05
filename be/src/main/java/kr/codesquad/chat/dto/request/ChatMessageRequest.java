@@ -7,13 +7,12 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class ChatMessageRequest {
-
-	private Long senderId;
 	private String content;
+	private String nickname;
 
 	@Builder
-	public ChatMessageRequest(Long senderId, String content) {
-		this.senderId = senderId;
+	public ChatMessageRequest(String content, String nickname) {
 		this.content = content;
+		this.nickname = nickname;
 	}
 }

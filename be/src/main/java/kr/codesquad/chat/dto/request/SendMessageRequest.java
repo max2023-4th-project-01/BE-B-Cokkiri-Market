@@ -1,8 +1,5 @@
 package kr.codesquad.chat.dto.request;
 
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
-
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,16 +7,17 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class SendMessageRequest {
+
+	private Long id;
 	private Long chatRoomId;
-	private Long senderId;
+	private String nickname;
 	private String content;
-	private LocalDateTime createdAt;
 
 	@Builder
-	public SendMessageRequest(Long chatRoomId, Long senderId, String content, ZonedDateTime createdAt) {
+	public SendMessageRequest(Long id, Long chatRoomId, String nickname, String content) {
+		this.id = id;
 		this.chatRoomId = chatRoomId;
-		this.senderId = senderId;
+		this.nickname = nickname;
 		this.content = content;
-		this.createdAt = createdAt.toLocalDateTime();
 	}
 }
