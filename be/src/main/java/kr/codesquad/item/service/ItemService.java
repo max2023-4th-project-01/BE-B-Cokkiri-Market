@@ -143,7 +143,7 @@ public class ItemService {
 			itemRepository.updateView(item.getId());
 			item.updateViewCount();
 			Cookie cookie = new Cookie("postView", item.getId().toString());
-			cookie.setMaxAge(60 * 60 * 24);
+			cookie.setMaxAge(60 * 60); // 3600 초
 			cookie.setPath("/");
 			return cookie;
 		} else {
@@ -151,7 +151,7 @@ public class ItemService {
 				itemRepository.updateView(item.getId());
 				item.updateViewCount();
 				oldCookie.setValue(oldCookie.getValue() + "_" + item.getId());
-				oldCookie.setMaxAge(60 * 60 * 24);
+				oldCookie.setMaxAge(60 * 60); // 3600 초
 				oldCookie.setPath("/");
 			}
 		}
