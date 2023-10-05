@@ -32,9 +32,15 @@ import { WS_BASE_URL } from '../api/axios';
 import { MessageType } from '../page/chat/ChatRoom';
 import { useAuthStore } from '../stores/useAuthStore';
 
+type ResData = {
+  id: number;
+  nickname: string;
+  content: string;
+};
+
 export const useStomp = (onMessage: (message: MessageType) => void) => {
   const [stompClient, setStompClient] = useState<Client | null>(null);
-  const { accessToken } = useAuthStore();
+  const { accessToken, nickname } = useAuthStore();
 
   const connectWS = useCallback(
     (chatRoomId: number) => {
@@ -42,8 +48,12 @@ export const useStomp = (onMessage: (message: MessageType) => void) => {
         brokerURL: `${WS_BASE_URL}/api/ws`,
         onConnect: () => {
           client.subscribe(`/sub/chatrooms/${chatRoomId}`, message => {
-            const data: MessageType = JSON.parse(message.body);
-            onMessage(data);
+            const data: ResData = JSON.parse(message.body);
+            onMessage({
+              id: data.id,
+              content: data.content,
+              isSent: nickname === data.nickname,
+            });
           });
         },
 
@@ -55,7 +65,7 @@ export const useStomp = (onMessage: (message: MessageType) => void) => {
       client.activate();
       setStompClient(client);
     },
-    [onMessage, accessToken]
+    [onMessage, nickname, accessToken]
   );
 
   const closeWS = useCallback(() => {
