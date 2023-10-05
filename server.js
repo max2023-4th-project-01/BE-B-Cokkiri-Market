@@ -1,56 +1,89 @@
-// eslint-disable-next-line import/order
+// // eslint-disable-next-line import/order
+// import express from 'express';
+// import http from 'http';
+// import { createRequire } from 'module';
+// const require = createRequire(import.meta.url);
+// const StompServer = require('stomp-broker-js');
+// const ws = require('ws');
+
+// const app = express();
+// const server = http.createServer(app);
+// const wss = new ws.Server({ noServer: true });
+
+// const stompServer = new StompServer({ server: wss });
+
+// const chatrooms = {};
+
+// app.get('/', (req, res) => {
+//   res.send('Hello, STOMP Server!');
+// });
+
+// stompServer.subscribe('/pub/chatrooms/:chatroomId', (msg, headers) => {
+//   const chatroomId = headers.destination.split('/').pop();
+//   const message = JSON.parse(msg);
+
+//   console.log(
+//     `Received message for chatroom ${chatroomId} => ${message.content}`
+//   );
+
+//   if (!chatrooms[chatroomId]) {
+//     chatrooms[chatroomId] = [];
+//   }
+
+//   chatrooms[chatroomId].forEach(client => {
+//     client.send(
+//       JSON.stringify({
+//         id: Date.now(),
+//         content: message.content,
+//       })
+//     );
+//   });
+// });
+
+// server.on('upgrade', (request, socket, head) => {
+//   wss.handleUpgrade(request, socket, head, ws => {
+//     wss.emit('connection', ws, request);
+//   });
+// });
+
+// server.listen(8080, () => {
+//   console.log('STOMP server started on http://localhost:8080');
+// });
 import express from 'express';
 import http from 'http';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
-const ws = require('ws');
+const StompServer = require('stomp-broker-js');
 
 const app = express();
 const server = http.createServer(app);
-const wss = new ws.Server({ server });
+
+const stompServer = new StompServer({ server, path: '/api/ws' });
+
 const chatrooms = {};
 
-app.get('/', (req, res) => {
-  res.send('Hello, JavaScript with ESM!');
-});
+stompServer.subscribe('/sub/chatrooms/:chatroomId', (msg, headers) => {
+  const chatroomId = headers.destination.split('/').pop();
+  const message = JSON.parse(msg.body);
 
-wss.on('connection', (ws, req) => {
-  const chatroomId = new URL(req.url, `http://${req.headers.host}`).pathname
-    .split('/')
-    .pop();
-
-  if (!chatroomId) return;
+  console.log(
+    `Received message for chatroom ${chatroomId} => ${message.content}`
+  );
 
   if (!chatrooms[chatroomId]) {
     chatrooms[chatroomId] = [];
   }
 
-  const currentRoom = chatrooms[chatroomId];
-  currentRoom.push(ws);
-
-  ws.on('message', message => {
-    console.log(`Received message for chatroom ${chatroomId} => ${message}`);
-
-    currentRoom.forEach(client => {
-      if (client.readyState === ws.OPEN) {
-        client.send(
-          JSON.stringify({
-            id: Date.now(),
-            isSent: client === ws,
-            content: JSON.parse(message).content,
-          })
-        );
-      }
-    });
-  });
-
-  ws.on('close', () => {
-    chatrooms[chatroomId] = chatrooms[chatroomId].filter(
-      client => client !== ws
-    );
-  });
+  stompServer.send(
+    `/pub/chatrooms/${chatroomId}`,
+    {},
+    JSON.stringify({
+      id: Date.now(),
+      content: message.content,
+    })
+  );
 });
 
 server.listen(8080, () => {
-  console.log('Server started on http://localhost:8080 with ESM');
+  console.log('STOMP server started on http://localhost:8080');
 });
