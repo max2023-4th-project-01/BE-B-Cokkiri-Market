@@ -41,6 +41,7 @@ export type ItemDetailsData = {
   };
   isFavorite: boolean;
   price: number;
+  chatroomId?: number;
 };
 
 export function ItemDetails() {
@@ -167,6 +168,20 @@ export function ItemDetails() {
     navigate(from);
   };
 
+  const getChatRooms = () => {
+    navigate('/chat', { state: { itemId: itemId } });
+  };
+
+  const moveToChatRoom = (chatroomId: number) => {
+    // 대화 중인 채팅방으로 이동
+    console.log('moveToChatRoom No.' + chatroomId);
+  };
+
+  const createChatRoom = () => {
+    // 새로운 채팅방 화면
+    console.log('createChatRoom');
+  };
+
   return (
     <Container>
       <Header
@@ -269,8 +284,23 @@ export function ItemDetails() {
           <Price>{priceToString(itemDetailsData.price)}</Price>
         </FooterLeft>
         <div>
-          <Button size="M" color="accentPrimary" fontColor="accentText">
-            {itemDetailsData.isSeller ? '대화 중인 채팅방' : ' 채팅하기'}
+          <Button
+            size="M"
+            color="accentPrimary"
+            fontColor="accentText"
+            onClick={
+              itemDetailsData.isSeller
+                ? getChatRooms
+                : itemDetailsData.chatroomId
+                ? () => moveToChatRoom(itemDetailsData.chatroomId!)
+                : createChatRoom
+            }
+          >
+            {itemDetailsData.isSeller
+              ? '대화 중인 채팅방'
+              : itemDetailsData.chatroomId
+              ? '대화 중인 채팅방'
+              : '채팅하기'}
           </Button>
         </div>
       </Footer>

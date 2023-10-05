@@ -6,8 +6,10 @@ import { getChatRoom, getChatRooms } from '../fetchers/chatFetcher';
 const CHAT_ROOMS_KEY = 'chatRooms';
 const CHAT_ROOM_KEY = 'chatRoom';
 
-export const useGetChatRooms = () => {
-  return useQuery<ChattingItemType[]>([CHAT_ROOMS_KEY], getChatRooms);
+export const useGetChatRooms = (itemId?: number) => {
+  return useQuery<ChattingItemType[]>([CHAT_ROOMS_KEY], () =>
+    getChatRooms(itemId)
+  );
 };
 
 export const useGetChatRoom = (chatRoomId: number) => {

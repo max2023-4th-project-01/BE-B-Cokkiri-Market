@@ -1,3 +1,4 @@
+import { useLocation } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { useGetChatRooms } from '../../api/queries/useChatQuery';
 import { Error } from '../../components/Error';
@@ -6,7 +7,9 @@ import { Loader } from '../../components/Loader';
 import { ChattingItem } from './ChattingItem';
 
 export function ChattingList() {
-  const { data, isLoading, isError } = useGetChatRooms();
+  const location = useLocation();
+  const itemId = location.state?.itemId;
+  const { data, isLoading, isError } = useGetChatRooms(itemId);
 
   return (
     <Container>
