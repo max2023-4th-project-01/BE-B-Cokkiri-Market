@@ -7,10 +7,15 @@ export const chatHandlers = [
   rest.get(API_ENDPOINT.CHAT_ROOMS, (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(chatRooms));
   }),
+
   rest.get(`${API_ENDPOINT.CHAT_ROOMS}/:id`, (req, res, ctx) => {
     const { id } = req.params;
 
     return res(ctx.status(200), ctx.json(chatRoom[Number(id)]));
+  }),
+
+  rest.post(API_ENDPOINT.CHAT_ROOMS, (_, res, ctx) => {
+    return res(ctx.status(201), ctx.json({ chatRoomId: 1 }));
   }),
 ];
 

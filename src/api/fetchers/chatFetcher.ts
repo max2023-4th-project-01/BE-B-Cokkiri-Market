@@ -15,3 +15,11 @@ export const getChatRoom = async (chatRoomId: number) => {
 
   return res.data;
 };
+
+export const createChatRoom = async (itemId: number) => {
+  const res = await fetcher.post(API_ENDPOINT.CHAT_ROOMS, {
+    itemId: itemId,
+  });
+
+  return res.data;
+};

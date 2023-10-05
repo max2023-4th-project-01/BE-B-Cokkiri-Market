@@ -182,7 +182,20 @@ export function ItemDetails() {
   };
 
   const createChatRoom = () => {
-    openChatRoomPanel(<NewChatRoom />);
+    const chatroomData = {
+      item: {
+        id: Number(itemId),
+        title: itemDetailsData.title,
+        price: itemDetailsData.price,
+        status: itemDetailsData.status.find(item => item.isSelected)!.name,
+        thumbnailUrl: itemDetailsData.images[0].url,
+      },
+      chatMember: {
+        nickname: itemDetailsData.seller,
+      },
+    };
+
+    openChatRoomPanel(<NewChatRoom chatroomData={chatroomData} />);
   };
 
   return (
@@ -299,11 +312,7 @@ export function ItemDetails() {
                 : createChatRoom
             }
           >
-            {itemDetailsData.isSeller
-              ? '대화 중인 채팅방'
-              : itemDetailsData.chatroomId
-              ? '대화 중인 채팅방'
-              : '채팅하기'}
+            {itemDetailsData.isSeller ? '대화 중인 채팅방' : '채팅하기'}
           </Button>
         </div>
       </Footer>
