@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import kr.codesquad.item.dto.request.ItemStatusDto;
 import org.springframework.http.HttpStatus;
@@ -35,9 +37,15 @@ public class ItemController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<ItemDetailResponse> getItem(@PathVariable Long id, HttpServletRequest request) {
+	public ResponseEntity<ItemDetailResponse> getItem(@PathVariable Long id, HttpServletRequest request, HttpServletResponse response) {
 		String userLoginId = (String)request.getAttribute(Constants.LOGIN_ID);
-		return ResponseEntity.ok(itemService.getItem(id, userLoginId));
+		ItemDetailResponse itemDetailResponse = itemService.getItem(id, userLoginId, request.getCookies());
+		Cookie cookie = itemDetailResponse.getCookie();
+		itemDetailResponse.setCookieNull();
+		if (cookie != null) {
+			response.addCookie(cookie);
+		}
+		return ResponseEntity.ok(itemDetailResponse);
 	}
 
 	@PutMapping("/{id}")

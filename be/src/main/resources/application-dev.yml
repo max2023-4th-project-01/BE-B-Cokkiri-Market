@@ -1,13 +1,8 @@
 spring:
-  config:
-    activate:
-      on-profile: test
-
   datasource:
-    url: jdbc:h2:mem:test;MODE=MySQL
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+    url: jdbc:mysql://localhost:3309/cokkiri_market
+    username: root
+    password: admin
 
   jpa:
     hibernate:
@@ -16,15 +11,21 @@ spring:
     properties:
       hibernate:
         format_sql: true
-  h2:
-    console:
-      enabled: true
+    defer-datasource-initialization: true # (2.5~) Hibernate 초기화 이후 data.sql 실행
+
 logging:
   level:
     kr.codesquad:
       DEBUG
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql: trace
+
 ---
 spring:
   sql:
     init:
-      mode: never
+      mode: always
+

@@ -1,0 +1,21 @@
+DELETE FROM category;
+ALTER TABLE category AUTO_INCREMENT = 1;
+
+INSERT INTO category (name, icon_name) VALUES ('디지털기기', 'icon_digital');
+INSERT INTO category (name, icon_name) VALUES ('생활가전', 'icon_appliance');
+INSERT INTO category (name, icon_name) VALUES ('가구/인테리어', 'icon_furniture');
+INSERT INTO category (name, icon_name) VALUES ('생활/주방', 'icon_kitchen');
+INSERT INTO category (name, icon_name) VALUES ('유아동', 'icon_baby');
+INSERT INTO category (name, icon_name) VALUES ('유아도서', 'icon_book');
+INSERT INTO category (name, icon_name) VALUES ('여성의류', 'icon_clothes');
+INSERT INTO category (name, icon_name) VALUES ('여성잡화', 'icon_accessories');
+INSERT INTO category (name, icon_name) VALUES ('남성패션/잡화', 'icon_man');
+INSERT INTO category (name, icon_name) VALUES ('뷰티/미용', 'icon_beauty');
+INSERT INTO category (name, icon_name) VALUES ('스포츠/레저', 'icon_sports');
+INSERT INTO category (name, icon_name) VALUES ('취미/게임/음반', 'icon_hobby');
+INSERT INTO category (name, icon_name) VALUES ('중고차', 'icon_car');
+INSERT INTO category (name, icon_name) VALUES ('티켓/교환권', 'icon_ticket');
+INSERT INTO category (name, icon_name) VALUES ('가공식품', 'icon_food');
+INSERT INTO category (name, icon_name) VALUES ('반려동물식품', 'icon_pet');
+INSERT INTO category (name, icon_name) VALUES ('식물', 'icon_plant');
+INSERT INTO category (name, icon_name) VALUES ('기타중고물품', 'icon_etc');

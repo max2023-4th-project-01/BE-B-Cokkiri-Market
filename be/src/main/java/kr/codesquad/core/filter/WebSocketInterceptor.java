@@ -18,8 +18,8 @@ import kr.codesquad.jwt.service.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
-@Component
 @RequiredArgsConstructor
+@Component
 public class WebSocketInterceptor implements ChannelInterceptor {
 
 	private final JwtProvider jwtProvider;

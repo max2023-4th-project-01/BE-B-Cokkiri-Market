@@ -1,8 +1,15 @@
 package kr.codesquad.item.service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.Cookie;
+
+import kr.codesquad.category.dto.response.CategoryEditResponse;
+import kr.codesquad.location.dto.response.LocationListResponse;
+import kr.codesquad.location.entity.Location;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -88,8 +95,7 @@ public class ItemService {
 		return item.getId();
 	}
 
-	@Transactional(readOnly = true)
-	public ItemDetailResponse getItem(Long id, String userLoginId) {
+	public ItemDetailResponse getItem(Long id, String userLoginId, Cookie[] cookies) {
 		Long userId = userRepository.findIdByLoginId(userLoginId);
 		Item item = itemRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 아이템이 없습니다."));
 		User seller = userRepository.findById(item.getUserId())
@@ -99,6 +105,11 @@ public class ItemService {
 		String categoryName = categoryRepository.findNameById(item.getCategoryId());
 		int chatCount = chatRoomRepository.countByItemId(item.getId());
 		int favoriteCount = favoriteRepository.countByItemId(item.getId());
+
+		Cookie cookie = null;
+		if (!Objects.equals(item.getUserId(), userId)) {
+			cookie = setViewCount(item, cookies);
+		}
 
 		return ItemDetailResponse.builder()
 			.isSeller(seller.getId().equals(userId))
@@ -112,7 +123,39 @@ public class ItemService {
 			.countData(item.countData(chatCount, favoriteCount))
 			.isFavorite(favoriteRepository.existsByUserIdAndItemId(userId, item.getId()))
 			.price(item.getPrice())
+			.cookie(cookie)
 			.build();
+	}
+
+	@Transactional
+	public Cookie setViewCount(Item item, Cookie[] cookies) {
+		Cookie oldCookie = null;
+		if (cookies != null) {
+			for (Cookie cookie : cookies) {
+				if (cookie.getName().equals("postView")) {
+					oldCookie = cookie;
+					break;
+				}
+			}
+		}
+
+		if (oldCookie == null) {
+			itemRepository.updateView(item.getId());
+			item.updateViewCount();
+			Cookie cookie = new Cookie("postView", item.getId().toString());
+			cookie.setMaxAge(60 * 60 * 24);
+			cookie.setPath("/");
+			return cookie;
+		} else {
+			if (!oldCookie.getValue().contains(item.getId().toString())) {
+				itemRepository.updateView(item.getId());
+				item.updateViewCount();
+				oldCookie.setValue(oldCookie.getValue() + "_" + item.getId());
+				oldCookie.setMaxAge(60 * 60 * 24);
+				oldCookie.setPath("/");
+			}
+		}
+		return oldCookie;
 	}
 
 	@Transactional
@@ -182,14 +225,27 @@ public class ItemService {
 
 		// 추후 작은 사이즈로 변경
 		List<ItemImageResponse> images = imageRepository.findByItemId(item.getId());
+		List<CategoryEditResponse> categories = List.of(CategoryEditResponse.builder()
+			.id(item.getCategoryId())
+			.name(categoryRepository.findNameById(item.getCategoryId()))
+			.isSelected(true)
+			.build());
+
+		List<LocationListResponse> locations = new ArrayList<>();
+		locations.add(new LocationListResponse(item.getLocationId(), item.getLocationName(), true));
+		for (Location location : locationRepository.findAllByUserId(item.getUserId())) {
+			if (!Objects.equals(location.getId(), item.getLocationId())) {
+				locations.add(new LocationListResponse(location.getId(), location.getLocationName(), false));
+			}
+		}
 
 		return ItemUpdateResponse.builder()
 			.images(images)
 			.title(item.getTitle())
-			.categoryId(item.getCategoryId())
+			.categories(categories)
 			.content(item.getContent())
 			.price(item.getPrice())
-			.locationName(item.getLocationName())
+			.locations(locations)
 			.build();
 	}
 
@@ -200,7 +256,7 @@ public class ItemService {
 			categoryName = categoryRepository.findNameById(categoryId);
 		}
 		User user = userRepository.findByLoginId(loginId);
-		String locationName = locationRepository.findByUserId(user.getId()).getLocationName();
+		String locationName = locationRepository.findSelectedLocationByUserId(user.getId()).getLocationName();
 
 		List<ItemListVo> itemListVos = itemPaginationRepository.readByConditions(ItemConditions.builder()
 			.itemId(itemId)
@@ -217,6 +273,7 @@ public class ItemService {
 				ItemCountDataResponse.builder()
 					.chat(itemListVo.getChat().intValue())
 					.favorite(itemListVo.getFavorite().intValue())
+					.view(itemListVo.getView())
 					.build(),
 				itemListVo.getStatus().name(), user.getId().equals(itemListVo.getUserId())))
 			.collect(Collectors.toList());
@@ -272,6 +329,7 @@ public class ItemService {
 				ItemCountDataResponse.builder()
 					.chat(itemListVo.getChat().intValue())
 					.favorite(itemListVo.getFavorite().intValue())
+					.view(itemListVo.getView())
 					.build(),
 				itemListVo.getStatus().name()))
 			.collect(Collectors.toList());
