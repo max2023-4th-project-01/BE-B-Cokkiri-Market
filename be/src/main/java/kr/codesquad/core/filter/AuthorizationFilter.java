@@ -68,7 +68,7 @@ public class AuthorizationFilter implements Filter {
 			log.debug("헤더 : {}", httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION));
 			log.debug("토큰 : {}", getToken(httpServletRequest));
 			log.debug("에러 메시지 : {}", e.getMessage());
-			throw new MalformedJwtException("올바르지 않은 토큰입니다." + httpServletRequest.getRequestURI());
+			throw new MalformedJwtException("올바르지 않은 토큰입니다." + httpServletRequest.getRequestURI() + getToken(httpServletRequest) + e.getMessage());
 		}
 	}
 
