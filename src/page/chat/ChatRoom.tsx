@@ -1,4 +1,4 @@
-import { KeyboardEvent, useEffect, useRef, useState } from 'react';
+import { KeyboardEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { styled } from 'styled-components';
 import { useGetChatRoom } from '../../api/queries/useChatQuery';
 import { Error } from '../../components/Error';
@@ -7,7 +7,7 @@ import { Loader } from '../../components/Loader';
 import { Button } from '../../components/button/Button';
 import { Icon } from '../../components/icon/Icon';
 import { useInput } from '../../hooks/useInput';
-import { useWebSocket } from '../../hooks/useWebSocket';
+import { useStomp } from '../../hooks/useWebSocket';
 import { usePanelStore } from '../../stores/usePanelStore';
 import { priceToString } from '../../utils/priceToString';
 import { Message } from './Message';
@@ -40,14 +40,14 @@ export function ChatRoom({ chatRoomId }: { chatRoomId: number }) {
 
   const message = useInput('');
 
-  const onMessage = (message: MessageType) => {
+  const onMessage = useCallback((message: MessageType) => {
     setMessages(prev => [
       ...(prev || []),
       { id: message.id, isSent: message.isSent, content: message.content },
     ]);
-  };
+  }, []);
 
-  const { connectWS, closeWS, sendMessage } = useWebSocket(onMessage);
+  const { connectWS, closeWS, sendMessage } = useStomp(onMessage);
 
   useEffect(() => {
     connectWS(chatRoomId);
@@ -66,9 +66,9 @@ export function ChatRoom({ chatRoomId }: { chatRoomId: number }) {
     }
   }, [data]);
 
-  const handleSend = () => {
+  const onSend = () => {
     if (message.value) {
-      sendMessage(message.value);
+      sendMessage(message.value, chatRoomId);
       message.clearValue();
     }
   };
@@ -78,9 +78,9 @@ export function ChatRoom({ chatRoomId }: { chatRoomId: number }) {
     closeWS();
   };
 
-  const onKeydownEnter = (event: KeyboardEvent<HTMLInputElement>) => {
+  const onKeyUpEnter = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      handleSend();
+      onSend();
     }
   };
 
@@ -118,7 +118,7 @@ export function ChatRoom({ chatRoomId }: { chatRoomId: number }) {
           <ChatBar>
             <StyledInput
               placeholder="내용을내용을 입력하세요"
-              onKeyDown={onKeydownEnter}
+              onKeyDown={onKeyUpEnter}
               onChange={message.onChange}
               value={message.value}
             />
@@ -126,7 +126,7 @@ export function ChatRoom({ chatRoomId }: { chatRoomId: number }) {
               size="M"
               styledType="circle"
               color="accentPrimary"
-              onClick={handleSend}
+              onClick={onSend}
             >
               <Icon size={16} name="send" color="accentText" />
             </Button>
