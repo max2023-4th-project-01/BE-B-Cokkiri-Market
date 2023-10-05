@@ -49,7 +49,7 @@ public class ChatService {
 	}
 
 	@Transactional
-	public void sendMessage(ChatMessageRequest chatMessageRequest, Long chatRoomId) {
+	public void sendMessage(ChatMessageRequest chatMessageRequest, Long chatRoomId, String loginId) {
 		User user = userRepository.findByNickname(chatMessageRequest.getNickname());
 		//채팅 생성 및 저장
 		// TODO: 채팅방에 사람이 있다면 ChatMessage 읽음 처리 로직 추가

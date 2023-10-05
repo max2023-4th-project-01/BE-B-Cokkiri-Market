@@ -1,15 +1,11 @@
 package kr.codesquad.core.filter;
 
-import java.util.ArrayList;
-
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
@@ -26,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 public class WebSocketInterceptor implements ChannelInterceptor {
 
 	private final JwtProvider jwtProvider;
-
 	@SneakyThrows
 	@Override
 	public Message<?> preSend(Message<?> message, MessageChannel channel) {
@@ -43,9 +38,10 @@ public class WebSocketInterceptor implements ChannelInterceptor {
 				// UsernamePasswordAuthenticationToken 발급
 				Claims claims = jwtProvider.getClaims(authToken);
 				String loginId = (String)claims.get(Constants.LOGIN_ID);
-				SecurityContextHolder.getContext()
-					.setAuthentication(
-						new UsernamePasswordAuthenticationToken(loginId, null, new ArrayList<>()));
+//				SecurityContextHolder.getContext()
+//					.setAuthentication(
+//						new UsernamePasswordAuthenticationToken(loginId, null, new ArrayList<>()));
+				accessor.addNativeHeader(Constants.LOGIN_ID, loginId);
 			} catch (RuntimeException e) {
 				throw new MalformedJwtException("토큰이 유효하지 않습니다");
 			}
