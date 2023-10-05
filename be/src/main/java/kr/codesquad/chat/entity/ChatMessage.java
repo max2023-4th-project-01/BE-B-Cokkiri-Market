@@ -22,11 +22,21 @@ public class ChatMessage extends TimeStamped {
 	private Long chatRoomId;
 	@Column(nullable = false, length = 200)
 	private String content;
+	@Column(columnDefinition = "BIT DEFAULT 0")
+	private boolean isRead;
+	@Column(nullable = false)
+	private Long senderId;
 
 	@Builder
-	public ChatMessage(Long id, Long chatRoomId, String content) {
+	public ChatMessage(Long id, Long chatRoomId, String content, boolean isRead, Long senderId) {
 		this.id = id;
 		this.chatRoomId = chatRoomId;
 		this.content = content;
+		this.isRead = isRead;
+		this.senderId = senderId;
+	}
+
+	public void readMessage() {
+		this.isRead = true;
 	}
 }

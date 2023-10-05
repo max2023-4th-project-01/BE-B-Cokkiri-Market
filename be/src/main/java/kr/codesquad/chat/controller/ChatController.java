@@ -9,15 +9,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import kr.codesquad.chat.dto.request.ChatMessageRequest;
 import kr.codesquad.chat.dto.request.ChatRoomCreateRequest;
-import kr.codesquad.chat.dto.request.SendMessageRequest;
 import kr.codesquad.chat.dto.response.ChatRoomCreateResponse;
+import kr.codesquad.chat.dto.response.ChatRoomListResponse;
 import kr.codesquad.chat.service.ChatService;
 import kr.codesquad.util.Constants;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -25,6 +25,13 @@ import lombok.RequiredArgsConstructor;
 public class ChatController {
 
 	private final ChatService chatService;
+
+	@GetMapping("/api/chatrooms")
+	public ResponseEntity<ChatRoomListResponse> showAllUsersChatRooms(@RequestParam(required = false) Long itemId,
+		HttpServletRequest request) {
+		String loginId = (String)request.getAttribute(Constants.LOGIN_ID);
+		return ResponseEntity.ok().body(chatService.findChatRoomsBy(itemId, loginId));
+	}
 
 	@PostMapping("/api/chatrooms")
 	public ResponseEntity<ChatRoomCreateResponse> createChatRoom(
