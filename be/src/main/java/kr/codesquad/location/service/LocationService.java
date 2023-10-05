@@ -38,7 +38,7 @@ public class LocationService {
         }
 
         String result;
-        if (query == null || query.equals("")) {
+        if (query == null || query.isEmpty()) {
             result = addressService.getAddressListDefault(page, size);
         } else {
             result = addressService.getAddressList(query, page, size);
@@ -50,10 +50,9 @@ public class LocationService {
         int start = 0;
         int end = 0;
 
-        String sub = result.substring(result.indexOf("page"));
-        start = sub.indexOf("total");
-        end = sub.indexOf(",", start);
-        int total = Integer.parseInt(sub.substring(start + 10, end - 1));
+        start = result.indexOf("total");
+        end = result.indexOf(",", start);
+        int total = Integer.parseInt(result.substring(start + 10, end - 1));
 
         if (page < total) {
             response.put("nextPage", page + 1);
@@ -66,15 +65,32 @@ public class LocationService {
             return response;
         }
 
-        while (true) {
-            start = result.indexOf("full_nm", end);
-            if (start == -1) {
-                break;
+        if (result.indexOf("full_nm", end) < result.indexOf("emd_cd", end)) {
+            while (true) {
+                start = result.indexOf("full_nm", end);
+                if (start == -1) {
+                    break;
+                }
+                end = result.indexOf(",", start);
+                String name = result.substring(start + 10, end - 1);
+                start = result.indexOf("emd_cd", end);
+                end = result.indexOf(",", start);
+                Long id = Long.parseLong(result.substring(start + 9, end - 1));
+                locations.add(new LocationListResponse(id, name, null));
             }
-            end = result.indexOf(",", start);
-            String name = result.substring(start + 10, end - 1);
-            Long id = Long.parseLong(result.substring(end + 11, end + 19));
-            locations.add(new LocationListResponse(id, name, null));
+        } else {
+            while (true) {
+                start = result.indexOf("emd_cd", end);
+                if (start == -1) {
+                    break;
+                }
+                end = result.indexOf(",", start);
+                Long id = Long.parseLong(result.substring(start + 9, end - 1));
+                start = result.indexOf("full_nm", end);
+                end = result.indexOf(",", start);
+                String name = result.substring(start + 10, end - 1);
+                locations.add(new LocationListResponse(id, name, null));
+            }
         }
 
         response.put("locations", locations);
