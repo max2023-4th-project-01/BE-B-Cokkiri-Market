@@ -50,7 +50,7 @@ export const useStomp = (onMessage: (message: MessageType) => void) => {
     if (stompClient) {
       stompClient.publish({
         destination: `/pub/chatrooms/${chatroomId}`,
-        body: JSON.stringify({ content: message }),
+        body: JSON.stringify({ nickname, content: message }),
       });
     }
   };
