@@ -1,31 +1,3 @@
-// import { useCallback, useState } from 'react';
-// import { WS_BASE_URL } from '../api/axios';
-// import { MessageType } from '../page/chat/ChatRoom';
-// export const useWebSocket = (onMessage: (message: MessageType) => void) => {
-//   const [ws, setWs] = useState<WebSocket>();
-
-//   const connectWS = useCallback((chatRoomId: number) => {
-//     setWs(new WebSocket(`${WS_BASE_URL}/api/ws/pub/chatrooms/${chatRoomId}`));
-//   }, []);
-
-//   const closeWS = useCallback(() => {
-//     ws?.close();
-//   }, [ws]);
-
-//   const sendMessage = (message: string) => {
-//     ws?.send(JSON.stringify({ content: message }));
-//   };
-
-//   if (ws) {
-//     ws.onmessage = message => {
-//       const data = JSON.parse(message.data);
-//       onMessage(data);
-//     };
-//   }
-
-//   return { connectWS, closeWS, sendMessage };
-// };
-
 import { Client } from '@stomp/stompjs';
 import { useCallback, useState } from 'react';
 import { WS_BASE_URL } from '../api/axios';
