@@ -18,10 +18,13 @@ import { Dropdown } from '../components/dropdown/Dropdown';
 import { MenuItem } from '../components/dropdown/MenuItem';
 import { Icon } from '../components/icon/Icon';
 import { Slider } from '../components/itemDetails/Slider';
+import { usePanelStore } from '../stores/usePanelStore';
 import { useProductEditorStore } from '../stores/useProductEditorStore';
 import { useToastStore } from '../stores/useToastStore';
 import { getElapsedSince } from '../utils/getElapsedSince';
 import { priceToString } from '../utils/priceToString';
+import { ChatRoom } from './chat/ChatRoom';
+import { NewChatRoom } from './chat/NewChatRoom';
 
 type DetailsStatus = '판매중' | '예약중' | '판매완료';
 
@@ -67,6 +70,7 @@ export function ItemDetails() {
   const from = location?.state?.redirectedFrom.pathname || '/';
   const openEditorPanel = useProductEditorStore(state => state.openPanel);
   const showToast = useToastStore(state => state.showToast);
+  const openChatRoomPanel = usePanelStore(state => state.openPanel);
 
   const {
     data: itemDetailsEditData,
@@ -169,17 +173,16 @@ export function ItemDetails() {
   };
 
   const getChatRooms = () => {
+    // 채팅방이 없으면??? 채팅방이 있는지 여부는 판단할 수 있어야 할 듯...
     navigate('/chat', { state: { itemId: itemId } });
   };
 
   const moveToChatRoom = (chatroomId: number) => {
-    // 대화 중인 채팅방으로 이동
-    console.log('moveToChatRoom No.' + chatroomId);
+    openChatRoomPanel(<ChatRoom chatRoomId={chatroomId} />);
   };
 
   const createChatRoom = () => {
-    // 새로운 채팅방 화면
-    console.log('createChatRoom');
+    openChatRoomPanel(<NewChatRoom />);
   };
 
   return (

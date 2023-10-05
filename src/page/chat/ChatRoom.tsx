@@ -33,6 +33,7 @@ type Messages = {
 export function ChatRoom({ chatRoomId }: { chatRoomId: number }) {
   const { closePanel } = usePanelStore();
   const { data, isError, isLoading } = useGetChatRoom(chatRoomId);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -73,7 +74,7 @@ export function ChatRoom({ chatRoomId }: { chatRoomId: number }) {
             ))}
           </Messages>
           <ChatBar>
-            <StyledInput placeholder="내용을내용을 입력하세요" />
+            <StyledInput placeholder="내용을 입력하세요" />
             <Button size="M" styledType="circle" color="accentPrimary">
               <Icon size={16} name="send" color="accentText" />
             </Button>
