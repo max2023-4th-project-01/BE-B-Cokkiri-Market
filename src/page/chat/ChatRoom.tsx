@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { KeyboardEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { styled } from 'styled-components';
 import { useGetChatRoom } from '../../api/queries/useChatQuery';
 import { Error } from '../../components/Error';
@@ -6,6 +6,8 @@ import { Header } from '../../components/Header';
 import { Loader } from '../../components/Loader';
 import { Button } from '../../components/button/Button';
 import { Icon } from '../../components/icon/Icon';
+import { useInput } from '../../hooks/useInput';
+import { useStomp } from '../../hooks/useWebSocket';
 import { usePanelStore } from '../../stores/usePanelStore';
 import { priceToString } from '../../utils/priceToString';
 import { Message } from './Message';
@@ -21,31 +23,72 @@ export type ChatRoomType = {
   chatMember: {
     nickname: string;
   };
-  messages: Messages;
+  messages: MessageType[];
 };
 
-type Messages = {
+export type MessageType = {
   id: number;
   isSent: boolean;
   content: string;
-}[];
+};
 
 export function ChatRoom({ chatRoomId }: { chatRoomId: number }) {
   const { closePanel } = usePanelStore();
   const { data, isError, isLoading } = useGetChatRoom(chatRoomId);
+  const [messages, setMessages] = useState<MessageType[]>();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const message = useInput('');
+
+  const onMessage = useCallback((message: MessageType) => {
+    setMessages(prev => [
+      ...(prev || []),
+      { id: message.id, isSent: message.isSent, content: message.content },
+    ]);
+  }, []);
+
+  const { connectWS, closeWS, sendMessage } = useStomp(onMessage);
+
+  useEffect(() => {
+    connectWS(chatRoomId);
+  }, [connectWS, chatRoomId]);
+
+  useEffect(() => {
+    return closeWS;
+  }, [closeWS]);
 
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
     }
+    if (data?.messages) {
+      setMessages(data.messages);
+    }
   }, [data]);
+
+  const onSend = () => {
+    if (message.value) {
+      sendMessage(message.value, chatRoomId);
+      message.clearValue();
+    }
+  };
+
+  const onClose = () => {
+    closePanel();
+    closeWS();
+  };
+
+  const onKeyUpEnter = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      onSend();
+    }
+  };
 
   return (
     <Container>
       <Header
         leftButton={
-          <Button styledType="text" onClick={closePanel}>
+          <Button styledType="text" onClick={onClose}>
             <Icon name="chevronLeft" color="neutralTextStrong" />
             <span>뒤로</span>
           </Button>
@@ -64,17 +107,27 @@ export function ChatRoom({ chatRoomId }: { chatRoomId: number }) {
             </div>
           </ProductInfoBanner>
           <Messages ref={messagesEndRef}>
-            {data?.messages.map(message => (
+            {messages?.map((message, index) => (
               <Message
-                key={message.id}
+                key={index}
                 content={message.content}
                 isSent={message.isSent}
               />
             ))}
           </Messages>
           <ChatBar>
-            <StyledInput placeholder="내용을내용을 입력하세요" />
-            <Button size="M" styledType="circle" color="accentPrimary">
+            <StyledInput
+              placeholder="내용을내용을 입력하세요"
+              onKeyDown={onKeyUpEnter}
+              onChange={message.onChange}
+              value={message.value}
+            />
+            <Button
+              size="M"
+              styledType="circle"
+              color="accentPrimary"
+              onClick={onSend}
+            >
               <Icon size={16} name="send" color="accentText" />
             </Button>
           </ChatBar>
