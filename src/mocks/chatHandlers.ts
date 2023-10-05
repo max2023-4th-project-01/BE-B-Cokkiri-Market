@@ -5,7 +5,7 @@ import { ChattingItemType } from '../page/chat/ChattingItem';
 
 export const chatHandlers = [
   rest.get(API_ENDPOINT.CHAT_ROOMS, (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json(chatRooms));
+    return res(ctx.status(200), ctx.json({ chatRooms }));
   }),
 
   rest.get(`${API_ENDPOINT.CHAT_ROOMS}/:id`, (req, res, ctx) => {

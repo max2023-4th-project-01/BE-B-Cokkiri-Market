@@ -44,7 +44,7 @@ export type ItemDetailsData = {
   };
   isFavorite: boolean;
   price: number;
-  chatroomId?: number;
+  chatRoomId?: number;
 };
 
 export function ItemDetails() {
@@ -173,7 +173,14 @@ export function ItemDetails() {
   };
 
   const getChatRooms = () => {
-    // 채팅방이 없으면??? 채팅방이 있는지 여부는 판단할 수 있어야 할 듯...
+    if (itemDetailsData.countData.chat === 0) {
+      showToast({
+        mode: 'warning',
+        message: '개설된 채팅방이 없습니다.',
+      });
+      return;
+    }
+
     navigate('/chat', { state: { itemId: itemId } });
   };
 
@@ -307,12 +314,14 @@ export function ItemDetails() {
             onClick={
               itemDetailsData.isSeller
                 ? getChatRooms
-                : itemDetailsData.chatroomId
-                ? () => moveToChatRoom(itemDetailsData.chatroomId!)
-                : createChatRoom
+                : itemDetailsData.chatRoomId === null
+                ? createChatRoom
+                : () => moveToChatRoom(itemDetailsData.chatRoomId!)
             }
           >
-            {itemDetailsData.isSeller ? '대화 중인 채팅방' : '채팅하기'}
+            {itemDetailsData.isSeller
+              ? `대화 중인 채팅방 ${itemDetailsData.countData.chat}`
+              : '채팅하기'}
           </Button>
         </div>
       </Footer>

@@ -13,6 +13,7 @@ type ResData = {
 export const useStomp = (onMessage: (message: MessageType) => void) => {
   const [stompClient, setStompClient] = useState<Client | null>(null);
   const { accessToken, nickname } = useAuthStore();
+  console.log(accessToken);
 
   const connectWS = useCallback(
     (chatRoomId: number) => {
@@ -29,8 +30,17 @@ export const useStomp = (onMessage: (message: MessageType) => void) => {
           });
         },
 
+        debug: function (str) {
+          console.log('STOMP: ' + str);
+        },
+
         connectHeaders: {
           Authorization: accessToken,
+        },
+
+        onStompError: frame => {
+          console.log('Broker reported error: ' + frame.headers['message']);
+          console.log('Additional details: ' + frame.body);
         },
       });
 
@@ -55,5 +65,5 @@ export const useStomp = (onMessage: (message: MessageType) => void) => {
     }
   };
 
-  return { connectWS, closeWS, sendMessage };
+  return { connectWS, closeWS, sendMessage, stompClient };
 };

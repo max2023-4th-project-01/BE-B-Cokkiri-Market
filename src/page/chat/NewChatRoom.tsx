@@ -1,11 +1,15 @@
-import { KeyboardEvent, useEffect, useRef, useState } from 'react';
+import { KeyboardEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { styled } from 'styled-components';
 import { createChatRoom } from '../../api/fetchers/chatFetcher';
 import { Header } from '../../components/Header';
 import { Button } from '../../components/button/Button';
 import { Icon } from '../../components/icon/Icon';
+import { useInput } from '../../hooks/useInput';
+import { useStomp } from '../../hooks/useWebSocket';
 import { usePanelStore } from '../../stores/usePanelStore';
 import { priceToString } from '../../utils/priceToString';
+import { MessageType } from './ChatRoom';
+import { Message } from './Message';
 
 type NewChatRoomDataProps = {
   item: {
@@ -25,10 +29,11 @@ export function NewChatRoom({
 }: {
   chatroomData: NewChatRoomDataProps;
 }) {
-  const { closePanel } = usePanelStore();
-  const [ws, setWebSocket] = useState<WebSocket | null>(null);
-
+  const [messages, setMessages] = useState<MessageType[]>([]);
+  const [chatRoomId, setChatRoomId] = useState<number>();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { closePanel } = usePanelStore();
+  const message = useInput('');
 
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -36,33 +41,55 @@ export function NewChatRoom({
     }
   }, []);
 
+  const onMessage = useCallback((message: MessageType) => {
+    setMessages(prev => [
+      ...(prev || []),
+      { id: message.id, isSent: message.isSent, content: message.content },
+    ]);
+  }, []);
+
+  const { connectWS, closeWS, sendMessage, stompClient } = useStomp(onMessage);
+
   const createWebSocket = async () => {
     try {
       // 채팅방 생성 요청
       const { chatRoomId } = await createChatRoom(chatroomData.item.id);
+      setChatRoomId(chatRoomId);
       console.log(chatRoomId);
 
       // 생성된 채팅방 정보를 사용하여 웹소켓 연결
+      connectWS(chatRoomId);
     } catch (error) {
       console.error('채팅방 생성 요청 중 오류 발생:', error);
     }
   };
 
-  const onSendFirstMessage = () => {
-    if (!ws) {
-      // 웹소켓이 없는 경우, 채팅방 생성 요청 후 웹소켓 연결
-      createWebSocket();
+  const onSend = async () => {
+    console.log('onSend');
+    console.log(message.value);
+    if (!message.value) return;
 
-      // 웹소켓 메시지를 처리하는 로직을 추가
+    if (!stompClient) {
+      await createWebSocket();
+      if (!chatRoomId) return;
+      sendMessage(message.value, chatRoomId);
+      message.clearValue();
       return;
     }
 
-    // 웹소켓이 이미 연결된 경우, 메시지 전송 로직 추가
+    if (!chatRoomId) return;
+    sendMessage(message.value, chatRoomId);
+    message.clearValue();
+  };
+
+  const onClose = () => {
+    closePanel();
+    closeWS();
   };
 
   const onKeydownEnter = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      onSendFirstMessage();
+      onSend();
     }
   };
 
@@ -70,7 +97,7 @@ export function NewChatRoom({
     <Container>
       <Header
         leftButton={
-          <Button styledType="text" onClick={closePanel}>
+          <Button styledType="text" onClick={onClose}>
             <Icon name="chevronLeft" color="neutralTextStrong" />
             <span>뒤로</span>
           </Button>
@@ -85,17 +112,27 @@ export function NewChatRoom({
             <Price>{priceToString(chatroomData?.item.price)}</Price>
           </div>
         </ProductInfoBanner>
-        <Messages ref={messagesEndRef} />
+        <Messages ref={messagesEndRef}>
+          {messages?.map((message, index) => (
+            <Message
+              key={index}
+              content={message.content}
+              isSent={message.isSent}
+            />
+          ))}
+        </Messages>
         <ChatBar>
           <StyledInput
             placeholder="내용을 입력하세요"
             onKeyDown={onKeydownEnter}
+            onChange={message.onChange}
+            value={message.value}
           />
           <Button
             size="M"
             styledType="circle"
             color="accentPrimary"
-            onClick={onSendFirstMessage}
+            onClick={onSend}
           >
             <Icon size={16} name="send" color="accentText" />
           </Button>

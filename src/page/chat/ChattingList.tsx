@@ -18,7 +18,9 @@ export function ChattingList() {
         {isLoading ? (
           <Loader />
         ) : (
-          data?.map((chat, index) => <ChattingItem key={index} {...chat} />)
+          data?.chatRooms.map((chat, index) => (
+            <ChattingItem key={index} {...chat} />
+          ))
         )}
         {isError && <Error message="채팅방 목록을 가져오지 못 했습니다." />}
       </Body>
