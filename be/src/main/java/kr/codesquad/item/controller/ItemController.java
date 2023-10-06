@@ -50,8 +50,8 @@ public class ItemController {
 
 	@PutMapping("/{id}")
 	public ResponseEntity<Void> updateItem(@PathVariable Long id,
-		@RequestPart List<MultipartFile> newImageFiles,
-		@RequestPart List<Long> deleteImageIds,
+		@RequestPart(required = false) List<MultipartFile> newImageFiles,
+		@RequestPart(required = false) List<Long> deleteImageIds,
 		@RequestPart ItemUpdateRequest item, HttpServletRequest request) {
 		String userLoginId = (String)request.getAttribute(Constants.LOGIN_ID);
 		itemService.updateItem(id, newImageFiles, deleteImageIds, item, userLoginId);
