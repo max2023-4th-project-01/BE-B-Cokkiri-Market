@@ -3,11 +3,11 @@ import axios from 'axios';
 const currentPort = window.location.port;
 
 export const BASE_URL = import.meta.env.DEV
-  ? `http://localhost:${currentPort}`
+  ? `http://3.39.67.85`
   : import.meta.env.VITE_API_URL;
 
 export const WS_BASE_URL = import.meta.env.DEV
-  ? `ws://localhost:8080`
+  ? `ws://3.39.67.85:8080`
   : `ws://${import.meta.env.VITE_API_URL}`; // port 번호 붙일지 말지 결정하기
 
 export const fetcher = axios.create({

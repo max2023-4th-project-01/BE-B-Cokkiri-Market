@@ -48,7 +48,7 @@ export function NewChatRoom({
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
     }
-  }, []);
+  }, [messages]);
 
   const createWebSocket = async () => {
     try {

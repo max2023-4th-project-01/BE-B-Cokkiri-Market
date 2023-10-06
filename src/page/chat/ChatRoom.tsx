@@ -1,4 +1,5 @@
 import { KeyboardEvent, useCallback, useEffect, useRef, useState } from 'react';
+import { useInView } from 'react-intersection-observer';
 import { styled } from 'styled-components';
 import { useGetChatRoom } from '../../api/queries/useChatQuery';
 import { Error } from '../../components/Error';
@@ -24,6 +25,7 @@ export type ChatRoomType = {
     nickname: string;
   };
   messages: MessageType[];
+  nextCursor: number | null;
 };
 
 export type MessageType = {
@@ -34,8 +36,10 @@ export type MessageType = {
 
 export function ChatRoom({ chatRoomId }: { chatRoomId: number }) {
   const { closePanel } = usePanelStore();
-  const { data, isError, isLoading } = useGetChatRoom(chatRoomId);
+  const { data, isError, isLoading, fetchNextPage, hasNextPage } =
+    useGetChatRoom(chatRoomId);
   const [messages, setMessages] = useState<MessageType[]>();
+  const { ref: observingTargetRef, inView } = useInView();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const message = useInput('');
@@ -58,13 +62,21 @@ export function ChatRoom({ chatRoomId }: { chatRoomId: number }) {
   }, [closeWS]);
 
   useEffect(() => {
+    if (data?.pages[0].messages) {
+      // Data의 pages 배열의 각 페이지들에 있는 messages 배열들을 하나로 합치기
+      const messageData: MessageType[] = data.pages.flatMap(
+        page => page.messages
+      );
+
+      setMessages(messageData);
+    }
+  }, [data]);
+
+  useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
     }
-    if (data?.messages) {
-      setMessages(data.messages);
-    }
-  }, [data]);
+  }, [messages]);
 
   const onSend = () => {
     if (message.value) {
@@ -93,20 +105,21 @@ export function ChatRoom({ chatRoomId }: { chatRoomId: number }) {
             <span>뒤로</span>
           </Button>
         }
-        title={data?.chatMember.nickname}
+        title={data?.pages[0].chatMember.nickname}
       />
       {isLoading ? (
         <Loader />
       ) : (
         <Body>
           <ProductInfoBanner>
-            <ProductImage src={data?.item.thumbnailUrl} />
+            <ProductImage src={data?.pages[0].item.thumbnailUrl} />
             <div>
-              <Title>{data?.item.title}</Title>
-              <Price>{priceToString(data?.item.price)}</Price>
+              <Title>{data?.pages[0].item.title}</Title>
+              <Price>{priceToString(data?.pages[0].item.price)}</Price>
             </div>
           </ProductInfoBanner>
           <Messages ref={messagesEndRef}>
+            <ObservingTarget ref={observingTargetRef} />
             {messages?.map((message, index) => (
               <Message
                 key={index}
@@ -118,7 +131,7 @@ export function ChatRoom({ chatRoomId }: { chatRoomId: number }) {
           <ChatBar>
             <StyledInput
               placeholder="내용을 입력하세요"
-              onKeyDown={onKeyUpEnter}
+              onKeyUp={onKeyUpEnter}
               onChange={message.onChange}
               value={message.value}
             />
@@ -188,11 +201,13 @@ const Price = styled.div`
 const Messages = styled.div`
   width: 100%;
   display: flex;
+  align-items: center;
   flex-direction: column;
   gap: 8px;
   flex: 1;
   padding: 12px 16px;
   overflow-y: scroll;
+  position: relative;
 
   &::-webkit-scrollbar {
     width: 4px;
@@ -228,4 +243,12 @@ const StyledInput = styled.input`
   background: ${({ theme }) => theme.color.neutralBackground};
   color: ${({ theme }) => theme.color.neutralTextWeak};
   font: ${({ theme }) => theme.font.availableDefault16};
+`;
+
+const ObservingTarget = styled.div`
+  width: 100%;
+  min-height: 40px;
+  background-color: transparent;
+  position: absolute;
+  z-index: -1;
 `;

@@ -10,8 +10,18 @@ export const getChatRooms = async (itemId?: number) => {
   return res.data;
 };
 
-export const getChatRoom = async (chatRoomId: number) => {
-  const res = await fetcher.get(`${API_ENDPOINT.CHAT_ROOMS}/${chatRoomId}`);
+export const getChatRoom = async ({
+  pageParam: cursor,
+  chatRoomId,
+}: {
+  pageParam: number;
+  chatRoomId: number;
+}) => {
+  const url = new URL(BASE_URL + API_ENDPOINT.CHAT_ROOMS + `/${chatRoomId}`);
+  cursor !== undefined && url.searchParams.append('cursor', String(cursor));
+  console.log(url.toString());
+
+  const res = await fetcher.get(url.toString());
 
   return res.data;
 };
