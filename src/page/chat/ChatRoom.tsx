@@ -39,6 +39,7 @@ export function ChatRoom({ chatRoomId }: { chatRoomId: number }) {
   const { data, isError, isLoading, fetchNextPage, hasNextPage } =
     useGetChatRoom(chatRoomId);
   const [messages, setMessages] = useState<MessageType[]>();
+  const [isAutoScroll, setIsAutoScroll] = useState(true);
   const { ref: observingTargetRef, inView } = useInView();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -63,24 +64,31 @@ export function ChatRoom({ chatRoomId }: { chatRoomId: number }) {
 
   useEffect(() => {
     if (data?.pages[0].messages) {
-      // Data의 pages 배열의 각 페이지들에 있는 messages 배열들을 하나로 합치기
-      const messageData: MessageType[] = data.pages.flatMap(
-        page => page.messages
-      );
+      const messageData: MessageType[] = [...data.pages]
+        .reverse()
+        .flatMap(page => page.messages);
 
       setMessages(messageData);
     }
   }, [data]);
 
   useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
+    if (isAutoScroll) {
+      scrollToBottom();
     }
   }, [messages]);
+
+  useEffect(() => {
+    if (inView && hasNextPage) {
+      fetchNextPage();
+      setIsAutoScroll(false);
+    }
+  }, [inView, hasNextPage, fetchNextPage]);
 
   const onSend = () => {
     if (message.value) {
       sendMessage(message.value, chatRoomId);
+      setIsAutoScroll(true);
       message.clearValue();
     }
   };
@@ -93,6 +101,12 @@ export function ChatRoom({ chatRoomId }: { chatRoomId: number }) {
   const onKeyUpEnter = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       onSend();
+    }
+  };
+
+  const scrollToBottom = () => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
     }
   };
 

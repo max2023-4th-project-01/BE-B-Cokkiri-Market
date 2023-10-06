@@ -19,7 +19,6 @@ export const getChatRoom = async ({
 }) => {
   const url = new URL(BASE_URL + API_ENDPOINT.CHAT_ROOMS + `/${chatRoomId}`);
   cursor !== undefined && url.searchParams.append('cursor', String(cursor));
-  console.log(url.toString());
 
   const res = await fetcher.get(url.toString());
 
