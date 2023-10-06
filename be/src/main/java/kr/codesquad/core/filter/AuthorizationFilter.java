@@ -10,6 +10,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,10 +25,11 @@ import kr.codesquad.util.RedisUtil;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
+@Slf4j
 public class AuthorizationFilter implements Filter {
 	private static final String[] whiteListUris = {"/h2-console/**", "/api/users", "/api/login",
 		"/api/reissue-access-token", "/api/oauth/**", "/api/redirect/**", "/redirect/**", "/api/locations**",
-		"/api/ws/**"};
+		"/api/ws/**", "/api/ws**"};
 
 	private final JwtProvider jwtProvider;
 	private final RedisUtil redisUtil;
@@ -63,6 +65,9 @@ public class AuthorizationFilter implements Filter {
 					new UsernamePasswordAuthenticationToken(claims.getSubject(), null, new ArrayList<>()));
 			chain.doFilter(request, response);
 		} catch (RuntimeException e) {
+			log.debug("헤더 : {}", httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION));
+			log.debug("토큰 : {}", getToken(httpServletRequest));
+			log.debug("에러 메시지 : {}", e.getMessage());
 			throw new MalformedJwtException("올바르지 않은 토큰입니다." + httpServletRequest.getRequestURI());
 		}
 	}

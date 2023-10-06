@@ -15,10 +15,13 @@ import org.springframework.stereotype.Component;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.MalformedJwtException;
 import kr.codesquad.jwt.service.JwtProvider;
+import kr.codesquad.util.Constants;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
+@Slf4j
 @Component
 public class WebSocketInterceptor implements ChannelInterceptor {
 
@@ -30,7 +33,7 @@ public class WebSocketInterceptor implements ChannelInterceptor {
 		StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
 
 		if (accessor.getCommand() == StompCommand.CONNECT) {
-			String authToken = accessor.getFirstNativeHeader("Authorization");
+			String authToken = getToken(accessor.getFirstNativeHeader("Authorization"));
 
 			if (authToken == null) {
 				throw new MalformedJwtException("토큰이 없습니다");
@@ -39,14 +42,19 @@ public class WebSocketInterceptor implements ChannelInterceptor {
 			try {
 				// UsernamePasswordAuthenticationToken 발급
 				Claims claims = jwtProvider.getClaims(authToken);
+				String loginId = (String)claims.get(Constants.LOGIN_ID);
 				SecurityContextHolder.getContext()
 					.setAuthentication(
-						new UsernamePasswordAuthenticationToken(claims.getSubject(), null, new ArrayList<>()));
+						new UsernamePasswordAuthenticationToken(loginId, null, new ArrayList<>()));
 			} catch (RuntimeException e) {
 				throw new MalformedJwtException("토큰이 유효하지 않습니다");
 			}
 		}
 
 		return message;
+	}
+
+	private String getToken(String token) {
+		return token.substring(Constants.TOKEN_PREFIX.length()).replace("\"", "");
 	}
 }

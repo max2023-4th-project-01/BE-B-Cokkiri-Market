@@ -14,13 +14,14 @@ import kr.codesquad.chat.entity.ChatRoom;
 @Mapper
 public interface ChatMapper {
 	ChatMapper INSTANCE = Mappers.getMapper(ChatMapper.class);
+
 	@Mapping(target = "senderId", source = "userId")
 	ChatRoom toChatRoom(ChatRoomCreateRequest chatRoomCreateRequest, Long userId);
 
 	@Mapping(target = "chatRoomId", source = "id")
 	ChatRoomCreateResponse toChatRoomCreateResponse(ChatRoom chatRoom);
 
-	ChatMessage toChatMessage(ChatMessageRequest chatMessageRequest, Long chatRoomId);
+	ChatMessage toChatMessage(ChatMessageRequest chatMessageRequest, Long chatRoomId, Long senderId);
 
-	SendMessageRequest toSendMessageRequest(ChatMessage chatMessage, Long senderId);
+	SendMessageRequest toSendMessageRequest(ChatMessage chatMessage, String nickname);
 }

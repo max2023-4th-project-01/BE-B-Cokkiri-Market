@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import kr.codesquad.chat.dto.response.ChatRoomDetailResponse;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Service;
@@ -50,15 +51,15 @@ public class ChatService {
 
 	@Transactional
 	public void sendMessage(ChatMessageRequest chatMessageRequest, Long chatRoomId) {
-
+		User user = userRepository.findByNickname(chatMessageRequest.getNickname());
 		//채팅 생성 및 저장
 		// TODO: 채팅방에 사람이 있다면 ChatMessage 읽음 처리 로직 추가
 		ChatMessage chatMessage = chatMessageRepository.save(
-			ChatMapper.INSTANCE.toChatMessage(chatMessageRequest, chatRoomId));
+			ChatMapper.INSTANCE.toChatMessage(chatMessageRequest, chatRoomId, user.getId()));
 		String topic = channelTopic.getTopic();
 
 		redisTemplate.convertAndSend(topic,
-			ChatMapper.INSTANCE.toSendMessageRequest(chatMessage, chatMessageRequest.getSenderId()));
+			ChatMapper.INSTANCE.toSendMessageRequest(chatMessage, user.getNickname()));
 	}
 
 	public ChatRoomListResponse findChatRoomsBy(Long itemId, String loginId) {
@@ -88,5 +89,14 @@ public class ChatService {
 			}
 		}
 		return map;
+	}
+
+    public ChatRoomDetailResponse findChatRoomDetail(Long chatroomId, String loginId, Long cursor) {
+		Long userId = userRepository.findByLoginId(loginId).getId();
+
+		if (cursor == null) {
+			cursor = Long.MAX_VALUE;
+		}
+		return chatRoomListRepository.findChatRoomDetailSlice(chatroomId, userId, cursor);
 	}
 }

@@ -123,6 +123,7 @@ public class ItemService {
 			.countData(item.countData(chatCount, favoriteCount))
 			.isFavorite(favoriteRepository.existsByUserIdAndItemId(userId, item.getId()))
 			.price(item.getPrice())
+			.chatRoomId(chatRoomRepository.findIdByItemIdAndSenderId(item.getId(), userId)) // 구매자 채팅 있으면 채팅방 아이디, 없으면 null
 			.cookie(cookie)
 			.build();
 	}
