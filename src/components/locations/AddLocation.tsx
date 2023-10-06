@@ -156,4 +156,5 @@ const ObservingTarget = styled.div`
   height: 56px;
   position: relative;
   bottom: 10%;
+  z-index: -1;
 `;

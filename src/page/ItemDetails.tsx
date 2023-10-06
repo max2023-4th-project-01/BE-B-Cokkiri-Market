@@ -21,6 +21,7 @@ import { Slider } from '../components/itemDetails/Slider';
 import { useProductEditorStore } from '../stores/useProductEditorStore';
 import { useToastStore } from '../stores/useToastStore';
 import { getElapsedSince } from '../utils/getElapsedSince';
+import { priceToString } from '../utils/priceToString';
 
 type DetailsStatus = '판매중' | '예약중' | '판매완료';
 
@@ -50,19 +51,12 @@ export function ItemDetails() {
 
   useEffect(() => {
     const isMobile = /Mobile|Android/i.test(navigator.userAgent);
+    const eventName = isMobile ? 'touchmove' : 'wheel';
 
-    if (isMobile) {
-      window.addEventListener('touchmove', onScroll);
-      return;
-    }
-    window.addEventListener('wheel', onScroll);
+    window.addEventListener(eventName, onScroll);
 
     return () => {
-      if (isMobile) {
-        window.removeEventListener('touchmove', onScroll);
-        return;
-      }
-      window.removeEventListener('wheel', onScroll);
+      window.removeEventListener(eventName, onScroll);
     };
   }, []);
 
@@ -122,17 +116,6 @@ export function ItemDetails() {
       data: itemDetailsEditData,
       id: Number(itemId),
     });
-  };
-
-  const setPrice = (price: number | null) => {
-    switch (price) {
-      case null:
-        return '가격 미정';
-      case 0:
-        return '나눔';
-      default:
-        return `${price.toLocaleString('ko')}원`;
-    }
   };
 
   const hoverToFetch = () => {
@@ -283,7 +266,7 @@ export function ItemDetails() {
               }
             />
           </IconButton>
-          <Price>{setPrice(itemDetailsData.price)}</Price>
+          <Price>{priceToString(itemDetailsData.price)}</Price>
         </FooterLeft>
         <div>
           <Button size="M" color="accentPrimary" fontColor="accentText">

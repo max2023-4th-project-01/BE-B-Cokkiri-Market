@@ -6,12 +6,18 @@ const BASE_HEIGHT = 852;
 type screenConfigState = {
   screenWidth: number;
   screenHeight: number;
+  screenRect: DOMRect | null;
+  setScreenRect: (screenRect: DOMRect) => void;
   updateConfig: () => void;
 };
 
 export const useScreenConfigStore = create<screenConfigState>(set => ({
   screenWidth: BASE_WIDTH,
   screenHeight: BASE_HEIGHT,
+  screenRect: null,
+  setScreenRect: (screenRect: DOMRect) => {
+    set(() => ({ screenRect }));
+  },
   updateConfig: () => {
     const userAgent = navigator.userAgent;
     const isMobile =

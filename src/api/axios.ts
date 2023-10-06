@@ -6,6 +6,10 @@ export const BASE_URL = import.meta.env.DEV
   ? `http://localhost:${currentPort}`
   : import.meta.env.VITE_API_URL;
 
+export const WS_BASE_URL = import.meta.env.DEV
+  ? `ws://localhost:8080`
+  : `ws://${import.meta.env.VITE_API_URL}`;
+
 export const fetcher = axios.create({
   baseURL: BASE_URL,
   headers: {

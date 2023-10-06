@@ -12,4 +12,5 @@ export const API_ENDPOINT = {
   FAVORITES_CATEGORY: '/api/users/favorites/categories',
   RECOMMENDED_CATEGORIES: '/api/categories/recommend',
   CHANGE_PROFILE_IMAGE: '/api/users/profile-image',
+  CHAT_ROOMS: '/api/chatrooms',
 };
