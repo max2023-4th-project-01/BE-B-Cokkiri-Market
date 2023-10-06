@@ -31,10 +31,22 @@ const Container = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
+  overflow: hidden;
 `;
 
 const Body = styled.div`
   width: 100%;
   flex: 1;
   margin-top: 56px;
+  box-sizing: border-box;
+  overflow-y: scroll;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: ${({ theme }) => theme.color.neutralBorderStrong};
+    border-radius: 10px;
+  }
 `;
