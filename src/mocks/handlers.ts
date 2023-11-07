@@ -1,4 +1,5 @@
 import { authHandlers } from './authHandlers';
+import { chatHandlers } from './chatHandlers';
 import { itemDetailsHandlers } from './itemDetailsHandlers';
 import { itemsHandlers } from './itemsHandlers';
 import { locationHandlers } from './locationHandlers';
@@ -8,4 +9,5 @@ export const handlers = [
   ...locationHandlers,
   ...itemsHandlers,
   ...itemDetailsHandlers,
+  ...chatHandlers,
 ];

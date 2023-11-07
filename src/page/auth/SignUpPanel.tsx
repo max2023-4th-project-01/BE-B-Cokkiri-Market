@@ -139,7 +139,7 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
     }
   };
 
-  const setSignUpLocation = (locationId: number, locationName: string) => {
+  const onSetSignUpLocation = (locationId: number, locationName: string) => {
     setLocation({ id: locationId, name: locationName });
     setIsModalOpen(false);
   };
@@ -213,7 +213,7 @@ export function SignUpPanel({ closePanel }: SignUpPanelProps) {
         <SignUpLocationModal
           isOpen={isModalOpen}
           onClose={closeModal}
-          setSignUpLocation={setSignUpLocation}
+          onSetSignUpLocation={onSetSignUpLocation}
         />
       )}
     </Div>

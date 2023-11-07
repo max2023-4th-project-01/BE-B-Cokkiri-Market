@@ -54,7 +54,6 @@ export function Home() {
   };
 
   const closeModal = () => {
-    refetchItems();
     resetLocationResult();
     setIsModalOpen(false);
   };
@@ -94,7 +93,12 @@ export function Home() {
       <Header
         leftButton={
           <LeftAccessory>
-            {!isLogin ? (
+            {isLogin ? (
+              <UserLocationDropdown
+                currentLocation={itemData?.pages[0]?.userLocation}
+                openModal={openModal}
+              />
+            ) : (
               <Button
                 styledType="text"
                 color="neutralText"
@@ -103,11 +107,6 @@ export function Home() {
                 역삼1동
                 <Icon name="chevronDown" color="neutralTextStrong" />
               </Button>
-            ) : (
-              <UserLocationDropdown
-                currentLocation={itemData?.pages[0]?.userLocation}
-                openModal={openModal}
-              />
             )}
           </LeftAccessory>
         }
@@ -221,6 +220,7 @@ const ObservingTarget = styled.div`
   height: 152px;
   position: relative;
   bottom: 152px;
+  z-index: -1;
 `;
 
 const FAB = styled(Button)`

@@ -2,12 +2,12 @@ import { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { Layout } from './components/Layout';
-import { Chatting } from './page/Chatting';
 import { Favorites } from './page/Favorites';
 import { ItemDetails } from './page/ItemDetails';
 import { SalesList } from './page/SalesList';
 import { MyAccount } from './page/auth/MyAccount';
 import { OAuthLoading } from './page/auth/OAuthLoading';
+import { ChattingList } from './page/chat/ChattingList';
 import { Home } from './page/home/Home';
 import { ProtectedRoute } from './router/ProtectedRoute';
 import { useScreenConfigStore } from './stores/useScreenConfigStore';
@@ -40,7 +40,7 @@ export function App() {
           <Route element={<ProtectedRoute />}>
             <Route path="/sellHistory" element={<SalesList />} />
             <Route path="/favoritesHistory" element={<Favorites />} />
-            <Route path="/chat" element={<Chatting />} />
+            <Route path="/chat" element={<ChattingList />} />
           </Route>
         </Route>
       </Routes>
